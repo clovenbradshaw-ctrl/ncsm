@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "_notes": "Starter import file migrated from the No MOU Nashville Google Sites page and {Rich Text} Substack articles. Upload this via the admin bar's + Import button. Dates are approximate where the original post date was not available — edit them in the UI if needed. Each article keeps a url field pointing to the primary source so nothing is re-hosted.",
+  "articles": [
+    {
+      "title": "Nashville's Unauthorized Secret Police Force And The People & Orgs Enabling It",
+      "url": "https://readrichtext.substack.com/p/nashvilles-unauthorized-secret-police",
+      "date": "2025-11-01",
+      "summary": "The Nashville Downtown Partnership's budget has not been reviewed or approved by Metro Council in 22 years. Its president has doubled his salary past $500K while public money funds a private policing operation licensed through a shell company — a multimillion-dollar contract that is, quite literally, a secret.",
+      "tags": ["NDP", "Downtown Partnership", "Secret Police", "Metro Council", "Accountability"]
+    },
+    {
+      "title": "We Built the Surveillance App Nashville's Leaders Have Been Asking For. Except It Tracks Them.",
+      "url": "https://readrichtext.substack.com/p/we-built-the-surveillance-app-nashvilles",
+      "date": "2026-04-07",
+      "summary": "MNPD's push into License Plate Readers and the undisclosed conflicts of interest between surveillance vendors and police leadership. Mayor O'Connell voted to ban LPRs in 2017 and warned in 2021 that 'strong communities are better for safety than a surveillance state' — a position he has since reversed.",
+      "tags": ["Surveillance", "LPR", "Flock", "MNPD", "O'Connell"]
+    },
+    {
+      "title": "Correction About THP Trooper Throwing Man to Ground for Kicking His Car (After Almost Running Him Over)",
+      "url": "https://readrichtext.substack.com/p/correction-about-thp-trooper-throwing",
+      "date": "2025-10-05",
+      "summary": "Correction and context on the September 20, 2025 incident: THP Sgt. DeWunya Topps — off-duty in uniform for Solaren Risk Management — slammed a pedestrian to the ground after nearly running him over in a crosswalk. The man kicked one car, not 'cars' as earlier reported.",
+      "tags": ["THP", "Solaren", "Use of Force", "Off-Duty Policing"]
+    },
+    {
+      "title": "Buckle Up: Another Fight Over Surveillance is Upon Us",
+      "url": "https://readrichtext.substack.com/p/surveillance-again-billionaires-invest",
+      "date": "2026-03-28",
+      "summary": "Flock Safety just raised $275M at a $7.5B valuation led by Andreessen Horowitz. Nashville is becoming the case study for how procurement is circumvented to eliminate public consent over surveillance — where LPRs feed a larger AI-driven infrastructure that can flow into Palantir.",
+      "tags": ["Flock", "LPR", "Palantir", "Andreessen Horowitz", "Procurement"]
+    }
+  ],
+  "ctas": [
+    {
+      "title": "Read the primary-source reporting",
+      "description": "{Rich Text} is the independent investigative newsletter that broke most of the surveillance, NDP, and off-duty-policing stories linked below. Subscribe and share.",
+      "url": "https://readrichtext.substack.com/",
+      "linkLabel": "Read {Rich Text}",
+      "urgency": "high"
+    },
+    {
+      "title": "Demand Metro Council oversight of the Downtown Partnership",
+      "description": "NDP's budget has not been reviewed by Metro Council in 22 years, even as it funds a private policing operation with public dollars. Contact your council member and ask why.",
+      "url": "https://www.nashville.gov/departments/metro-council",
+      "linkLabel": "Find your council member",
+      "urgency": "high"
+    },
+    {
+      "title": "Watch the MNPD surveillance budget",
+      "description": "Even after the $15M downtown grant was rejected, MNPD's budget request still includes roughly $2.8M for License Plate Recognition. Track every line item before it becomes another Flock contract.",
+      "url": "https://readrichtext.substack.com/p/surveillance-again-billionaires-invest",
+      "linkLabel": "Read the breakdown",
+      "urgency": "medium"
+    },
+    {
+      "title": "No MOU Nashville — campaign archive",
+      "description": "Original organizing materials, talking points, and the timeline of how Nashville pushed back on the surveillance MOU.",
+      "url": "https://github.com/clovenbradshaw-ctrl/mou",
+      "linkLabel": "Browse archive",
+      "urgency": "low"
+    }
+  ]
+}

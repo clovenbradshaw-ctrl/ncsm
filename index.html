@@ -101,6 +101,7 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
   <span>Edit mode</span>
   <button class="abar-btn" onclick="openAddCTA()">+ Action</button>
   <button class="abar-btn" onclick="openAddArticle()">+ Article</button>
+  <button class="abar-btn" onclick="openImport()">+ Import</button>
   <button class="abar-btn" id="save-btn" onclick="saveAll()">Save</button>
   <button class="abar-btn" onclick="openChangelog()">Log</button>
   <button class="abar-btn" onclick="openInvite()">+ Invite</button>
@@ -235,6 +236,26 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
     <div class="modal-actions">
       <button class="mbtn" onclick="closeAllModals()">Cancel</button>
       <button class="mbtn primary" onclick="saveArt()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ IMPORT CONTENT ══ -->
+<div class="modal-bg" id="import-modal">
+  <div class="modal">
+    <h2>Import content</h2>
+    <p class="step-note">Upload a JSON file of articles and/or calls to action. Merge adds new items and skips duplicates (matched by URL for articles, title for actions). Replace clears everything and loads the file from scratch. Either way, nothing is published until you hit Save in the top bar.</p>
+    <label>Content file (.json)</label>
+    <input type="file" id="import-file" accept=".json,application/json">
+    <label>Mode</label>
+    <select id="import-mode">
+      <option value="merge" selected>Merge — skip duplicates</option>
+      <option value="replace">Replace — clear and reload</option>
+    </select>
+    <p class="modal-msg" id="import-msg"></p>
+    <div class="modal-actions">
+      <button class="mbtn" onclick="closeAllModals()">Cancel</button>
+      <button class="mbtn primary" id="import-btn" onclick="doImport()">Import</button>
     </div>
   </div>
 </div>
@@ -962,6 +983,95 @@ function saveArt() {
   closeAllModals(); renderArts();
 }
 function delArt(id){if(!confirm('Delete?'))return;S.articles=S.articles.filter(a=>a.id!==id);renderArts()}
+
+/* ══════════════════════════════════════════════════════════
+   IMPORT — upload a JSON file of migrated content
+   Format: { version:1, articles:[...], ctas:[...] }
+   Items without an id get one assigned. Merge mode dedupes
+   articles by URL (fallback title) and CTAs by title.
+   Nothing is published until the user clicks Save.
+   ══════════════════════════════════════════════════════════ */
+function openImport() {
+  if (!admin) return;
+  document.getElementById('import-file').value = '';
+  document.getElementById('import-mode').value = 'merge';
+  setMsg('import-msg','','');
+  setDisabled('import-btn', false);
+  openModal('import-modal');
+}
+
+async function doImport() {
+  const f = document.getElementById('import-file').files?.[0];
+  const mode = document.getElementById('import-mode').value;
+  if (!f) { setMsg('import-msg','Choose a file.','err'); return; }
+
+  setDisabled('import-btn', true);
+  setMsg('import-msg','Reading…','status');
+
+  let data;
+  try {
+    data = JSON.parse(await f.text());
+  } catch(err) {
+    setMsg('import-msg','Not a valid JSON file: '+err.message,'err');
+    setDisabled('import-btn', false);
+    return;
+  }
+
+  const inArts = Array.isArray(data.articles) ? data.articles : [];
+  const inCTAs = Array.isArray(data.ctas)     ? data.ctas     : [];
+  if (!inArts.length && !inCTAs.length) {
+    setMsg('import-msg','File has no articles or ctas.','err');
+    setDisabled('import-btn', false);
+    return;
+  }
+
+  const normArt = a => ({
+    id:      a.id || uid(),
+    title:   String(a.title||'').trim(),
+    url:     String(a.url||'').trim(),
+    date:    String(a.date||'').trim(),
+    summary: String(a.summary||'').trim(),
+    tags:    Array.isArray(a.tags) ? a.tags.map(t=>String(t).trim()).filter(Boolean) : [],
+  });
+  const normCTA = c => ({
+    id:          c.id || uid(),
+    title:       String(c.title||'').trim(),
+    description: String(c.description||'').trim(),
+    url:         String(c.url||'').trim(),
+    linkLabel:   String(c.linkLabel||'').trim(),
+    urgency:     ['high','medium','low'].includes(c.urgency) ? c.urgency : 'medium',
+  });
+
+  const arts = inArts.map(normArt).filter(a=>a.title);
+  const ctas = inCTAs.map(normCTA).filter(c=>c.title);
+
+  if (mode === 'replace') {
+    if (!confirm(`Replace all content with ${arts.length} articles and ${ctas.length} actions?`)) {
+      setDisabled('import-btn', false);
+      setMsg('import-msg','','');
+      return;
+    }
+    S.articles = arts;
+    S.ctas     = ctas;
+    setMsg('import-msg',`Replaced. ${arts.length} articles, ${ctas.length} actions. Click Save in the top bar to publish.`,'status');
+  } else {
+    const haveArtKey = new Set(S.articles.map(a => (a.url || a.title).toLowerCase()));
+    const haveCTAKey = new Set(S.ctas.map(c => c.title.toLowerCase()));
+    let addedA = 0, addedC = 0;
+    arts.forEach(a => {
+      const k = (a.url || a.title).toLowerCase();
+      if (!haveArtKey.has(k)) { S.articles.push(a); haveArtKey.add(k); addedA++; }
+    });
+    ctas.forEach(c => {
+      const k = c.title.toLowerCase();
+      if (!haveCTAKey.has(k)) { S.ctas.push(c); haveCTAKey.add(k); addedC++; }
+    });
+    setMsg('import-msg',`Added ${addedA} articles, ${addedC} actions (duplicates skipped). Click Save in the top bar to publish.`,'status');
+  }
+
+  setDisabled('import-btn', false);
+  renderCTAs(); renderArts();
+}
 
 /* ══════════════════════════════════════════════════════════
    MODAL / UI HELPERS
