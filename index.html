@@ -756,6 +756,11 @@ async function saveAll() {
   const btn = document.getElementById('save-btn');
   btn.textContent='Saving…'; btn.disabled=true;
 
+  // First-fill × Making: if no prior save has ever landed against this site
+  // (no lastUpdated was loaded from the remote), this save is the initial
+  // authoring act and carries the Making stance. Subsequent saves are
+  // replace. Capture before we overwrite lastUpdated below.
+  const isFirstFill = !S.lastUpdated;
   S.lastUpdated = new Date().toISOString();
 
   // Encrypt the content payload before it leaves the browser
@@ -774,7 +779,7 @@ async function saveAll() {
   const body = {
     op:         'INS',
     site:       CFG.eoSite,
-    resolution: 'replace',
+    resolution: isFirstFill ? 'Making' : 'replace',
     author:     matrixUserId || '',
     meta: {
       title:       'Nashville Community Safety Network',
