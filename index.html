@@ -6,6 +6,8 @@
 <title>Nashville Community Safety Network</title>
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<link rel="icon" type="image/jpeg" href="https://instagram.fiad1-1.fna.fbcdn.net/v/t51.2885-19/486497637_1937174386814019_3710320330457640021_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby40NDIuYzIifQ&_nc_ht=instagram.fiad1-1.fna.fbcdn.net&_nc_cat=103&_nc_oc=Q6cZ2gG0sTZBGKqd8moJOIpy5hwIMdQFJ9BumgBdaGvSA9BB5r_Y4uVK8U5gqXr6-LI4hVA&_nc_ohc=EwyUj37DBrMQ7kNvwFRf92V&_nc_gid=8kSlSn4J2-s2T-VuOTwnNQ&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_Af1lZmL9oB7MmDOAuSXHX0vGpCJcz7POiqL6kng8wqTlAA&oe=69E0698A&_nc_sid=7a9f4b">
+<link rel="apple-touch-icon" href="https://instagram.fiad1-1.fna.fbcdn.net/v/t51.2885-19/486497637_1937174386814019_3710320330457640021_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby40NDIuYzIifQ&_nc_ht=instagram.fiad1-1.fna.fbcdn.net&_nc_cat=103&_nc_oc=Q6cZ2gG0sTZBGKqd8moJOIpy5hwIMdQFJ9BumgBdaGvSA9BB5r_Y4uVK8U5gqXr6-LI4hVA&_nc_ohc=EwyUj37DBrMQ7kNvwFRf92V&_nc_gid=8kSlSn4J2-s2T-VuOTwnNQ&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_Af1lZmL9oB7MmDOAuSXHX0vGpCJcz7POiqL6kng8wqTlAA&oe=69E0698A&_nc_sid=7a9f4b">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--ink:#111;--mid:#444;--muted:#888;--faint:#bbb;--rule:#e0e0e0}
@@ -926,6 +928,11 @@ async function saveAll() {
   const btn = document.getElementById('save-btn');
   btn.textContent='Saving…'; btn.disabled=true;
 
+  // First-fill × Making: if no prior save has ever landed against this site
+  // (no lastUpdated was loaded from the remote), this save is the initial
+  // authoring act and carries the Making stance. Subsequent saves are
+  // replace. Capture before we overwrite lastUpdated below.
+  const isFirstFill = !S.lastUpdated;
   S.lastUpdated = new Date().toISOString();
 
   // Encrypt the content payload before it leaves the browser
@@ -944,7 +951,7 @@ async function saveAll() {
   const body = {
     op:         'INS',
     site:       CFG.eoSite,
-    resolution: 'replace',
+    resolution: isFirstFill ? 'Making' : 'replace',
     author:     matrixUserId || '',
     meta: {
       title:       'Nashville Community Safety Network',
