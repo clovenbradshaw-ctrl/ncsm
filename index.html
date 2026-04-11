@@ -103,6 +103,7 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
   <button class="abar-btn" onclick="openAddArticle()">+ Article</button>
   <button class="abar-btn" id="save-btn" onclick="saveAll()">Save</button>
   <button class="abar-btn" onclick="openChangelog()">Log</button>
+  <button class="abar-btn" onclick="openInvite()">+ Invite</button>
   <button class="abar-btn danger" onclick="logout()">Log out</button>
 </div>
 
@@ -133,13 +134,30 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
 <div class="modal-bg" id="modal-matrix">
   <div class="modal">
     <h2>Editor login</h2>
-    <p class="step-note">Step 1 — Matrix identity</p>
+    <p class="step-note">Step 1 — Matrix identity (hyphae.social)</p>
+    <label>Matrix user</label>
+    <input type="text" id="matrix-user" autocomplete="username" placeholder="username or @user:hyphae.social">
     <label>Matrix password</label>
     <input type="password" id="matrix-pw" autocomplete="current-password">
     <p class="modal-msg" id="matrix-msg"></p>
     <div class="modal-actions">
       <button class="mbtn" onclick="closeAllModals()">Cancel</button>
       <button class="mbtn primary" id="matrix-btn" onclick="doMatrixLogin()">Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ INVITE EDITOR ══ -->
+<div class="modal-bg" id="invite-modal">
+  <div class="modal">
+    <h2>Invite editor</h2>
+    <p class="step-note">Grant another hyphae.social user upload access by inviting them to the site's Matrix room. Upon joining they automatically receive the admin credentials from room state.</p>
+    <label>Matrix user</label>
+    <input type="text" id="invite-user" autocomplete="off" placeholder="username or @user:hyphae.social">
+    <p class="modal-msg" id="invite-msg"></p>
+    <div class="modal-actions">
+      <button class="mbtn" onclick="closeAllModals()">Cancel</button>
+      <button class="mbtn primary" id="invite-btn" onclick="doInvite()">Invite</button>
     </div>
   </div>
 </div>
@@ -152,7 +170,7 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
     <div class="setup-steps" id="setup-steps">
       <div class="setup-step" id="ss-room">Create private Matrix room</div>
       <div class="setup-step" id="ss-key">Generate AES-256-GCM encryption key</div>
-      <div class="setup-step" id="ss-state">Store config in Matrix room state</div>
+      <div class="setup-step" id="ss-state">Store config, key &amp; admin pw in room state</div>
       <div class="setup-step" id="ss-gcs">Write site config to GCS</div>
     </div>
     <label>Write webhook URL</label>
@@ -242,12 +260,12 @@ const CFG = {
   logEndpoint:    'https://n8n.intelechia.com/webhook/site/log',
 
   matrixServer:      'https://hyphae.social',
-  matrixUser:        '@collective_boundary730383:hyphae.social',
+  matrixDomain:      'hyphae.social',
   matrixConfigState: 'community.ncsn.config',
   matrixKeyState:    'community.ncsn.key',
+  matrixAdminState:  'community.ncsn.admin',
 
-  eoAuthor: '@collective_boundary730383:hyphae.social',
-  eoSite:   'page',
+  eoSite: 'page',
 };
 
 /* ══════════════════════════════════════════════════════════
@@ -258,10 +276,11 @@ let roomId     = null;
 let isFirstRun = false;
 
 // Per-session — all sessionStorage, cleared on tab close
-let matrixToken = sessionStorage.getItem('ncsn_mx')  || null;
-let writeUrl    = sessionStorage.getItem('ncsn_wh')  || null;
-let adminPass   = sessionStorage.getItem('ncsn_ap')  || null;
-let encKeyB64   = sessionStorage.getItem('ncsn_key') || null;
+let matrixToken  = sessionStorage.getItem('ncsn_mx')  || null;
+let matrixUserId = sessionStorage.getItem('ncsn_mxu') || null;
+let writeUrl     = sessionStorage.getItem('ncsn_wh')  || null;
+let adminPass    = sessionStorage.getItem('ncsn_ap')  || null;
+let encKeyB64    = sessionStorage.getItem('ncsn_key') || null;
 
 let admin = !!(matrixToken && writeUrl && adminPass && encKeyB64);
 
@@ -445,26 +464,51 @@ async function matrixGetState(token, rid, type) {
    LOGIN FLOW — STEP 1: Matrix
    ══════════════════════════════════════════════════════════ */
 function openLogin() {
-  document.getElementById('matrix-pw').value = '';
+  document.getElementById('matrix-user').value = '';
+  document.getElementById('matrix-pw').value   = '';
   setMsg('matrix-msg','','');
   setDisabled('matrix-btn', false);
   openModal('modal-matrix');
-  setTimeout(()=>document.getElementById('matrix-pw').focus(), 60);
+  setTimeout(()=>document.getElementById('matrix-user').focus(), 60);
 }
 
+// Accept either a bare localpart ("alice") or a full MXID ("@alice:hyphae.social").
+// Only hyphae.social accounts are allowed.
+function normalizeMxid(input) {
+  let u = (input || '').trim();
+  if (!u) return null;
+  if (u.startsWith('@')) {
+    if (!u.toLowerCase().endsWith(':' + CFG.matrixDomain)) return null;
+    return u;
+  }
+  if (u.includes(':') || u.includes('@')) return null;
+  return '@' + u + ':' + CFG.matrixDomain;
+}
+
+document.getElementById('matrix-user').addEventListener('keydown', ev=>{
+  if(ev.key==='Enter'){ ev.preventDefault(); document.getElementById('matrix-pw').focus(); }
+});
 document.getElementById('matrix-pw').addEventListener('keydown', ev=>{
   if(ev.key==='Enter') doMatrixLogin();
 });
 
 async function doMatrixLogin() {
-  const pw = document.getElementById('matrix-pw').value;
+  const userInput = document.getElementById('matrix-user').value;
+  const pw        = document.getElementById('matrix-pw').value;
   if (!pw) return;
+
+  const mxid = normalizeMxid(userInput);
+  if (!mxid) {
+    setMsg('matrix-msg','Enter a valid '+CFG.matrixDomain+' user.','err');
+    return;
+  }
+
   setDisabled('matrix-btn', true);
   setMsg('matrix-msg','Authenticating…','status');
 
   const res = await matrixPost('/_matrix/client/v3/login', null, {
     type: 'm.login.password',
-    identifier: {type:'m.id.user', user:CFG.matrixUser},
+    identifier: {type:'m.id.user', user: mxid},
     password: pw,
   });
   if (!res.ok) {
@@ -473,9 +517,12 @@ async function doMatrixLogin() {
     return;
   }
 
-  const tok = res.data.access_token;
-  sessionStorage.setItem('ncsn_mx', tok);
-  matrixToken = tok;
+  const tok        = res.data.access_token;
+  const serverMxid = res.data.user_id || mxid;
+  sessionStorage.setItem('ncsn_mx',  tok);
+  sessionStorage.setItem('ncsn_mxu', serverMxid);
+  matrixToken  = tok;
+  matrixUserId = serverMxid;
 
   closeAllModals();
 
@@ -488,20 +535,19 @@ async function doMatrixLogin() {
   }
 }
 
-// After Matrix login on a normal run: fetch write URL + key from room state
+// After Matrix login on a normal run: fetch write URL + key + admin pw from room state.
+// If the admin password is present in state (shared via room membership), auto-unlock.
 async function fetchRoomSession(tok) {
-  setMsg('admin-msg','Fetching room config…','status');
-  openModal('modal-admin');
-
   const cfgState = await matrixGetState(tok, roomId, CFG.matrixConfigState);
   const keyState = await matrixGetState(tok, roomId, CFG.matrixKeyState);
+  const admState = await matrixGetState(tok, roomId, CFG.matrixAdminState);
 
-  if (!cfgState?.writeWebhook) {
-    setMsg('admin-msg','Matrix room config not found. Was setup completed?','err');
-    return;
-  }
-  if (!keyState?.k) {
-    setMsg('admin-msg','Encryption key not found in Matrix room state.','err');
+  if (!cfgState?.writeWebhook || !keyState?.k) {
+    openModal('modal-admin');
+    setMsg('admin-msg',
+      'Could not read room state. You may not be a member of this site\'s Matrix room — ask an existing editor to invite you.',
+      'err');
+    setDisabled('admin-btn', true);
     return;
   }
 
@@ -510,7 +556,18 @@ async function fetchRoomSession(tok) {
   writeUrl  = cfgState.writeWebhook;
   encKeyB64 = keyState.k;
 
-  setMsg('admin-msg','','');
+  // Shared admin password — any invited room member auto-unlocks with it.
+  if (admState?.adminPw) {
+    sessionStorage.setItem('ncsn_ap', admState.adminPw);
+    adminPass = admState.adminPw;
+    admin     = true;
+    render();
+    return;
+  }
+
+  // Legacy fallback: prompt the user manually.
+  openModal('modal-admin');
+  setMsg('admin-msg','Admin password not in room state — enter it manually.','status');
   document.getElementById('admin-pw').value = '';
   setDisabled('admin-btn', false);
   setTimeout(()=>document.getElementById('admin-pw').focus(), 60);
@@ -545,12 +602,16 @@ async function doFirstRunSetup() {
     const keyB64 = await generateKey();
     stepState('ss-key','done');
 
-    // 3. Store config + key in Matrix room state
+    // 3. Store config, key, and admin password in Matrix room state.
+    //    Anyone invited to this room will later read the admin password from
+    //    state and automatically gain upload access.
     stepState('ss-state','active');
     const cfgPut = await matrixPutState(matrixToken, rid, CFG.matrixConfigState, {writeWebhook: wh});
     if (!cfgPut.ok) throw new Error('Failed to set config state: ' + JSON.stringify(cfgPut.data));
     const keyPut = await matrixPutState(matrixToken, rid, CFG.matrixKeyState, {k: keyB64});
     if (!keyPut.ok) throw new Error('Failed to set key state: ' + JSON.stringify(keyPut.data));
+    const admPut = await matrixPutState(matrixToken, rid, CFG.matrixAdminState, {adminPw: apw});
+    if (!admPut.ok) throw new Error('Failed to set admin state: ' + JSON.stringify(admPut.data));
     stepState('ss-state','done');
 
     // 4. Write site config to GCS via n8n
@@ -611,7 +672,7 @@ async function doAdminLogin() {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+pw},
       body: JSON.stringify({_probe:true, op:'NUL', site:'probe',
-        resolution:'probe', author:CFG.eoAuthor, meta:{}, payload:{}, content:''}),
+        resolution:'probe', author: matrixUserId || '', meta:{}, payload:{}, content:''}),
     });
     if (r.status === 401) {
       setMsg('admin-msg','Wrong password.','err');
@@ -635,11 +696,57 @@ async function doAdminLogin() {
    LOGOUT
    ══════════════════════════════════════════════════════════ */
 function logout() {
-  ['ncsn_mx','ncsn_wh','ncsn_ap','ncsn_key'].forEach(k=>sessionStorage.removeItem(k));
-  matrixToken=null; writeUrl=null; adminPass=null; encKeyB64=null; admin=false;
+  ['ncsn_mx','ncsn_mxu','ncsn_wh','ncsn_ap','ncsn_key'].forEach(k=>sessionStorage.removeItem(k));
+  matrixToken=null; matrixUserId=null; writeUrl=null; adminPass=null; encKeyB64=null; admin=false;
   document.getElementById('admin-bar').classList.remove('on');
   render();
 }
+
+/* ══════════════════════════════════════════════════════════
+   INVITE — grant another hyphae.social user upload access
+   by inviting them to the site's Matrix room. Upon joining
+   they read the admin password from room state automatically.
+   ══════════════════════════════════════════════════════════ */
+function openInvite() {
+  if (!admin || !matrixToken || !roomId) return;
+  document.getElementById('invite-user').value = '';
+  setMsg('invite-msg','','');
+  setDisabled('invite-btn', false);
+  openModal('invite-modal');
+  setTimeout(()=>document.getElementById('invite-user').focus(), 60);
+}
+
+async function doInvite() {
+  const mxid = normalizeMxid(document.getElementById('invite-user').value);
+  if (!mxid) {
+    setMsg('invite-msg','Enter a valid '+CFG.matrixDomain+' user.','err');
+    return;
+  }
+  setDisabled('invite-btn', true);
+  setMsg('invite-msg','Sending invite…','status');
+  try {
+    const url = CFG.matrixServer + '/_matrix/client/v3/rooms/'
+              + encodeURIComponent(roomId) + '/invite';
+    const r = await fetch(url, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+matrixToken},
+      body: JSON.stringify({user_id: mxid}),
+    });
+    if (!r.ok) {
+      const d = await r.json().catch(()=>({}));
+      throw new Error(d.error || ('HTTP '+r.status));
+    }
+    setMsg('invite-msg','Invited '+mxid+'. Once they accept and log in they\'ll have upload access.','status');
+    setDisabled('invite-btn', false);
+  } catch(err) {
+    setMsg('invite-msg', err.message, 'err');
+    setDisabled('invite-btn', false);
+  }
+}
+
+document.getElementById('invite-user').addEventListener('keydown', ev=>{
+  if(ev.key==='Enter') doInvite();
+});
 
 /* ══════════════════════════════════════════════════════════
    SAVE — encrypted payload, rendered content HTML
@@ -668,7 +775,7 @@ async function saveAll() {
     op:         'INS',
     site:       CFG.eoSite,
     resolution: 'replace',
-    author:     CFG.eoAuthor,
+    author:     matrixUserId || '',
     meta: {
       title:       'Nashville Community Safety Network',
       description: 'Accountability. Transparency. Mutual Aid.',
