@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nashville Community Safety Network</title>
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
 <link rel="icon" type="image/jpeg" href="https://instagram.fiad1-1.fna.fbcdn.net/v/t51.2885-19/486497637_1937174386814019_3710320330457640021_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby40NDIuYzIifQ&_nc_ht=instagram.fiad1-1.fna.fbcdn.net&_nc_cat=103&_nc_oc=Q6cZ2gG0sTZBGKqd8moJOIpy5hwIMdQFJ9BumgBdaGvSA9BB5r_Y4uVK8U5gqXr6-LI4hVA&_nc_ohc=EwyUj37DBrMQ7kNvwFRf92V&_nc_gid=8kSlSn4J2-s2T-VuOTwnNQ&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_Af1lZmL9oB7MmDOAuSXHX0vGpCJcz7POiqL6kng8wqTlAA&oe=69E0698A&_nc_sid=7a9f4b">
 <link rel="apple-touch-icon" href="https://instagram.fiad1-1.fna.fbcdn.net/v/t51.2885-19/486497637_1937174386814019_3710320330457640021_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby40NDIuYzIifQ&_nc_ht=instagram.fiad1-1.fna.fbcdn.net&_nc_cat=103&_nc_oc=Q6cZ2gG0sTZBGKqd8moJOIpy5hwIMdQFJ9BumgBdaGvSA9BB5r_Y4uVK8U5gqXr6-LI4hVA&_nc_ohc=EwyUj37DBrMQ7kNvwFRf92V&_nc_gid=8kSlSn4J2-s2T-VuOTwnNQ&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_Af1lZmL9oB7MmDOAuSXHX0vGpCJcz7POiqL6kng8wqTlAA&oe=69E0698A&_nc_sid=7a9f4b">
 <style>
@@ -29,8 +31,18 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
 .cta-link:hover{opacity:.55}
 
 .article-rule{border:none;border-top:1px solid var(--rule);margin:0}
-.article-item{display:grid;grid-template-columns:72px 1fr;gap:0 18px;padding:12px 0;border-bottom:1px solid var(--rule)}
-.art-date{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);line-height:1.4;padding-top:2px;white-space:pre-line}
+.article-item{display:grid;grid-template-columns:72px 1fr;gap:0 18px;padding:14px 0;border-bottom:1px solid var(--rule)}
+.art-meta{padding-top:2px;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.art-icon{font-size:24px;line-height:1;display:block}
+.art-icon.substack{color:#ff6719}
+.art-icon.media{color:#1a5490}
+.art-icon.analysis{color:#6a4c93}
+.art-icon.podcast{color:#2a8a3e}
+.art-icon.social{color:#e91e63}
+.art-icon.community{color:#c0392b}
+.art-icon.other{color:var(--faint)}
+.art-date{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);line-height:1.4;white-space:pre-line}
+.art-source-label{font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);font-weight:700}
 .art-title{font-size:15px;font-weight:700;line-height:1.35;margin-bottom:3px}
 .art-title a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule)}
 .art-title a:hover{border-bottom-color:var(--ink)}
@@ -94,7 +106,7 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
 .log-detail{font-size:11px;color:var(--mid)}
 .log-enc{font-size:10px;color:var(--faint);font-style:italic}
 
-@media(max-width:480px){.article-item{grid-template-columns:1fr}.art-date{margin-bottom:3px}}
+@media(max-width:480px){.article-item{grid-template-columns:1fr}.art-meta{flex-direction:row;align-items:center;gap:10px;margin-bottom:4px}.art-icon{font-size:20px}}
 </style>
 </head>
 <body>
@@ -232,6 +244,17 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
     <input type="hidden" id="art-id">
     <label>Headline</label><input type="text" id="art-title">
     <label>URL</label><input type="url" id="art-url">
+    <label>Source type</label>
+    <select id="art-source-type">
+      <option value="">Auto-detect from URL</option>
+      <option value="substack">Primary reporting (Substack / newsletter)</option>
+      <option value="media">News media</option>
+      <option value="analysis">Long-form analysis</option>
+      <option value="podcast">Podcast</option>
+      <option value="social">Social media</option>
+      <option value="community">Community / mutual aid</option>
+      <option value="other">Other</option>
+    </select>
     <label>Date</label><input type="date" id="art-date">
     <label>Summary (optional)</label><textarea id="art-summary"></textarea>
     <label>Tags (comma-separated)</label><input type="text" id="art-tags">
@@ -292,10 +315,73 @@ const CFG = {
 };
 
 /* ══════════════════════════════════════════════════════════
+   SOURCE TYPES — visual taxonomy for articles
+   Phosphor icon (regular weight) + label + accent color.
+   Edit in the Article modal; auto-detected on import by URL.
+   ══════════════════════════════════════════════════════════ */
+const SOURCE_TYPES = {
+  substack:  {icon:'ph-pen-nib',          label:'Primary'},
+  media:     {icon:'ph-newspaper',         label:'Media'},
+  analysis:  {icon:'ph-magnifying-glass',  label:'Analysis'},
+  podcast:   {icon:'ph-microphone',        label:'Podcast'},
+  social:    {icon:'ph-share-network',     label:'Social'},
+  community: {icon:'ph-hand-heart',        label:'Community'},
+  other:     {icon:'ph-link-simple',       label:'Link'},
+};
+
+// Auto-detect source type from a URL when one isn't supplied.
+function detectSourceType(url) {
+  const u = String(url||'').toLowerCase();
+  if (!u) return 'other';
+  if (u.includes('substack.com'))                              return 'substack';
+  if (u.includes('truthout.org')
+      || u.includes('liberationnews.org')
+      || u.includes('theintercept.com')
+      || u.includes('jacobin'))                                return 'analysis';
+  if (u.includes('citycast.fm')
+      || u.includes('/podcast')
+      || u.includes('podcasts.')
+      || u.includes('apple.com/podcast')
+      || u.includes('spotify.com'))                            return 'podcast';
+  if (u.includes('twitter.com')
+      || u.includes('x.com')
+      || u.includes('bsky.app')
+      || u.includes('mastodon')
+      || u.includes('hyphae.social')
+      || u.includes('instagram.com')
+      || u.includes('facebook.com')
+      || u.includes('tiktok.com')
+      || u.includes('threads.net'))                            return 'social';
+  if (u.includes('opentablenashville')
+      || u.includes('mutualaid')
+      || u.includes('.org/'))                                  return 'community';
+  // Known media outlets + generic news domains
+  if (u.includes('nashvillescene.com')
+      || u.includes('nashvillebanner.com')
+      || u.includes('newschannel5.com')
+      || u.includes('wkrn.com')
+      || u.includes('wsmv.com')
+      || u.includes('wpln.org')
+      || u.includes('tennessean.com')
+      || u.includes('npr.org')
+      || u.includes('apnews.com')
+      || u.includes('reuters.com')
+      || u.includes('nytimes.com')
+      || u.includes('washingtonpost.com'))                     return 'media';
+  return 'other';
+}
+
+function normalizeSourceType(t) {
+  return Object.prototype.hasOwnProperty.call(SOURCE_TYPES, t) ? t : 'other';
+}
+
+/* ══════════════════════════════════════════════════════════
    SESSION STATE
    ══════════════════════════════════════════════════════════ */
-// Boot-time — fetched from GCS config on load
-let roomId     = null;
+// Boot-time — fetched from GCS config on load, with localStorage fallback.
+// roomId is not a secret; we cache it so the site survives a flaky config
+// endpoint and never asks an existing editor to re-run first-run setup.
+let roomId     = localStorage.getItem('ncsn_room') || null;
 let isFirstRun = false;
 
 // Per-session — all sessionStorage, cleared on tab close
@@ -334,18 +420,39 @@ async function boot() {
 }
 
 async function loadConfig() {
+  // Prefer the GCS config file as the source of truth, but only treat
+  // "no roomId anywhere" as first-run. A cached localStorage value (or a
+  // post-login joined-rooms discovery) is enough to keep using the existing
+  // room when the GCS write is broken.
   try {
     const r = await fetch(CFG.configEndpoint);
     if (r.ok) {
       const d = await r.json();
-      roomId     = d.roomId || null;
-      isFirstRun = !roomId;
-    } else {
-      isFirstRun = true;
+      if (d && d.roomId) {
+        roomId = d.roomId;
+        localStorage.setItem('ncsn_room', d.roomId);
+      }
     }
-  } catch {
-    isFirstRun = true;
-  }
+  } catch { /* ignore — fall through to cache + discovery */ }
+  isFirstRun = !roomId;
+}
+
+// Walk the editor's joined Matrix rooms looking for one that carries our
+// site config state event. Used as a fallback when neither the GCS config
+// nor localStorage has a roomId — prevents repeated first-run setup.
+async function discoverRoomFromJoined(tok) {
+  try {
+    const r = await fetch(CFG.matrixServer + '/_matrix/client/v3/joined_rooms', {
+      headers: {'Authorization':'Bearer '+tok}
+    });
+    if (!r.ok) return null;
+    const d = await r.json();
+    for (const rid of (d.joined_rooms || [])) {
+      const cfg = await matrixGetState(tok, rid, CFG.matrixConfigState);
+      if (cfg && cfg.writeWebhook) return rid;
+    }
+  } catch { /* ignore */ }
+  return null;
 }
 
 async function loadContent() {
@@ -408,9 +515,16 @@ function renderArts() {
   if (!S.articles.length) { el.innerHTML=`<p class="msg">No articles yet.</p>`; return; }
   el.innerHTML = [...S.articles]
     .sort((a,b)=>(b.date||'').localeCompare(a.date||''))
-    .map(a=>`
+    .map(a=>{
+      const st  = normalizeSourceType(a.sourceType || detectSourceType(a.url));
+      const meta = SOURCE_TYPES[st];
+      return `
       <div class="article-item">
-        <div class="art-date">${fmtDate(a.date)}</div>
+        <div class="art-meta">
+          <i class="ph ${meta.icon} art-icon ${st}" title="${x(meta.label)}" aria-label="${x(meta.label)}"></i>
+          <div class="art-date">${fmtDate(a.date)}</div>
+          <div class="art-source-label">${x(meta.label)}</div>
+        </div>
         <div>
           <div class="art-title">${a.url
             ?`<a href="${x(a.url)}" target="_blank" rel="noopener">${x(a.title)}</a>`
@@ -422,7 +536,8 @@ function renderArts() {
             <button class="ebtn del" onclick="delArt('${x(a.id)}')">Delete</button>
           </div>
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -549,8 +664,22 @@ async function doMatrixLogin() {
 
   closeAllModals();
 
+  // Belt-and-suspenders: even if loadConfig didn't find a roomId, the editor
+  // may already be a member of an existing site config room. Scan their
+  // joined rooms for one that carries our config state before assuming this
+  // is a first run. This prevents the setup wizard from running twice when
+  // the GCS config write is failing.
+  if (!roomId) {
+    const found = await discoverRoomFromJoined(tok);
+    if (found) {
+      roomId = found;
+      localStorage.setItem('ncsn_room', found);
+      isFirstRun = false;
+    }
+  }
+
   // Branch: first run vs existing room
-  if (isFirstRun) {
+  if (isFirstRun || !roomId) {
     openModal('modal-setup');
     setTimeout(()=>document.getElementById('setup-admin-pw').focus(), 60);
   } else {
@@ -637,23 +766,43 @@ async function doFirstRunSetup() {
     if (!admPut.ok) throw new Error('Failed to set admin state: ' + JSON.stringify(admPut.data));
     stepState('ss-state','done');
 
-    // 4. Write site config to GCS via n8n
+    // 4. Write site config to GCS via n8n. The roomId already lives in
+    //    Matrix room state (and we cache it locally), so a GCS failure here
+    //    is recoverable — log it but don't lose the freshly-created room.
     stepState('ss-gcs','active');
-    const gcsCfg = await fetch(CFG.configEndpoint, {
-      method:  'POST',
-      headers: {'Content-Type':'application/json','Authorization':'Bearer '+apw},
-      body:    JSON.stringify({roomId: rid, createdAt: new Date().toISOString(), version:1}),
-    });
-    if (gcsCfg.status === 401) throw new Error('Wrong admin password.');
-    if (!gcsCfg.ok)            throw new Error('Config write failed: HTTP ' + gcsCfg.status);
-    stepState('ss-gcs','done');
+    let gcsOk = false;
+    try {
+      const gcsCfg = await fetch(CFG.configEndpoint, {
+        method:  'POST',
+        headers: {'Content-Type':'application/json','Authorization':'Bearer '+apw},
+        body:    JSON.stringify({roomId: rid, createdAt: new Date().toISOString(), version:1}),
+      });
+      if (gcsCfg.status === 401) throw new Error('Wrong admin password.');
+      if (!gcsCfg.ok)            throw new Error('Config write failed: HTTP ' + gcsCfg.status);
+      gcsOk = true;
+      stepState('ss-gcs','done');
+    } catch (gcsErr) {
+      // Hard-fail only on auth — a 500 from GCS shouldn't strand the editor.
+      if (/wrong admin password/i.test(gcsErr.message)) throw gcsErr;
+      console.warn('GCS config write failed, falling back to local cache:', gcsErr);
+      stepState('ss-gcs','error');
+      // Defer the alert until after the modal closes so it isn't hidden.
+      setTimeout(()=>alert(
+        'Site is set up, but the GCS config write failed (' + gcsErr.message + ').\n\n' +
+        'The room id has been cached locally and is also stored in Matrix room state, ' +
+        'so editors who join the room will still find it on next login. ' +
+        'You can fix the n8n config webhook later without redoing setup.'
+      ), 100);
+    }
 
-    // Commit session state
+    // Commit session state. Cache the roomId persistently so even a wiped
+    // GCS config file can never trigger a duplicate first-run setup.
     roomId    = rid;
     writeUrl  = wh;
     encKeyB64 = keyB64;
     adminPass = apw;
     isFirstRun = false;
+    localStorage.setItem('ncsn_room', rid);
     sessionStorage.setItem('ncsn_wh',  wh);
     sessionStorage.setItem('ncsn_key', keyB64);
     sessionStorage.setItem('ncsn_ap',  apw);
@@ -843,15 +992,23 @@ function buildContentHTML() {
       ${c.url?`<a class="cta-link" href="${x(c.url)}">${x(c.linkLabel||'Take action')} →</a>`:''}
     </div>`).join('');
 
-  const artHtml = sArts.map(a=>`
+  const artHtml = sArts.map(a=>{
+    const st   = normalizeSourceType(a.sourceType || detectSourceType(a.url));
+    const meta = SOURCE_TYPES[st];
+    return `
     <div class="article-item">
-      <div class="art-date">${fmtDate(a.date)}</div>
+      <div class="art-meta">
+        <i class="ph ${meta.icon} art-icon ${st}" title="${x(meta.label)}" aria-label="${x(meta.label)}"></i>
+        <div class="art-date">${fmtDate(a.date)}</div>
+        <div class="art-source-label">${x(meta.label)}</div>
+      </div>
       <div>
         <div class="art-title">${a.url?`<a href="${x(a.url)}">${x(a.title)}</a>`:x(a.title)}</div>
         ${a.summary?`<div class="art-summary">${x(a.summary)}</div>`:''}
         ${a.tags?.length?`<div class="art-tags">${a.tags.map(t=>`<span class="art-tag">${x(t.trim())}</span>`).join('')}</div>`:''}
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   const stateJson = JSON.stringify({articles:S.articles,ctas:S.ctas,lastUpdated:S.lastUpdated});
 
@@ -965,26 +1122,33 @@ function openAddArticle() {
   document.getElementById('art-modal-h').textContent='Add article';
   ['art-id','art-title','art-url','art-summary','art-tags'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('art-date').value=today();
+  document.getElementById('art-source-type').value='';
   openModal('art-modal');
 }
 function openEditArt(id) {
   const a=S.articles.find(a=>a.id===id); if(!a)return;
   document.getElementById('art-modal-h').textContent='Edit article';
-  document.getElementById('art-id').value      =id;
-  document.getElementById('art-title').value   =a.title||'';
-  document.getElementById('art-url').value     =a.url||'';
-  document.getElementById('art-date').value    =a.date||today();
-  document.getElementById('art-summary').value =a.summary||'';
-  document.getElementById('art-tags').value    =(a.tags||[]).join(', ');
+  document.getElementById('art-id').value         =id;
+  document.getElementById('art-title').value      =a.title||'';
+  document.getElementById('art-url').value        =a.url||'';
+  document.getElementById('art-date').value       =a.date||today();
+  document.getElementById('art-summary').value    =a.summary||'';
+  document.getElementById('art-tags').value       =(a.tags||[]).join(', ');
+  document.getElementById('art-source-type').value=a.sourceType||'';
   openModal('art-modal');
 }
 function saveArt() {
   const id=document.getElementById('art-id').value;
+  const url=document.getElementById('art-url').value.trim();
+  const stChoice=document.getElementById('art-source-type').value;
   const a={id:id||uid(),title:document.getElementById('art-title').value.trim(),
-    url:document.getElementById('art-url').value.trim(),
+    url,
     date:document.getElementById('art-date').value,
     summary:document.getElementById('art-summary').value.trim(),
-    tags:document.getElementById('art-tags').value.split(',').map(t=>t.trim()).filter(Boolean)};
+    tags:document.getElementById('art-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+    // Empty value = auto-detect: store only when the editor explicitly picked one,
+    // so future URL changes can keep auto-detecting.
+    sourceType: stChoice ? normalizeSourceType(stChoice) : ''};
   if(!a.title)return;
   S.articles=id?S.articles.map(v=>v.id===id?a:v):[...S.articles,a];
   closeAllModals(); renderArts();
@@ -1032,14 +1196,25 @@ async function doImport() {
     return;
   }
 
-  const normArt = a => ({
-    id:      a.id || uid(),
-    title:   String(a.title||'').trim(),
-    url:     String(a.url||'').trim(),
-    date:    String(a.date||'').trim(),
-    summary: String(a.summary||'').trim(),
-    tags:    Array.isArray(a.tags) ? a.tags.map(t=>String(t).trim()).filter(Boolean) : [],
-  });
+  const normArt = a => {
+    const url = String(a.url||'').trim();
+    // If the file supplies a known sourceType, keep it. Otherwise leave the
+    // field empty so the renderer auto-detects from the URL — that way an
+    // editor changing the URL later still gets a sensible default.
+    let st = '';
+    if (a.sourceType && Object.prototype.hasOwnProperty.call(SOURCE_TYPES, a.sourceType)) {
+      st = a.sourceType;
+    }
+    return {
+      id:         a.id || uid(),
+      title:      String(a.title||'').trim(),
+      url,
+      date:       String(a.date||'').trim(),
+      summary:    String(a.summary||'').trim(),
+      tags:       Array.isArray(a.tags) ? a.tags.map(t=>String(t).trim()).filter(Boolean) : [],
+      sourceType: st,
+    };
+  };
   const normCTA = c => ({
     id:          c.id || uid(),
     title:       String(c.title||'').trim(),
