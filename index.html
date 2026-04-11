@@ -1,1 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nashville Community Safety Network</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#111;--mid:#444;--muted:#888;--faint:#bbb;--rule:#e0e0e0}
+body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.6;color:var(--ink);background:#fff;max-width:700px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
 
+.site-label{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--faint);margin-bottom:5px}
+.site-name{font-size:16px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;line-height:1.2}
+.site-meta{font-size:11px;color:var(--muted);letter-spacing:.06em;margin-top:3px}
+.masthead-rule{border:none;border-top:1px solid var(--ink);margin:14px 0 0}
+
+.section-label{font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--faint);font-weight:700;margin:2rem 0 1rem}
+
+.cta-item{margin-bottom:1.4rem}
+.cta-item.high .cta-title{font-size:22px;font-weight:800;letter-spacing:-.02em;line-height:1.15;color:var(--ink);margin-bottom:5px}
+.cta-item.medium .cta-title{font-size:16px;font-weight:700;letter-spacing:-.01em;color:var(--ink);margin-bottom:4px}
+.cta-item.low .cta-title{font-size:14px;font-weight:600;color:var(--mid);margin-bottom:3px}
+.cta-desc{font-size:13px;color:var(--mid);line-height:1.55;margin-bottom:6px}
+.cta-item.low .cta-desc{font-size:12px;color:var(--muted)}
+.cta-link{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--ink);padding-bottom:1px}
+.cta-item.medium .cta-link,.cta-item.low .cta-link{color:var(--muted);border-bottom-color:var(--muted)}
+.cta-link:hover{opacity:.55}
+
+.article-rule{border:none;border-top:1px solid var(--rule);margin:0}
+.article-item{display:grid;grid-template-columns:72px 1fr;gap:0 18px;padding:12px 0;border-bottom:1px solid var(--rule)}
+.art-date{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);line-height:1.4;padding-top:2px;white-space:pre-line}
+.art-title{font-size:15px;font-weight:700;line-height:1.35;margin-bottom:3px}
+.art-title a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule)}
+.art-title a:hover{border-bottom-color:var(--ink)}
+.art-summary{font-size:12px;color:var(--mid);line-height:1.5;margin-bottom:5px}
+.art-tags{display:flex;flex-wrap:wrap;gap:4px}
+.art-tag{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border:1px solid var(--rule);padding:1px 5px}
+
+.site-footer{margin-top:2.5rem;border-top:1px solid var(--rule);padding-top:10px;display:flex;justify-content:space-between;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);flex-wrap:wrap;gap:.4rem}
+
+#admin-bar{display:none;background:var(--ink);color:#fff;padding:8px 1.5rem;margin:-2.5rem -1.5rem 2rem;font-size:10px;letter-spacing:.14em;text-transform:uppercase;align-items:center;gap:1rem;flex-wrap:wrap}
+#admin-bar.on{display:flex}
+#admin-bar span{flex:1}
+.abar-btn{background:none;border:1px solid rgba(255,255,255,.3);color:#fff;font-family:inherit;font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:3px 10px;cursor:pointer;white-space:nowrap}
+.abar-btn:hover{background:rgba(255,255,255,.12)}
+.abar-btn.danger{border-color:rgba(255,110,100,.45);color:#ffaa99}
+
+.edit-row{display:none;gap:6px;margin-top:6px}
+.edit-row.on{display:flex}
+.ebtn{background:none;border:1px solid var(--rule);color:var(--muted);font-family:inherit;font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;cursor:pointer}
+.ebtn:hover{border-color:var(--ink);color:var(--ink)}
+.ebtn.del:hover{border-color:#b02020;color:#b02020}
+
+.msg{font-size:12px;color:var(--muted);padding:1rem 0}
+.msg.err{color:#b02020}
+
+.modal-bg{display:none;background:rgba(0,0,0,.5);min-height:520px;align-items:flex-start;justify-content:center;padding:3rem 1rem}
+.modal-bg.on{display:flex}
+.modal{background:#fff;border:1px solid var(--ink);padding:1.8rem;width:100%;max-width:460px}
+.modal h2{font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem;padding-bottom:.6rem;border-bottom:1px solid var(--rule)}
+.modal .step-note{font-size:11px;color:var(--faint);margin-bottom:1.1rem;padding-top:.3rem}
+.modal label{display:block;font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);margin:.9rem 0 .25rem}
+.modal label:first-of-type{margin-top:0}
+.modal input,.modal textarea,.modal select{width:100%;border:1px solid var(--rule);font-family:inherit;font-size:13px;padding:6px 8px;color:var(--ink);outline:none;background:#fff}
+.modal input:focus,.modal textarea:focus,.modal select:focus{border-color:var(--ink)}
+.modal textarea{min-height:72px;resize:vertical;line-height:1.5}
+.modal-actions{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.2rem}
+.mbtn{background:none;border:1px solid var(--rule);color:var(--ink);font-family:inherit;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;cursor:pointer}
+.mbtn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.mbtn:hover{border-color:var(--ink)}
+.mbtn.primary:hover{opacity:.8}
+.mbtn:disabled{opacity:.4;cursor:default}
+.modal-msg{font-size:11px;margin-top:.6rem;display:none}
+.modal-msg.err{color:#b02020;display:block}
+.modal-msg.status{color:var(--muted);display:block}
+
+/* setup progress steps */
+.setup-steps{margin:.8rem 0 1rem;display:flex;flex-direction:column;gap:.3rem}
+.setup-step{font-size:11px;color:var(--faint);padding-left:.8rem;position:relative}
+.setup-step::before{content:'·';position:absolute;left:0}
+.setup-step.done{color:var(--mid)}
+.setup-step.done::before{content:'✓'}
+.setup-step.active{color:var(--ink);font-weight:600}
+.setup-step.active::before{content:'→'}
+.setup-step.error{color:#b02020}
+.setup-step.error::before{content:'×'}
+
+/* changelog */
+.log-entry{padding:8px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:110px 36px 1fr;gap:0 10px;align-items:start}
+.log-ts{font-size:10px;color:var(--faint);letter-spacing:.02em}
+.log-op{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--mid)}
+.log-detail{font-size:11px;color:var(--mid)}
+.log-enc{font-size:10px;color:var(--faint);font-style:italic}
+
+@media(max-width:480px){.article-item{grid-template-columns:1fr}.art-date{margin-bottom:3px}}
+</style>
+</head>
+<body>
+
+<div id="admin-bar">
+  <span>Edit mode</span>
+  <button class="abar-btn" onclick="openAddCTA()">+ Action</button>
+  <button class="abar-btn" onclick="openAddArticle()">+ Article</button>
+  <button class="abar-btn" id="save-btn" onclick="saveAll()">Save</button>
+  <button class="abar-btn" onclick="openChangelog()">Log</button>
+  <button class="abar-btn danger" onclick="logout()">Log out</button>
+</div>
+
+<header>
+  <div class="site-label">Nashville, TN</div>
+  <div class="site-name">Community Safety Network</div>
+  <div class="site-meta">Accountability &nbsp;·&nbsp; Transparency &nbsp;·&nbsp; Mutual Aid</div>
+  <hr class="masthead-rule">
+</header>
+
+<section>
+  <div class="section-label">Calls to action</div>
+  <div id="cta-container"><p class="msg">Loading...</p></div>
+</section>
+
+<section>
+  <div class="section-label">News &amp; articles</div>
+  <hr class="article-rule">
+  <div id="articles-container"><p class="msg">Loading...</p></div>
+</section>
+
+<footer class="site-footer">
+  <span>Nashville Community Safety Network</span>
+  <span id="footer-date"></span>
+</footer>
+
+<!-- ══ STEP 1: Matrix identity ══ -->
+<div class="modal-bg" id="modal-matrix">
+  <div class="modal">
+    <h2>Editor login</h2>
+    <p class="step-note">Step 1 — Matrix identity</p>
+    <label>Matrix password</label>
+    <input type="password" id="matrix-pw" autocomplete="current-password">
+    <p class="modal-msg" id="matrix-msg"></p>
+    <div class="modal-actions">
+      <button class="mbtn" onclick="closeAllModals()">Cancel</button>
+      <button class="mbtn primary" id="matrix-btn" onclick="doMatrixLogin()">Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FIRST-RUN SETUP ══ -->
+<div class="modal-bg" id="modal-setup">
+  <div class="modal">
+    <h2>First-run setup</h2>
+    <p class="step-note">Initialize this site's Matrix room and encryption key.</p>
+    <div class="setup-steps" id="setup-steps">
+      <div class="setup-step" id="ss-room">Create private Matrix room</div>
+      <div class="setup-step" id="ss-key">Generate AES-256-GCM encryption key</div>
+      <div class="setup-step" id="ss-state">Store config in Matrix room state</div>
+      <div class="setup-step" id="ss-gcs">Write site config to GCS</div>
+    </div>
+    <label>Write webhook URL</label>
+    <input type="url" id="setup-write-url" value="https://n8n.intelechia.com/webhook/site/write">
+    <label>Admin password (n8n Bearer token)</label>
+    <input type="password" id="setup-admin-pw" autocomplete="off">
+    <p class="modal-msg" id="setup-msg"></p>
+    <div class="modal-actions">
+      <button class="mbtn" onclick="closeAllModals()">Cancel</button>
+      <button class="mbtn primary" id="setup-btn" onclick="doFirstRunSetup()">Initialize</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ STEP 2: Admin password ══ -->
+<div class="modal-bg" id="modal-admin">
+  <div class="modal">
+    <h2>Editor login</h2>
+    <p class="step-note">Step 2 — Admin password</p>
+    <label>Admin password</label>
+    <input type="password" id="admin-pw" autocomplete="off">
+    <p class="modal-msg" id="admin-msg"></p>
+    <div class="modal-actions">
+      <button class="mbtn" onclick="closeAllModals()">Cancel</button>
+      <button class="mbtn primary" id="admin-btn" onclick="doAdminLogin()">Unlock</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CTA FORM ══ -->
+<div class="modal-bg" id="cta-modal">
+  <div class="modal">
+    <h2 id="cta-modal-h">Add call to action</h2>
+    <input type="hidden" id="cta-id">
+    <label>Title</label><input type="text" id="cta-title">
+    <label>Description</label><textarea id="cta-desc"></textarea>
+    <label>Link URL (optional)</label><input type="url" id="cta-url">
+    <label>Link label</label><input type="text" id="cta-lbl" placeholder="Take action">
+    <label>Urgency</label>
+    <select id="cta-urgency">
+      <option value="high">High</option>
+      <option value="medium" selected>Medium</option>
+      <option value="low">Low</option>
+    </select>
+    <div class="modal-actions">
+      <button class="mbtn" onclick="closeAllModals()">Cancel</button>
+      <button class="mbtn primary" onclick="saveCTA()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ARTICLE FORM ══ -->
+<div class="modal-bg" id="art-modal">
+  <div class="modal">
+    <h2 id="art-modal-h">Add article</h2>
+    <input type="hidden" id="art-id">
+    <label>Headline</label><input type="text" id="art-title">
+    <label>URL</label><input type="url" id="art-url">
+    <label>Date</label><input type="date" id="art-date">
+    <label>Summary (optional)</label><textarea id="art-summary"></textarea>
+    <label>Tags (comma-separated)</label><input type="text" id="art-tags">
+    <div class="modal-actions">
+      <button class="mbtn" onclick="closeAllModals()">Cancel</button>
+      <button class="mbtn primary" onclick="saveArt()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CHANGELOG ══ -->
+<div class="modal-bg" id="log-modal">
+  <div class="modal" style="max-width:580px">
+    <h2>Change log</h2>
+    <div id="log-container"><p class="msg">Loading...</p></div>
+    <div class="modal-actions" style="margin-top:1rem">
+      <button class="mbtn primary" onclick="closeAllModals()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   CONFIG — safe to commit; no secrets
+   ══════════════════════════════════════════════════════════ */
+const CFG = {
+  configEndpoint: 'https://n8n.intelechia.com/webhook/site/config',
+  readEndpoint:   'https://n8n.intelechia.com/webhook/site/read',
+  logEndpoint:    'https://n8n.intelechia.com/webhook/site/log',
+
+  matrixServer:      'https://hyphae.social',
+  matrixUser:        '@collective_boundary730383:hyphae.social',
+  matrixConfigState: 'community.ncsn.config',
+  matrixKeyState:    'community.ncsn.key',
+
+  eoAuthor: '@collective_boundary730383:hyphae.social',
+  eoSite:   'page',
+};
+
+/* ══════════════════════════════════════════════════════════
+   SESSION STATE
+   ══════════════════════════════════════════════════════════ */
+// Boot-time — fetched from GCS config on load
+let roomId     = null;
+let isFirstRun = false;
+
+// Per-session — all sessionStorage, cleared on tab close
+let matrixToken = sessionStorage.getItem('ncsn_mx')  || null;
+let writeUrl    = sessionStorage.getItem('ncsn_wh')  || null;
+let adminPass   = sessionStorage.getItem('ncsn_ap')  || null;
+let encKeyB64   = sessionStorage.getItem('ncsn_key') || null;
+
+let admin = !!(matrixToken && writeUrl && adminPass && encKeyB64);
+
+// Content state
+let S = { articles:[], ctas:[], lastUpdated:null };
+
+/* ══════════════════════════════════════════════════════════
+   ESC × 3
+   ══════════════════════════════════════════════════════════ */
+let ec=0, et;
+document.addEventListener('keydown', ev => {
+  if (ev.key !== 'Escape') { ec=0; return; }
+  ec++; clearTimeout(et);
+  et = setTimeout(() => ec=0, 800);
+  if (ec >= 3) {
+    ec=0;
+    if (document.querySelector('.modal-bg.on')) { closeAllModals(); return; }
+    admin ? logout() : openLogin();
+  }
+});
+
+/* ══════════════════════════════════════════════════════════
+   BOOT — load config then content
+   ══════════════════════════════════════════════════════════ */
+async function boot() {
+  await loadConfig();
+  await loadContent();
+}
+
+async function loadConfig() {
+  try {
+    const r = await fetch(CFG.configEndpoint);
+    if (r.ok) {
+      const d = await r.json();
+      roomId     = d.roomId || null;
+      isFirstRun = !roomId;
+    } else {
+      isFirstRun = true;
+    }
+  } catch {
+    isFirstRun = true;
+  }
+}
+
+async function loadContent() {
+  try {
+    const r = await fetch(CFG.readEndpoint);
+    if (r.ok) {
+      const html  = await r.text();
+      const state = parseEmbeddedState(html);
+      if (state) S = state;
+    }
+  } catch(err) {
+    S._err = err.message;
+  }
+  render();
+}
+
+function parseEmbeddedState(html) {
+  try {
+    const m = html.match(/<script[^>]+id="ncsn-data"[^>]*>([\s\S]*?)<\/script>/);
+    return m ? JSON.parse(m[1]) : null;
+  } catch { return null; }
+}
+
+/* ══════════════════════════════════════════════════════════
+   RENDER
+   ══════════════════════════════════════════════════════════ */
+function render() {
+  renderMeta(); renderCTAs(); renderArts();
+  document.getElementById('admin-bar').classList.toggle('on', admin);
+}
+
+function renderMeta() {
+  const d = S.lastUpdated
+    ? new Date(S.lastUpdated).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+    : '—';
+  document.getElementById('footer-date').textContent = 'Updated ' + d;
+}
+
+function renderCTAs() {
+  const el = document.getElementById('cta-container');
+  if (S._err) { el.innerHTML=`<p class="msg err">Could not load: ${x(S._err)}</p>`; return; }
+  if (!S.ctas.length) { el.innerHTML=`<p class="msg">No active calls to action.</p>`; return; }
+  const ord = {high:0,medium:1,low:2};
+  el.innerHTML = [...S.ctas]
+    .sort((a,b)=>(ord[a.urgency]??1)-(ord[b.urgency]??1))
+    .map(c=>`
+      <div class="cta-item ${x(c.urgency||'medium')}">
+        <div class="cta-title">${x(c.title)}</div>
+        ${c.description?`<div class="cta-desc">${x(c.description)}</div>`:''}
+        ${c.url?`<a class="cta-link" href="${x(c.url)}" target="_blank" rel="noopener">${x(c.linkLabel||'Take action')} →</a>`:''}
+        <div class="edit-row${admin?' on':''}">
+          <button class="ebtn" onclick="openEditCTA('${x(c.id)}')">Edit</button>
+          <button class="ebtn del" onclick="delCTA('${x(c.id)}')">Delete</button>
+        </div>
+      </div>`).join('');
+}
+
+function renderArts() {
+  const el = document.getElementById('articles-container');
+  if (!S.articles.length) { el.innerHTML=`<p class="msg">No articles yet.</p>`; return; }
+  el.innerHTML = [...S.articles]
+    .sort((a,b)=>(b.date||'').localeCompare(a.date||''))
+    .map(a=>`
+      <div class="article-item">
+        <div class="art-date">${fmtDate(a.date)}</div>
+        <div>
+          <div class="art-title">${a.url
+            ?`<a href="${x(a.url)}" target="_blank" rel="noopener">${x(a.title)}</a>`
+            :x(a.title)}</div>
+          ${a.summary?`<div class="art-summary">${x(a.summary)}</div>`:''}
+          ${a.tags?.length?`<div class="art-tags">${a.tags.map(t=>`<span class="art-tag">${x(t.trim())}</span>`).join('')}</div>`:''}
+          <div class="edit-row${admin?' on':''}">
+            <button class="ebtn" onclick="openEditArt('${x(a.id)}')">Edit</button>
+            <button class="ebtn del" onclick="delArt('${x(a.id)}')">Delete</button>
+          </div>
+        </div>
+      </div>`).join('');
+}
+
+/* ══════════════════════════════════════════════════════════
+   CRYPTO — Web Crypto API (AES-256-GCM)
+   ══════════════════════════════════════════════════════════ */
+async function generateKey() {
+  const key = await crypto.subtle.generateKey(
+    {name:'AES-GCM', length:256}, true, ['encrypt','decrypt']
+  );
+  const raw = await crypto.subtle.exportKey('raw', key);
+  return btoa(String.fromCharCode(...new Uint8Array(raw)));
+}
+
+async function encryptData(obj, keyB64) {
+  const keyBytes = Uint8Array.from(atob(keyB64), c=>c.charCodeAt(0));
+  const key = await crypto.subtle.importKey('raw', keyBytes, {name:'AES-GCM'}, false, ['encrypt']);
+  const iv  = crypto.getRandomValues(new Uint8Array(12));
+  const enc = await crypto.subtle.encrypt(
+    {name:'AES-GCM', iv}, key,
+    new TextEncoder().encode(JSON.stringify(obj))
+  );
+  return btoa(String.fromCharCode(...iv)) + '.' + btoa(String.fromCharCode(...new Uint8Array(enc)));
+}
+
+async function decryptData(blob, keyB64) {
+  const [ivB64, encB64] = blob.split('.');
+  const keyBytes = Uint8Array.from(atob(keyB64), c=>c.charCodeAt(0));
+  const key = await crypto.subtle.importKey('raw', keyBytes, {name:'AES-GCM'}, false, ['decrypt']);
+  const iv  = Uint8Array.from(atob(ivB64),  c=>c.charCodeAt(0));
+  const enc = Uint8Array.from(atob(encB64), c=>c.charCodeAt(0));
+  const dec = await crypto.subtle.decrypt({name:'AES-GCM', iv}, key, enc);
+  return JSON.parse(new TextDecoder().decode(dec));
+}
+
+/* ══════════════════════════════════════════════════════════
+   MATRIX HELPERS
+   ══════════════════════════════════════════════════════════ */
+async function matrixPost(path, token, body) {
+  const headers = {'Content-Type':'application/json'};
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  const r = await fetch(CFG.matrixServer + path, {method:'POST', headers, body:JSON.stringify(body)});
+  return {ok: r.ok, status: r.status, data: await r.json()};
+}
+
+async function matrixPutState(token, rid, type, content) {
+  const url = `${CFG.matrixServer}/_matrix/client/v3/rooms/${encodeURIComponent(rid)}/state/${encodeURIComponent(type)}/`;
+  const r = await fetch(url, {
+    method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+    body: JSON.stringify(content)
+  });
+  return {ok:r.ok, data:await r.json()};
+}
+
+async function matrixGetState(token, rid, type) {
+  const url = `${CFG.matrixServer}/_matrix/client/v3/rooms/${encodeURIComponent(rid)}/state/${encodeURIComponent(type)}/`;
+  const r = await fetch(url, {headers:{'Authorization':'Bearer '+token}});
+  if (!r.ok) return null;
+  return r.json();
+}
+
+/* ══════════════════════════════════════════════════════════
+   LOGIN FLOW — STEP 1: Matrix
+   ══════════════════════════════════════════════════════════ */
+function openLogin() {
+  document.getElementById('matrix-pw').value = '';
+  setMsg('matrix-msg','','');
+  setDisabled('matrix-btn', false);
+  openModal('modal-matrix');
+  setTimeout(()=>document.getElementById('matrix-pw').focus(), 60);
+}
+
+document.getElementById('matrix-pw').addEventListener('keydown', ev=>{
+  if(ev.key==='Enter') doMatrixLogin();
+});
+
+async function doMatrixLogin() {
+  const pw = document.getElementById('matrix-pw').value;
+  if (!pw) return;
+  setDisabled('matrix-btn', true);
+  setMsg('matrix-msg','Authenticating…','status');
+
+  const res = await matrixPost('/_matrix/client/v3/login', null, {
+    type: 'm.login.password',
+    identifier: {type:'m.id.user', user:CFG.matrixUser},
+    password: pw,
+  });
+  if (!res.ok) {
+    setMsg('matrix-msg', res.data.error||'Login failed.','err');
+    setDisabled('matrix-btn', false);
+    return;
+  }
+
+  const tok = res.data.access_token;
+  sessionStorage.setItem('ncsn_mx', tok);
+  matrixToken = tok;
+
+  closeAllModals();
+
+  // Branch: first run vs existing room
+  if (isFirstRun) {
+    openModal('modal-setup');
+    setTimeout(()=>document.getElementById('setup-admin-pw').focus(), 60);
+  } else {
+    await fetchRoomSession(tok);
+  }
+}
+
+// After Matrix login on a normal run: fetch write URL + key from room state
+async function fetchRoomSession(tok) {
+  setMsg('admin-msg','Fetching room config…','status');
+  openModal('modal-admin');
+
+  const cfgState = await matrixGetState(tok, roomId, CFG.matrixConfigState);
+  const keyState = await matrixGetState(tok, roomId, CFG.matrixKeyState);
+
+  if (!cfgState?.writeWebhook) {
+    setMsg('admin-msg','Matrix room config not found. Was setup completed?','err');
+    return;
+  }
+  if (!keyState?.k) {
+    setMsg('admin-msg','Encryption key not found in Matrix room state.','err');
+    return;
+  }
+
+  sessionStorage.setItem('ncsn_wh',  cfgState.writeWebhook);
+  sessionStorage.setItem('ncsn_key', keyState.k);
+  writeUrl  = cfgState.writeWebhook;
+  encKeyB64 = keyState.k;
+
+  setMsg('admin-msg','','');
+  document.getElementById('admin-pw').value = '';
+  setDisabled('admin-btn', false);
+  setTimeout(()=>document.getElementById('admin-pw').focus(), 60);
+}
+
+/* ══════════════════════════════════════════════════════════
+   LOGIN FLOW — FIRST RUN SETUP
+   ══════════════════════════════════════════════════════════ */
+async function doFirstRunSetup() {
+  const wh  = document.getElementById('setup-write-url').value.trim();
+  const apw = document.getElementById('setup-admin-pw').value;
+  if (!wh || !apw) { setMsg('setup-msg','Both fields are required.','err'); return; }
+
+  setDisabled('setup-btn', true);
+  setMsg('setup-msg','','');
+
+  try {
+    // 1. Create Matrix room
+    stepState('ss-room','active');
+    const roomRes = await matrixPost('/_matrix/client/v3/createRoom', matrixToken, {
+      visibility: 'private',
+      name:       'NCSN Site Config',
+      topic:      'Nashville Community Safety Network — site config and encryption key',
+      preset:     'private_chat',
+    });
+    if (!roomRes.ok) throw new Error('Room creation failed: ' + (roomRes.data.error||roomRes.status));
+    const rid = roomRes.data.room_id;
+    stepState('ss-room','done');
+
+    // 2. Generate encryption key
+    stepState('ss-key','active');
+    const keyB64 = await generateKey();
+    stepState('ss-key','done');
+
+    // 3. Store config + key in Matrix room state
+    stepState('ss-state','active');
+    const cfgPut = await matrixPutState(matrixToken, rid, CFG.matrixConfigState, {writeWebhook: wh});
+    if (!cfgPut.ok) throw new Error('Failed to set config state: ' + JSON.stringify(cfgPut.data));
+    const keyPut = await matrixPutState(matrixToken, rid, CFG.matrixKeyState, {k: keyB64});
+    if (!keyPut.ok) throw new Error('Failed to set key state: ' + JSON.stringify(keyPut.data));
+    stepState('ss-state','done');
+
+    // 4. Write site config to GCS via n8n
+    stepState('ss-gcs','active');
+    const gcsCfg = await fetch(CFG.configEndpoint, {
+      method:  'POST',
+      headers: {'Content-Type':'application/json','Authorization':'Bearer '+apw},
+      body:    JSON.stringify({roomId: rid, createdAt: new Date().toISOString(), version:1}),
+    });
+    if (gcsCfg.status === 401) throw new Error('Wrong admin password.');
+    if (!gcsCfg.ok)            throw new Error('Config write failed: HTTP ' + gcsCfg.status);
+    stepState('ss-gcs','done');
+
+    // Commit session state
+    roomId    = rid;
+    writeUrl  = wh;
+    encKeyB64 = keyB64;
+    adminPass = apw;
+    isFirstRun = false;
+    sessionStorage.setItem('ncsn_wh',  wh);
+    sessionStorage.setItem('ncsn_key', keyB64);
+    sessionStorage.setItem('ncsn_ap',  apw);
+    admin = true;
+
+    closeAllModals();
+    render();
+
+  } catch(err) {
+    setMsg('setup-msg', err.message, 'err');
+    // Mark last active step as error
+    document.querySelectorAll('.setup-step.active').forEach(el=>{
+      el.classList.remove('active'); el.classList.add('error');
+    });
+    setDisabled('setup-btn', false);
+  }
+}
+
+function stepState(id, state) {
+  const el = document.getElementById(id);
+  el.className = 'setup-step ' + state;
+}
+
+/* ══════════════════════════════════════════════════════════
+   LOGIN FLOW — STEP 2: Admin password
+   ══════════════════════════════════════════════════════════ */
+document.getElementById('admin-pw').addEventListener('keydown', ev=>{
+  if(ev.key==='Enter') doAdminLogin();
+});
+
+async function doAdminLogin() {
+  const pw = document.getElementById('admin-pw').value;
+  if (!pw) return;
+  setDisabled('admin-btn', true);
+  setMsg('admin-msg','Verifying…','status');
+
+  try {
+    const r = await fetch(writeUrl, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+pw},
+      body: JSON.stringify({_probe:true, op:'NUL', site:'probe',
+        resolution:'probe', author:CFG.eoAuthor, meta:{}, payload:{}, content:''}),
+    });
+    if (r.status === 401) {
+      setMsg('admin-msg','Wrong password.','err');
+      setDisabled('admin-btn', false);
+      return;
+    }
+  } catch {
+    setMsg('admin-msg','Could not reach write endpoint.','err');
+    setDisabled('admin-btn', false);
+    return;
+  }
+
+  sessionStorage.setItem('ncsn_ap', pw);
+  adminPass = pw;
+  admin     = true;
+  closeAllModals();
+  render();
+}
+
+/* ══════════════════════════════════════════════════════════
+   LOGOUT
+   ══════════════════════════════════════════════════════════ */
+function logout() {
+  ['ncsn_mx','ncsn_wh','ncsn_ap','ncsn_key'].forEach(k=>sessionStorage.removeItem(k));
+  matrixToken=null; writeUrl=null; adminPass=null; encKeyB64=null; admin=false;
+  document.getElementById('admin-bar').classList.remove('on');
+  render();
+}
+
+/* ══════════════════════════════════════════════════════════
+   SAVE — encrypted payload, rendered content HTML
+   ══════════════════════════════════════════════════════════ */
+async function saveAll() {
+  if (!admin||!writeUrl||!adminPass||!encKeyB64) return;
+  const btn = document.getElementById('save-btn');
+  btn.textContent='Saving…'; btn.disabled=true;
+
+  S.lastUpdated = new Date().toISOString();
+
+  // Encrypt the content payload before it leaves the browser
+  let encPayload;
+  try {
+    encPayload = await encryptData(
+      {articles:S.articles, ctas:S.ctas, ts:S.lastUpdated},
+      encKeyB64
+    );
+  } catch(err) {
+    btn.textContent='Crypto error'; btn.disabled=false;
+    alert('Encryption failed: '+err.message);
+    return;
+  }
+
+  const body = {
+    op:         'INS',
+    site:       CFG.eoSite,
+    resolution: 'replace',
+    author:     CFG.eoAuthor,
+    meta: {
+      title:       'Nashville Community Safety Network',
+      description: 'Accountability. Transparency. Mutual Aid.',
+    },
+    // n8n stores whatever is in payload verbatim in the JSONL event
+    payload: { encrypted: encPayload },
+    // content = inner HTML saved to GCS index.html
+    content: buildContentHTML(),
+  };
+
+  try {
+    const r = await fetch(writeUrl, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminPass},
+      body: JSON.stringify(body),
+    });
+    if (r.status===401) { btn.textContent='Auth error'; btn.disabled=false; return; }
+    if (!r.ok) throw new Error('HTTP '+r.status);
+    renderMeta();
+    btn.textContent='Saved';
+    setTimeout(()=>{btn.textContent='Save';btn.disabled=false},2200);
+  } catch(err) {
+    btn.textContent='Error'; btn.disabled=false;
+    alert('Save failed: '+err.message);
+  }
+}
+
+function buildContentHTML() {
+  const ord={high:0,medium:1,low:2};
+  const sCTAs=[...S.ctas].sort((a,b)=>(ord[a.urgency]??1)-(ord[b.urgency]??1));
+  const sArts=[...S.articles].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+
+  const ctaHtml = sCTAs.map(c=>`
+    <div class="cta-item ${x(c.urgency||'medium')}">
+      <div class="cta-title">${x(c.title)}</div>
+      ${c.description?`<div class="cta-desc">${x(c.description)}</div>`:''}
+      ${c.url?`<a class="cta-link" href="${x(c.url)}">${x(c.linkLabel||'Take action')} →</a>`:''}
+    </div>`).join('');
+
+  const artHtml = sArts.map(a=>`
+    <div class="article-item">
+      <div class="art-date">${fmtDate(a.date)}</div>
+      <div>
+        <div class="art-title">${a.url?`<a href="${x(a.url)}">${x(a.title)}</a>`:x(a.title)}</div>
+        ${a.summary?`<div class="art-summary">${x(a.summary)}</div>`:''}
+        ${a.tags?.length?`<div class="art-tags">${a.tags.map(t=>`<span class="art-tag">${x(t.trim())}</span>`).join('')}</div>`:''}
+      </div>
+    </div>`).join('');
+
+  const stateJson = JSON.stringify({articles:S.articles,ctas:S.ctas,lastUpdated:S.lastUpdated});
+
+  return `<script type="application/json" id="ncsn-data">${stateJson}<\/script>
+<section><div class="section-label">Calls to action</div>
+<div id="cta-container">${ctaHtml}</div></section>
+<section><div class="section-label">News &amp; articles</div>
+<hr class="article-rule"><div id="articles-container">${artHtml}</div></section>`;
+}
+
+/* ══════════════════════════════════════════════════════════
+   CHANGELOG — fetch JSONL, decrypt payloads
+   Requires GET /webhook/site/log in n8n (see ncsn-n8n-additions.json)
+   ══════════════════════════════════════════════════════════ */
+async function openChangelog() {
+  openModal('log-modal');
+  const el = document.getElementById('log-container');
+  el.innerHTML='<p class="msg">Loading...</p>';
+
+  if (!adminPass) { el.innerHTML='<p class="msg err">Admin session required.</p>'; return; }
+
+  let text;
+  try {
+    const r = await fetch(CFG.logEndpoint, {
+      headers:{'Authorization':'Bearer '+adminPass}
+    });
+    if (r.status===404) {
+      el.innerHTML=`<p class="msg">Log endpoint not yet configured.<br>
+        Import <code>ncsn-n8n-additions.json</code> into n8n and activate it.</p>`;
+      return;
+    }
+    if (r.status===401) { el.innerHTML='<p class="msg err">Unauthorized.</p>'; return; }
+    if (!r.ok) throw new Error('HTTP '+r.status);
+    text = await r.text();
+  } catch(err) {
+    el.innerHTML=`<p class="msg err">Could not load log: ${x(err.message)}</p>`;
+    return;
+  }
+
+  const lines = text.trim().split('\n').filter(Boolean).reverse();
+  if (!lines.length) { el.innerHTML='<p class="msg">No log entries yet.</p>'; return; }
+
+  const rows = await Promise.all(lines.map(async line => {
+    let ev;
+    try { ev = JSON.parse(line); } catch { return ''; }
+    const ts = ev.ts
+      ? new Date(ev.ts).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})
+      : '—';
+
+    let detail = '';
+    if (ev.payload?.encrypted && encKeyB64) {
+      try {
+        const dec = await decryptData(ev.payload.encrypted, encKeyB64);
+        const na = dec.articles?.length ?? '?';
+        const nc = dec.ctas?.length ?? '?';
+        detail = `${na} articles, ${nc} actions`;
+      } catch {
+        detail = '<span class="log-enc">encrypted</span>';
+      }
+    } else if (ev.payload?._probe) {
+      detail = '<span class="log-enc">probe</span>';
+    }
+
+    return `<div class="log-entry">
+      <div class="log-ts">${ts}</div>
+      <div class="log-op">${x(ev.op||'—')}</div>
+      <div class="log-detail">${detail || x(ev.site||'')}</div>
+    </div>`;
+  }));
+
+  el.innerHTML = rows.join('');
+}
+
+/* ══════════════════════════════════════════════════════════
+   CTA CRUD
+   ══════════════════════════════════════════════════════════ */
+function openAddCTA() {
+  document.getElementById('cta-modal-h').textContent='Add call to action';
+  ['cta-id','cta-title','cta-desc','cta-url','cta-lbl'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('cta-urgency').value='medium';
+  openModal('cta-modal');
+}
+function openEditCTA(id) {
+  const c=S.ctas.find(c=>c.id===id); if(!c)return;
+  document.getElementById('cta-modal-h').textContent='Edit call to action';
+  document.getElementById('cta-id').value    =id;
+  document.getElementById('cta-title').value =c.title||'';
+  document.getElementById('cta-desc').value  =c.description||'';
+  document.getElementById('cta-url').value   =c.url||'';
+  document.getElementById('cta-lbl').value   =c.linkLabel||'';
+  document.getElementById('cta-urgency').value=c.urgency||'medium';
+  openModal('cta-modal');
+}
+function saveCTA() {
+  const id=document.getElementById('cta-id').value;
+  const c={id:id||uid(),title:document.getElementById('cta-title').value.trim(),
+    description:document.getElementById('cta-desc').value.trim(),
+    url:document.getElementById('cta-url').value.trim(),
+    linkLabel:document.getElementById('cta-lbl').value.trim(),
+    urgency:document.getElementById('cta-urgency').value};
+  if(!c.title)return;
+  S.ctas=id?S.ctas.map(v=>v.id===id?c:v):[...S.ctas,c];
+  closeAllModals(); renderCTAs();
+}
+function delCTA(id){if(!confirm('Delete?'))return;S.ctas=S.ctas.filter(c=>c.id!==id);renderCTAs()}
+
+/* ══════════════════════════════════════════════════════════
+   ARTICLE CRUD
+   ══════════════════════════════════════════════════════════ */
+function openAddArticle() {
+  document.getElementById('art-modal-h').textContent='Add article';
+  ['art-id','art-title','art-url','art-summary','art-tags'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('art-date').value=today();
+  openModal('art-modal');
+}
+function openEditArt(id) {
+  const a=S.articles.find(a=>a.id===id); if(!a)return;
+  document.getElementById('art-modal-h').textContent='Edit article';
+  document.getElementById('art-id').value      =id;
+  document.getElementById('art-title').value   =a.title||'';
+  document.getElementById('art-url').value     =a.url||'';
+  document.getElementById('art-date').value    =a.date||today();
+  document.getElementById('art-summary').value =a.summary||'';
+  document.getElementById('art-tags').value    =(a.tags||[]).join(', ');
+  openModal('art-modal');
+}
+function saveArt() {
+  const id=document.getElementById('art-id').value;
+  const a={id:id||uid(),title:document.getElementById('art-title').value.trim(),
+    url:document.getElementById('art-url').value.trim(),
+    date:document.getElementById('art-date').value,
+    summary:document.getElementById('art-summary').value.trim(),
+    tags:document.getElementById('art-tags').value.split(',').map(t=>t.trim()).filter(Boolean)};
+  if(!a.title)return;
+  S.articles=id?S.articles.map(v=>v.id===id?a:v):[...S.articles,a];
+  closeAllModals(); renderArts();
+}
+function delArt(id){if(!confirm('Delete?'))return;S.articles=S.articles.filter(a=>a.id!==id);renderArts()}
+
+/* ══════════════════════════════════════════════════════════
+   MODAL / UI HELPERS
+   ══════════════════════════════════════════════════════════ */
+function openModal(id){closeAllModals();document.getElementById(id).classList.add('on')}
+function closeAllModals(){document.querySelectorAll('.modal-bg.on').forEach(m=>m.classList.remove('on'))}
+function setMsg(id,txt,type){const el=document.getElementById(id);el.className='modal-msg'+(txt?' '+type:'');el.textContent=txt}
+function setDisabled(id,v){document.getElementById(id).disabled=v}
+
+document.querySelectorAll('.modal-bg').forEach(bg=>
+  bg.addEventListener('click',ev=>{if(ev.target===bg)closeAllModals()}));
+
+/* ══════════════════════════════════════════════════════════
+   UTILS
+   ══════════════════════════════════════════════════════════ */
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5)}
+function today(){return new Date().toISOString().slice(0,10)}
+function x(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+function fmtDate(iso){
+  if(!iso)return'—';
+  const d=new Date(iso+'T12:00:00');
+  if(isNaN(d))return iso;
+  return d.toLocaleDateString('en-US',{month:'short'})+'\n'+d.getFullYear();
+}
+
+/* ══════════════════════════════════════════════════════════
+   INIT
+   ══════════════════════════════════════════════════════════ */
+boot();
+</script>
+</body>
+</html>
