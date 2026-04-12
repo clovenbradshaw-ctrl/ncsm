@@ -185,10 +185,12 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
     <div class="setup-steps" id="setup-steps">
       <div class="setup-step" id="ss-room">Create private Matrix room</div>
       <div class="setup-step" id="ss-key">Generate AES-256-GCM encryption key</div>
-      <div class="setup-step" id="ss-pub">Create public content room</div>
       <div class="setup-step" id="ss-state">Store config, key &amp; admin pw in room state</div>
+      <div class="setup-step" id="ss-gcs">Write site config to GCS</div>
     </div>
-    <label>Admin password</label>
+    <label>Write webhook URL</label>
+    <input type="url" id="setup-write-url" value="https://n8n.intelechia.com/webhook/site/write">
+    <label>Admin password (n8n Bearer token)</label>
     <input type="password" id="setup-admin-pw" autocomplete="off">
     <p class="modal-msg" id="setup-msg"></p>
     <div class="modal-actions">
@@ -299,14 +301,18 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
    CONFIG — safe to commit; no secrets
    ══════════════════════════════════════════════════════════ */
 const CFG = {
-  matrixServer:       'https://hyphae.social',
-  matrixDomain:       'hyphae.social',
-  matrixConfigState:  'community.ncsn.config',
-  matrixKeyState:     'community.ncsn.key',
-  matrixAdminState:   'community.ncsn.admin',
-  matrixContentState: 'community.ncsn.content',
-  matrixBackupState:  'community.ncsn.backup',
-  publicRoomAlias:    'ncsn-public',
+  configEndpoint: 'https://n8n.intelechia.com/webhook/site/config',
+  readEndpoint:   'https://n8n.intelechia.com/webhook/site/read',
+  writeEndpoint:  'https://n8n.intelechia.com/webhook/site/write',
+  logEndpoint:    'https://n8n.intelechia.com/webhook/site/log',
+
+  matrixServer:      'https://hyphae.social',
+  matrixDomain:      'hyphae.social',
+  matrixConfigState: 'community.ncsn.config',
+  matrixKeyState:    'community.ncsn.key',
+  matrixAdminState:  'community.ncsn.admin',
+
+  eoSite: 'page',
 };
 
 /* ══════════════════════════════════════════════════════════
@@ -373,19 +379,20 @@ function normalizeSourceType(t) {
 /* ══════════════════════════════════════════════════════════
    SESSION STATE
    ══════════════════════════════════════════════════════════ */
-// Boot-time — cached in localStorage. roomId is not a secret; we cache it
-// so the site never asks an existing editor to re-run first-run setup.
-let roomId       = localStorage.getItem('ncsn_room') || null;
-let publicRoomId = localStorage.getItem('ncsn_pub')  || null;
-let isFirstRun   = false;
+// Boot-time — fetched from GCS config on load, with localStorage fallback.
+// roomId is not a secret; we cache it so the site survives a flaky config
+// endpoint and never asks an existing editor to re-run first-run setup.
+let roomId     = localStorage.getItem('ncsn_room') || null;
+let isFirstRun = false;
 
 // Per-session — all sessionStorage, cleared on tab close
 let matrixToken  = sessionStorage.getItem('ncsn_mx')  || null;
 let matrixUserId = sessionStorage.getItem('ncsn_mxu') || null;
+let writeUrl     = sessionStorage.getItem('ncsn_wh')  || null;
 let adminPass    = sessionStorage.getItem('ncsn_ap')  || null;
 let encKeyB64    = sessionStorage.getItem('ncsn_key') || null;
 
-let admin = !!(matrixToken && adminPass && encKeyB64);
+let admin = !!(matrixToken && writeUrl && adminPass && encKeyB64);
 
 // Content state
 let S = { articles:[], ctas:[], lastUpdated:null };
@@ -414,24 +421,26 @@ async function boot() {
 }
 
 async function loadConfig() {
-  // Discover publicRoomId via the well-known alias if not cached.
-  if (!publicRoomId) {
-    try {
-      const alias = encodeURIComponent('#' + CFG.publicRoomAlias + ':' + CFG.matrixDomain);
-      const r = await fetch(CFG.matrixServer + '/_matrix/client/v3/directory/room/' + alias);
-      if (r.ok) {
-        const d = await r.json();
-        publicRoomId = d.room_id;
-        localStorage.setItem('ncsn_pub', publicRoomId);
+  // Prefer the GCS config file as the source of truth, but only treat
+  // "no roomId anywhere" as first-run. A cached localStorage value (or a
+  // post-login joined-rooms discovery) is enough to keep using the existing
+  // room when the GCS write is broken.
+  try {
+    const r = await fetch(CFG.configEndpoint);
+    if (r.ok) {
+      const d = await r.json();
+      if (d && d.roomId) {
+        roomId = d.roomId;
+        localStorage.setItem('ncsn_room', d.roomId);
       }
-    } catch { /* ignore — site may not be initialized yet */ }
-  }
+    }
+  } catch { /* ignore — fall through to cache + discovery */ }
   isFirstRun = !roomId;
 }
 
 // Walk the editor's joined Matrix rooms looking for one that carries our
-// site config state event. Used as a fallback when localStorage has no
-// roomId — prevents repeated first-run setup.
+// site config state event. Used as a fallback when neither the GCS config
+// nor localStorage has a roomId — prevents repeated first-run setup.
 async function discoverRoomFromJoined(tok) {
   try {
     const r = await fetch(CFG.matrixServer + '/_matrix/client/v3/joined_rooms', {
@@ -441,38 +450,32 @@ async function discoverRoomFromJoined(tok) {
     const d = await r.json();
     for (const rid of (d.joined_rooms || [])) {
       const cfg = await matrixGetState(tok, rid, CFG.matrixConfigState);
-      if (cfg && cfg.publicRoomId) return rid;
+      if (cfg && cfg.writeWebhook) return rid;
     }
   } catch { /* ignore */ }
   return null;
 }
 
 async function loadContent() {
-  if (!publicRoomId) { render(); return; }
   try {
-    // Get or register a guest token for unauthenticated reads
-    let guestTok = sessionStorage.getItem('ncsn_guest');
-    if (!guestTok) {
-      const reg = await matrixPost('/_matrix/client/v3/register?kind=guest', null, {});
-      if (reg.ok) {
-        guestTok = reg.data.access_token;
-        sessionStorage.setItem('ncsn_guest', guestTok);
-      }
+    const r = await fetch(CFG.readEndpoint);
+    if (r.ok) {
+      const html  = await r.text();
+      const state = parseEmbeddedState(html);
+      if (state) S = state;
     }
-    if (!guestTok) { render(); return; }
-
-    // Join the public room (idempotent)
-    await matrixPost('/_matrix/client/v3/join/' + encodeURIComponent(publicRoomId), guestTok, {});
-
-    // Read published content state
-    const state = await matrixGetState(guestTok, publicRoomId, CFG.matrixContentState);
-    if (state && state.articles) S = state;
   } catch(err) {
     S._err = err.message;
   }
   render();
 }
 
+function parseEmbeddedState(html) {
+  try {
+    const m = html.match(/<script[^>]+id="ncsn-data"[^>]*>([\s\S]*?)<\/script>/);
+    return m ? JSON.parse(m[1]) : null;
+  } catch { return null; }
+}
 
 /* ══════════════════════════════════════════════════════════
    RENDER
@@ -589,16 +592,6 @@ async function matrixPutState(token, rid, type, content) {
   return {ok:r.ok, data:await r.json()};
 }
 
-async function matrixSendEvent(token, rid, type, content) {
-  const txnId = 'ncsn_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
-  const url = `${CFG.matrixServer}/_matrix/client/v3/rooms/${encodeURIComponent(rid)}/send/${encodeURIComponent(type)}/${encodeURIComponent(txnId)}`;
-  const r = await fetch(url, {
-    method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-    body: JSON.stringify(content)
-  });
-  return {ok:r.ok, data:await r.json()};
-}
-
 async function matrixGetState(token, rid, type) {
   const url = `${CFG.matrixServer}/_matrix/client/v3/rooms/${encodeURIComponent(rid)}/state/${encodeURIComponent(type)}/`;
   const r = await fetch(url, {headers:{'Authorization':'Bearer '+token}});
@@ -672,8 +665,11 @@ async function doMatrixLogin() {
 
   closeAllModals();
 
-  // Belt-and-suspenders: scan joined rooms for one that carries our config
-  // state before assuming this is a first run.
+  // Belt-and-suspenders: even if loadConfig didn't find a roomId, the editor
+  // may already be a member of an existing site config room. Scan their
+  // joined rooms for one that carries our config state before assuming this
+  // is a first run. This prevents the setup wizard from running twice when
+  // the GCS config write is failing.
   if (!roomId) {
     const found = await discoverRoomFromJoined(tok);
     if (found) {
@@ -692,14 +688,14 @@ async function doMatrixLogin() {
   }
 }
 
-// After Matrix login on a normal run: fetch key + admin pw + publicRoomId from room state.
+// After Matrix login on a normal run: fetch write URL + key + admin pw from room state.
 // If the admin password is present in state (shared via room membership), auto-unlock.
 async function fetchRoomSession(tok) {
   const cfgState = await matrixGetState(tok, roomId, CFG.matrixConfigState);
   const keyState = await matrixGetState(tok, roomId, CFG.matrixKeyState);
   const admState = await matrixGetState(tok, roomId, CFG.matrixAdminState);
 
-  if (!keyState?.k) {
+  if (!cfgState?.writeWebhook || !keyState?.k) {
     openModal('modal-admin');
     setMsg('admin-msg',
       'Could not read room state. You may not be a member of this site\'s Matrix room — ask an existing editor to invite you.',
@@ -708,12 +704,9 @@ async function fetchRoomSession(tok) {
     return;
   }
 
-  if (cfgState?.publicRoomId) {
-    publicRoomId = cfgState.publicRoomId;
-    localStorage.setItem('ncsn_pub', publicRoomId);
-  }
-
+  sessionStorage.setItem('ncsn_wh',  cfgState.writeWebhook);
   sessionStorage.setItem('ncsn_key', keyState.k);
+  writeUrl  = cfgState.writeWebhook;
   encKeyB64 = keyState.k;
 
   // Shared admin password — any invited room member auto-unlocks with it.
@@ -725,7 +718,7 @@ async function fetchRoomSession(tok) {
     return;
   }
 
-  // Fallback: prompt the user manually.
+  // Legacy fallback: prompt the user manually.
   openModal('modal-admin');
   setMsg('admin-msg','Admin password not in room state — enter it manually.','status');
   document.getElementById('admin-pw').value = '';
@@ -737,14 +730,15 @@ async function fetchRoomSession(tok) {
    LOGIN FLOW — FIRST RUN SETUP
    ══════════════════════════════════════════════════════════ */
 async function doFirstRunSetup() {
+  const wh  = document.getElementById('setup-write-url').value.trim();
   const apw = document.getElementById('setup-admin-pw').value;
-  if (!apw) { setMsg('setup-msg','Admin password is required.','err'); return; }
+  if (!wh || !apw) { setMsg('setup-msg','Both fields are required.','err'); return; }
 
   setDisabled('setup-btn', true);
   setMsg('setup-msg','','');
 
   try {
-    // 1. Create private Matrix room (secrets + config)
+    // 1. Create Matrix room
     stepState('ss-room','active');
     const roomRes = await matrixPost('/_matrix/client/v3/createRoom', matrixToken, {
       visibility: 'private',
@@ -761,33 +755,11 @@ async function doFirstRunSetup() {
     const keyB64 = await generateKey();
     stepState('ss-key','done');
 
-    // 3. Create public content room — guests can join + read, only editors
-    //    (power level ≥ 50) can set the content state event.
-    stepState('ss-pub','active');
-    const pubRes = await matrixPost('/_matrix/client/v3/createRoom', matrixToken, {
-      visibility:      'public',
-      name:            'NCSN Public Content',
-      topic:           'Nashville Community Safety Network — published content (read-only for guests)',
-      preset:          'public_chat',
-      room_alias_name: CFG.publicRoomAlias,
-      initial_state: [
-        {type:'m.room.guest_access',       state_key:'', content:{guest_access:'can_join'}},
-        {type:'m.room.history_visibility',  state_key:'', content:{history_visibility:'world_readable'}},
-      ],
-      power_level_content_override: {
-        events: {[CFG.matrixContentState]: 50},
-        users_default: 0,
-      },
-    });
-    if (!pubRes.ok) throw new Error('Public room creation failed: ' + (pubRes.data.error||pubRes.status));
-    const pubRid = pubRes.data.room_id;
-    stepState('ss-pub','done');
-
-    // 4. Store config, key, and admin password in private room state.
+    // 3. Store config, key, and admin password in Matrix room state.
     //    Anyone invited to this room will later read the admin password from
-    //    state and automatically gain editor access.
+    //    state and automatically gain upload access.
     stepState('ss-state','active');
-    const cfgPut = await matrixPutState(matrixToken, rid, CFG.matrixConfigState, {publicRoomId: pubRid});
+    const cfgPut = await matrixPutState(matrixToken, rid, CFG.matrixConfigState, {writeWebhook: wh});
     if (!cfgPut.ok) throw new Error('Failed to set config state: ' + JSON.stringify(cfgPut.data));
     const keyPut = await matrixPutState(matrixToken, rid, CFG.matrixKeyState, {k: keyB64});
     if (!keyPut.ok) throw new Error('Failed to set key state: ' + JSON.stringify(keyPut.data));
@@ -795,14 +767,44 @@ async function doFirstRunSetup() {
     if (!admPut.ok) throw new Error('Failed to set admin state: ' + JSON.stringify(admPut.data));
     stepState('ss-state','done');
 
-    // Commit session state
-    roomId       = rid;
-    publicRoomId = pubRid;
-    encKeyB64    = keyB64;
-    adminPass    = apw;
-    isFirstRun   = false;
+    // 4. Write site config to GCS via n8n. The roomId already lives in
+    //    Matrix room state (and we cache it locally), so a GCS failure here
+    //    is recoverable — log it but don't lose the freshly-created room.
+    stepState('ss-gcs','active');
+    let gcsOk = false;
+    try {
+      const gcsCfg = await fetch(CFG.configEndpoint, {
+        method:  'POST',
+        headers: {'Content-Type':'application/json','Authorization':'Bearer '+apw},
+        body:    JSON.stringify({roomId: rid, createdAt: new Date().toISOString(), version:1}),
+      });
+      if (gcsCfg.status === 401) throw new Error('Wrong admin password.');
+      if (!gcsCfg.ok)            throw new Error('Config write failed: HTTP ' + gcsCfg.status);
+      gcsOk = true;
+      stepState('ss-gcs','done');
+    } catch (gcsErr) {
+      // Hard-fail only on auth — a 500 from GCS shouldn't strand the editor.
+      if (/wrong admin password/i.test(gcsErr.message)) throw gcsErr;
+      console.warn('GCS config write failed, falling back to local cache:', gcsErr);
+      stepState('ss-gcs','error');
+      // Defer the alert until after the modal closes so it isn't hidden.
+      setTimeout(()=>alert(
+        'Site is set up, but the GCS config write failed (' + gcsErr.message + ').\n\n' +
+        'The room id has been cached locally and is also stored in Matrix room state, ' +
+        'so editors who join the room will still find it on next login. ' +
+        'You can fix the n8n config webhook later without redoing setup.'
+      ), 100);
+    }
+
+    // Commit session state. Cache the roomId persistently so even a wiped
+    // GCS config file can never trigger a duplicate first-run setup.
+    roomId    = rid;
+    writeUrl  = wh;
+    encKeyB64 = keyB64;
+    adminPass = apw;
+    isFirstRun = false;
     localStorage.setItem('ncsn_room', rid);
-    localStorage.setItem('ncsn_pub',  pubRid);
+    sessionStorage.setItem('ncsn_wh',  wh);
     sessionStorage.setItem('ncsn_key', keyB64);
     sessionStorage.setItem('ncsn_ap',  apw);
     admin = true;
@@ -812,6 +814,7 @@ async function doFirstRunSetup() {
 
   } catch(err) {
     setMsg('setup-msg', err.message, 'err');
+    // Mark last active step as error
     document.querySelectorAll('.setup-step.active').forEach(el=>{
       el.classList.remove('active'); el.classList.add('error');
     });
@@ -838,14 +841,19 @@ async function doAdminLogin() {
   setMsg('admin-msg','Verifying…','status');
 
   try {
-    const admState = await matrixGetState(matrixToken, roomId, CFG.matrixAdminState);
-    if (!admState?.adminPw || admState.adminPw !== pw) {
+    const r = await fetch(writeUrl, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+pw},
+      body: JSON.stringify({_probe:true, op:'NUL', site:'probe',
+        resolution:'probe', author: matrixUserId || '', meta:{}, payload:{}, content:''}),
+    });
+    if (r.status === 401) {
       setMsg('admin-msg','Wrong password.','err');
       setDisabled('admin-btn', false);
       return;
     }
   } catch {
-    setMsg('admin-msg','Could not verify — check room membership.','err');
+    setMsg('admin-msg','Could not reach write endpoint.','err');
     setDisabled('admin-btn', false);
     return;
   }
@@ -861,8 +869,8 @@ async function doAdminLogin() {
    LOGOUT
    ══════════════════════════════════════════════════════════ */
 function logout() {
-  ['ncsn_mx','ncsn_mxu','ncsn_ap','ncsn_key'].forEach(k=>sessionStorage.removeItem(k));
-  matrixToken=null; matrixUserId=null; adminPass=null; encKeyB64=null; admin=false;
+  ['ncsn_mx','ncsn_mxu','ncsn_wh','ncsn_ap','ncsn_key'].forEach(k=>sessionStorage.removeItem(k));
+  matrixToken=null; matrixUserId=null; writeUrl=null; adminPass=null; encKeyB64=null; admin=false;
   document.getElementById('admin-bar').classList.remove('on');
   render();
 }
@@ -890,39 +898,18 @@ async function doInvite() {
   setDisabled('invite-btn', true);
   setMsg('invite-msg','Sending invite…','status');
   try {
-    // 1. Invite to private room (secrets + config)
-    const privUrl = CFG.matrixServer + '/_matrix/client/v3/rooms/'
+    const url = CFG.matrixServer + '/_matrix/client/v3/rooms/'
               + encodeURIComponent(roomId) + '/invite';
-    const r1 = await fetch(privUrl, {
+    const r = await fetch(url, {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+matrixToken},
       body: JSON.stringify({user_id: mxid}),
     });
-    if (!r1.ok) {
-      const d = await r1.json().catch(()=>({}));
-      throw new Error(d.error || ('HTTP '+r1.status));
+    if (!r.ok) {
+      const d = await r.json().catch(()=>({}));
+      throw new Error(d.error || ('HTTP '+r.status));
     }
-
-    // 2. Invite to public room + grant editor power level (50)
-    if (publicRoomId) {
-      const pubUrl = CFG.matrixServer + '/_matrix/client/v3/rooms/'
-                + encodeURIComponent(publicRoomId) + '/invite';
-      await fetch(pubUrl, {
-        method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+matrixToken},
-        body: JSON.stringify({user_id: mxid}),
-      });
-
-      // Set their power level to 50 so they can write content state
-      const plState = await matrixGetState(matrixToken, publicRoomId, 'm.room.power_levels');
-      if (plState) {
-        plState.users = plState.users || {};
-        plState.users[mxid] = 50;
-        await matrixPutState(matrixToken, publicRoomId, 'm.room.power_levels', plState);
-      }
-    }
-
-    setMsg('invite-msg','Invited '+mxid+'. Once they accept and log in they\'ll have editor access.','status');
+    setMsg('invite-msg','Invited '+mxid+'. Once they accept and log in they\'ll have upload access.','status');
     setDisabled('invite-btn', false);
   } catch(err) {
     setMsg('invite-msg', err.message, 'err');
@@ -938,13 +925,18 @@ document.getElementById('invite-user').addEventListener('keydown', ev=>{
    SAVE — encrypted payload, rendered content HTML
    ══════════════════════════════════════════════════════════ */
 async function saveAll() {
-  if (!admin||!matrixToken||!encKeyB64||!publicRoomId) return;
+  if (!admin||!writeUrl||!adminPass||!encKeyB64) return;
   const btn = document.getElementById('save-btn');
   btn.textContent='Saving…'; btn.disabled=true;
 
+  // First-fill × Making: if no prior save has ever landed against this site
+  // (no lastUpdated was loaded from the remote), this save is the initial
+  // authoring act and carries the Making stance. Subsequent saves are
+  // replace. Capture before we overwrite lastUpdated below.
+  const isFirstFill = !S.lastUpdated;
   S.lastUpdated = new Date().toISOString();
 
-  // Encrypt for the private-room backup
+  // Encrypt the content payload before it leaves the browser
   let encPayload;
   try {
     encPayload = await encryptData(
@@ -957,31 +949,52 @@ async function saveAll() {
     return;
   }
 
+  const body = {
+    op:         'INS',
+    site:       CFG.eoSite,
+    resolution: isFirstFill ? 'Making' : 'replace',
+    author:     matrixUserId || '',
+    meta: {
+      title:       'Nashville Community Safety Network',
+      description: 'Accountability. Transparency. Mutual Aid.',
+    },
+    // n8n stores whatever is in payload verbatim in the JSONL event
+    payload: { encrypted: encPayload },
+    // content = inner HTML saved to GCS index.html
+    content: buildContentHTML(),
+  };
+
+  const MAX_RETRIES = 2;
+  const jsonBody = JSON.stringify(body);
+
   try {
-    // 1. Publish content to public Matrix room state
-    const pubRes = await matrixPutState(matrixToken, publicRoomId, CFG.matrixContentState, {
-      articles:    S.articles,
-      ctas:        S.ctas,
-      lastUpdated: S.lastUpdated,
-    });
-    if (!pubRes.ok) throw new Error('Publish failed: ' + (pubRes.data?.error || JSON.stringify(pubRes.data)));
-
-    // 2. Encrypted backup to private room state
-    await matrixPutState(matrixToken, roomId, CFG.matrixBackupState, {
-      encrypted: encPayload,
-      ts:        S.lastUpdated,
-      author:    matrixUserId || '',
-    });
-
-    // 3. Changelog entry as a timeline event in the private room
-    await matrixSendEvent(matrixToken, roomId, 'community.ncsn.save', {
-      ts:       S.lastUpdated,
-      author:   matrixUserId || '',
-      articles: S.articles.length,
-      ctas:     S.ctas.length,
-      payload:  {encrypted: encPayload},
-    });
-
+    let r, attempt = 0, lastErr;
+    while (attempt <= MAX_RETRIES) {
+      if (attempt > 0) {
+        btn.textContent = `Retry ${attempt}/${MAX_RETRIES}…`;
+        await new Promise(ok => setTimeout(ok, 1000 * Math.pow(2, attempt)));
+      }
+      try {
+        r = await fetch(writeUrl, {
+          method:'POST',
+          headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminPass},
+          body: jsonBody,
+        });
+      } catch (netErr) {
+        lastErr = netErr;
+        attempt++;
+        continue;
+      }
+      if (r.status === 401) { btn.textContent='Auth error'; btn.disabled=false; return; }
+      if (r.status >= 500 && attempt < MAX_RETRIES) { attempt++; continue; }
+      if (!r.ok) {
+        let detail = '';
+        try { detail = (await r.text()).slice(0, 200); } catch {}
+        throw new Error('HTTP ' + r.status + (detail ? ' — ' + detail : ''));
+      }
+      break;
+    }
+    if (!r || !r.ok) throw lastErr || new Error('Save failed after retries');
     renderMeta();
     btn.textContent='Saved';
     setTimeout(()=>{btn.textContent='Save';btn.disabled=false},2200);
@@ -991,57 +1004,107 @@ async function saveAll() {
   }
 }
 
+function buildContentHTML() {
+  const ord={high:0,medium:1,low:2};
+  const sCTAs=[...S.ctas].sort((a,b)=>(ord[a.urgency]??1)-(ord[b.urgency]??1));
+  const sArts=[...S.articles].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+
+  const ctaHtml = sCTAs.map(c=>`
+    <div class="cta-item ${x(c.urgency||'medium')}">
+      <div class="cta-title">${x(c.title)}</div>
+      ${c.description?`<div class="cta-desc">${x(c.description)}</div>`:''}
+      ${c.url?`<a class="cta-link" href="${x(c.url)}">${x(c.linkLabel||'Take action')} →</a>`:''}
+    </div>`).join('');
+
+  const artHtml = sArts.map(a=>{
+    const st   = normalizeSourceType(a.sourceType || detectSourceType(a.url));
+    const meta = SOURCE_TYPES[st];
+    return `
+    <div class="article-item">
+      <div class="art-meta">
+        <i class="ph ${meta.icon} art-icon ${st}" title="${x(meta.label)}" aria-label="${x(meta.label)}"></i>
+        <div class="art-date">${fmtDate(a.date)}</div>
+        <div class="art-source-label">${x(meta.label)}</div>
+      </div>
+      <div>
+        <div class="art-title">${a.url?`<a href="${x(a.url)}">${x(a.title)}</a>`:x(a.title)}</div>
+        ${a.summary?`<div class="art-summary">${x(a.summary)}</div>`:''}
+        ${a.tags?.length?`<div class="art-tags">${a.tags.map(t=>`<span class="art-tag">${x(t.trim())}</span>`).join('')}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+
+  const stateJson = JSON.stringify({articles:S.articles,ctas:S.ctas,lastUpdated:S.lastUpdated})
+    .replace(/<\//g, '<\\/');
+
+  return `<script type="application/json" id="ncsn-data">${stateJson}<\/script>
+<section><div class="section-label">Calls to action</div>
+<div id="cta-container">${ctaHtml}</div></section>
+<section><div class="section-label">News &amp; articles</div>
+<hr class="article-rule"><div id="articles-container">${artHtml}</div></section>`;
+}
+
 /* ══════════════════════════════════════════════════════════
-   CHANGELOG — read save events from private Matrix room
+   CHANGELOG — fetch JSONL, decrypt payloads
+   Requires GET /webhook/site/log in n8n (see ncsn-n8n-additions.json)
    ══════════════════════════════════════════════════════════ */
 async function openChangelog() {
   openModal('log-modal');
   const el = document.getElementById('log-container');
   el.innerHTML='<p class="msg">Loading...</p>';
 
-  if (!matrixToken || !roomId) { el.innerHTML='<p class="msg err">Admin session required.</p>'; return; }
+  if (!adminPass) { el.innerHTML='<p class="msg err">Admin session required.</p>'; return; }
 
+  let text;
   try {
-    const url = CFG.matrixServer + '/_matrix/client/v3/rooms/'
-      + encodeURIComponent(roomId) + '/messages?dir=b&limit=50';
-    const r = await fetch(url, {headers:{'Authorization':'Bearer '+matrixToken}});
+    const r = await fetch(CFG.logEndpoint, {
+      headers:{'Authorization':'Bearer '+adminPass}
+    });
+    if (r.status===404) {
+      el.innerHTML=`<p class="msg">Log endpoint not yet configured.<br>
+        Import <code>ncsn-n8n-additions.json</code> into n8n and activate it.</p>`;
+      return;
+    }
+    if (r.status===401) { el.innerHTML='<p class="msg err">Unauthorized.</p>'; return; }
     if (!r.ok) throw new Error('HTTP '+r.status);
-    const data = await r.json();
-
-    const saves = (data.chunk||[]).filter(ev => ev.type === 'community.ncsn.save');
-    if (!saves.length) { el.innerHTML='<p class="msg">No log entries yet.</p>'; return; }
-
-    const rows = await Promise.all(saves.map(async ev => {
-      const c = ev.content || {};
-      const ts = c.ts
-        ? new Date(c.ts).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})
-        : '—';
-
-      let detail = '';
-      if (c.payload?.encrypted && encKeyB64) {
-        try {
-          const dec = await decryptData(c.payload.encrypted, encKeyB64);
-          const na = dec.articles?.length ?? '?';
-          const nc = dec.ctas?.length ?? '?';
-          detail = `${na} articles, ${nc} actions`;
-        } catch {
-          detail = '<span class="log-enc">encrypted</span>';
-        }
-      } else if (typeof c.articles === 'number') {
-        detail = `${c.articles} articles, ${c.ctas} actions`;
-      }
-
-      return `<div class="log-entry">
-        <div class="log-ts">${ts}</div>
-        <div class="log-op">save</div>
-        <div class="log-detail">${detail || x(c.author||'')}</div>
-      </div>`;
-    }));
-
-    el.innerHTML = rows.join('');
+    text = await r.text();
   } catch(err) {
     el.innerHTML=`<p class="msg err">Could not load log: ${x(err.message)}</p>`;
+    return;
   }
+
+  const lines = text.trim().split('\n').filter(Boolean).reverse();
+  if (!lines.length) { el.innerHTML='<p class="msg">No log entries yet.</p>'; return; }
+
+  const rows = await Promise.all(lines.map(async line => {
+    let ev;
+    try { ev = JSON.parse(line); } catch { return ''; }
+    const ts = ev.ts
+      ? new Date(ev.ts).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})
+      : '—';
+
+    let detail = '';
+    if (ev.payload?.encrypted && encKeyB64) {
+      try {
+        const dec = await decryptData(ev.payload.encrypted, encKeyB64);
+        const na = dec.articles?.length ?? '?';
+        const nc = dec.ctas?.length ?? '?';
+        detail = `${na} articles, ${nc} actions`;
+      } catch {
+        detail = '<span class="log-enc">encrypted</span>';
+      }
+    } else if (ev.payload?._probe) {
+      detail = '<span class="log-enc">probe</span>';
+    }
+
+    return `<div class="log-entry">
+      <div class="log-ts">${ts}</div>
+      <div class="log-op">${x(ev.op||'—')}</div>
+      <div class="log-detail">${detail || x(ev.site||'')}</div>
+    </div>`;
+  }));
+
+  el.innerHTML = rows.join('');
 }
 
 /* ══════════════════════════════════════════════════════════
