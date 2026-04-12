@@ -963,14 +963,37 @@ async function saveAll() {
     content: buildContentHTML(),
   };
 
+  const MAX_RETRIES = 2;
+  const jsonBody = JSON.stringify(body);
+
   try {
-    const r = await fetch(writeUrl, {
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminPass},
-      body: JSON.stringify(body),
-    });
-    if (r.status===401) { btn.textContent='Auth error'; btn.disabled=false; return; }
-    if (!r.ok) throw new Error('HTTP '+r.status);
+    let r, attempt = 0, lastErr;
+    while (attempt <= MAX_RETRIES) {
+      if (attempt > 0) {
+        btn.textContent = `Retry ${attempt}/${MAX_RETRIES}…`;
+        await new Promise(ok => setTimeout(ok, 1000 * Math.pow(2, attempt)));
+      }
+      try {
+        r = await fetch(writeUrl, {
+          method:'POST',
+          headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminPass},
+          body: jsonBody,
+        });
+      } catch (netErr) {
+        lastErr = netErr;
+        attempt++;
+        continue;
+      }
+      if (r.status === 401) { btn.textContent='Auth error'; btn.disabled=false; return; }
+      if (r.status >= 500 && attempt < MAX_RETRIES) { attempt++; continue; }
+      if (!r.ok) {
+        let detail = '';
+        try { detail = (await r.text()).slice(0, 200); } catch {}
+        throw new Error('HTTP ' + r.status + (detail ? ' — ' + detail : ''));
+      }
+      break;
+    }
+    if (!r || !r.ok) throw lastErr || new Error('Save failed after retries');
     renderMeta();
     btn.textContent='Saved';
     setTimeout(()=>{btn.textContent='Save';btn.disabled=false},2200);
@@ -1010,7 +1033,8 @@ function buildContentHTML() {
     </div>`;
   }).join('');
 
-  const stateJson = JSON.stringify({articles:S.articles,ctas:S.ctas,lastUpdated:S.lastUpdated});
+  const stateJson = JSON.stringify({articles:S.articles,ctas:S.ctas,lastUpdated:S.lastUpdated})
+    .replace(/<\//g, '<\\/');
 
   return `<script type="application/json" id="ncsn-data">${stateJson}<\/script>
 <section><div class="section-label">Calls to action</div>
