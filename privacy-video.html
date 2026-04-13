@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Testimony · Nashville Community Safety Network</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --bg:#f8f8f6; --black:#111; --mid:#888; --light:#ccc; --line:#e0e0e0; --red:#c00; }
+
+body { font-family:'IBM Plex Mono',monospace; background:var(--bg); color:var(--black); font-size:13px; line-height:1.65; }
+.page { max-width:520px; margin:0 auto; padding:44px 22px 80px; }
+.site-tag { font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--mid); margin-bottom:44px; }
+.screen { display:none; }
+.screen.active { display:block; }
+h1 { font-size:19px; font-weight:500; letter-spacing:-.01em; line-height:1.3; margin-bottom:12px; }
+h2 { font-size:10px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; color:var(--mid); margin-bottom:8px; }
+p  { color:#444; margin-bottom:10px; max-width:440px; }
+p.note { font-size:11px; color:var(--mid); }
+hr { border:none; border-top:1px solid var(--line); margin:24px 0; }
+
+.btn { display:inline-block; padding:7px 15px; border:1px solid var(--black); font-size:12px; letter-spacing:.05em; cursor:pointer; background:transparent; color:var(--black); transition:background .1s,color .1s; font-family:'IBM Plex Mono',monospace; }
+.btn:hover { background:var(--black); color:var(--bg); }
+.btn:disabled { border-color:var(--light); color:var(--light); cursor:default; pointer-events:none; }
+.btn-fill { background:var(--black); color:var(--bg); }
+.btn-fill:hover { background:#333; }
+.btn-sm { padding:4px 10px; font-size:11px; }
+.btn-row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:18px; }
+
+.meta-row { display:flex; gap:24px; flex-wrap:wrap; margin:20px 0; padding:14px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.mk { font-size:10px; text-transform:uppercase; letter-spacing:.12em; color:var(--mid); }
+.mv { font-size:12px; margin-top:2px; }
+
+.opt-group { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 16px; }
+.opt { border:1px solid var(--line); padding:11px 13px; cursor:pointer; flex:1; min-width:90px; background:white; transition:border-color .1s; user-select:none; }
+.opt:hover { border-color:#aaa; }
+.opt.on    { border-color:var(--black); }
+.opt-ico   { font-size:14px; display:block; margin-bottom:5px; }
+.opt-lbl   { font-size:11px; font-weight:500; }
+.opt-sub   { font-size:10px; color:var(--mid); margin-top:2px; }
+
+/* camera */
+.cam-wrap { position:relative; background:#000; width:100%; max-width:300px; border:1px solid var(--line); overflow:hidden; }
+.cam-wrap canvas { width:100%; display:block; }
+.cam-prompt { position:absolute; bottom:0; left:0; right:0; padding:22px 10px 8px; background:linear-gradient(transparent,rgba(0,0,0,.5)); font-size:10px; color:rgba(255,255,255,.45); pointer-events:none; font-style:italic; font-family:'IBM Plex Mono',monospace; }
+
+.rec-light { position:absolute; top:9px; left:10px; display:none; align-items:center; gap:5px; font-size:9px; letter-spacing:.14em; color:rgba(255,255,255,.78); font-family:'IBM Plex Mono',monospace; pointer-events:none; }
+.rec-light.on { display:flex; }
+.rec-dot { width:7px; height:7px; border-radius:50%; background:var(--red); box-shadow:0 0 7px var(--red); animation:rpulse 1.1s ease-in-out infinite; flex-shrink:0; }
+@keyframes rpulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.2;transform:scale(.75)} }
+
+.countdown-row { display:none; align-items:baseline; gap:8px; padding:10px 0 0; max-width:300px; }
+.countdown-row.on { display:flex; }
+.countdown-num { font-size:52px; font-weight:400; letter-spacing:-.03em; font-variant-numeric:tabular-nums; color:var(--black); line-height:1; transition:color .4s; }
+.countdown-num.urgent { color:var(--red); }
+.countdown-lbl { font-size:10px; letter-spacing:.1em; color:var(--mid); text-transform:uppercase; padding-bottom:6px; }
+
+.prog-wrap { height:1px; background:var(--line); max-width:300px; margin:8px 0 14px; }
+.prog-fill { height:100%; background:var(--black); width:0%; transition:width .8s linear; }
+
+/* sliders */
+.slider-group { max-width:300px; margin-bottom:16px; }
+.slider-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.slider-lbl { font-size:10px; letter-spacing:.06em; color:var(--mid); width:96px; flex-shrink:0; }
+input[type=range] { -webkit-appearance:none; appearance:none; flex:1; height:1px; background:var(--line); outline:none; cursor:pointer; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:11px; height:11px; border-radius:50%; background:var(--black); cursor:pointer; }
+input[type=range]::-moz-range-thumb { width:11px; height:11px; border-radius:50%; background:var(--black); border:none; cursor:pointer; }
+.slider-val { font-size:10px; color:var(--mid); width:30px; text-align:right; flex-shrink:0; }
+
+.cam-note { font-size:11px; color:var(--mid); margin-bottom:14px; min-height:18px; }
+.ctrl-row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+section { margin-bottom:18px; }
+
+/* render progress */
+.render-box { max-width:300px; margin:20px 0; }
+.render-label { font-size:11px; color:var(--mid); margin-bottom:8px; }
+.render-prog-wrap { height:1px; background:var(--line); margin-bottom:6px; }
+.render-prog-fill { height:100%; background:var(--black); width:0%; transition:width .25s linear; }
+.render-pct { font-size:10px; color:var(--mid); }
+
+/* review */
+.rev-vid { width:100%; max-width:300px; border:1px solid var(--line); display:block; background:#000; margin-bottom:12px; }
+.rev-note { font-size:10px; color:var(--mid); margin-bottom:14px; max-width:300px; }
+.sbox { border:1px solid var(--line); padding:10px 12px; font-size:11px; color:var(--mid); margin-top:14px; display:none; max-width:300px; }
+.sk { text-transform:uppercase; letter-spacing:.1em; font-size:9px; margin-bottom:3px; }
+.sv { color:var(--black); }
+.sv.ok { color:#1c7a1c; }
+.sv.err { color:#b00; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="site-tag">Nashville Community Safety Network</div>
+
+  <!-- INTRO -->
+  <div id="s-intro" class="screen">
+    <h1>Why does privacy matter to you?</h1>
+
+    <p>Nashville Community Safety Network is building a public archive of video testimonies on surveillance, privacy, and the right to be left alone. We want to hear from you — a moment, a concern, a principle. Whatever it means to you.</p>
+
+    <p>Speak directly to camera. You have two minutes.</p>
+
+    <hr>
+
+    <p class="note" style="line-height:1.8">
+      <strong style="color:var(--black);font-weight:500">Your censored video</strong> will be uploaded to
+      <a href="https://archive.org" target="_blank" style="color:var(--black)">archive.org</a>
+      as part of the permanent public record.<br>
+      <strong style="color:var(--black);font-weight:500">The uncensored footage never leaves your device.</strong>
+      Raw video is recorded locally, effects are applied here in the browser, and only the processed file is transmitted.
+    </p>
+
+    <div class="meta-row">
+      <div><div class="mk">Archive</div><div class="mv">archive.org</div></div>
+      <div><div class="mk">Max length</div><div class="mv">2:00</div></div>
+      <div><div class="mk">Raw footage stored</div><div class="mv" style="color:var(--red)">Never</div></div>
+    </div>
+
+    <button class="btn btn-fill" onclick="goTo('s-setup')">Record your testimony →</button>
+  </div>
+
+  <!-- SETUP -->
+  <div id="s-setup" class="screen">
+    <h1>Setup</h1>
+    <section>
+      <h2>Face censoring</h2>
+      <div class="opt-group">
+        <div class="opt" id="op-none" onclick="selMode('none')">
+          <span class="opt-ico">◦</span>
+          <div class="opt-lbl">None</div><div class="opt-sub">Face visible</div>
+        </div>
+        <div class="opt on" id="op-blur" onclick="selMode('blur')">
+          <span class="opt-ico">◎</span>
+          <div class="opt-lbl">Blur</div><div class="opt-sub">Oval blurred</div>
+        </div>
+        <div class="opt" id="op-bar" onclick="selMode('bar')">
+          <span class="opt-ico">▬</span>
+          <div class="opt-lbl">Eye bar</div><div class="opt-sub">Bar over eyes</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="cam-note" id="cam-note">Ready to request camera access.</div>
+    <div class="btn-row">
+      <button class="btn" onclick="goTo('s-intro')">← Back</button>
+      <button class="btn btn-fill" id="btn-cam" onclick="startCamera()">Grant camera access →</button>
+    </div>
+  </div>
+
+  <!-- RECORD -->
+  <div id="s-record" class="screen">
+    <div class="cam-wrap">
+      <canvas id="cvs"></canvas>
+      <div class="rec-light" id="rec-light"><div class="rec-dot"></div>REC</div>
+      <div class="cam-prompt">Why does privacy matter to you?</div>
+    </div>
+    <div class="countdown-row" id="countdown-row">
+      <span class="countdown-num" id="countdown-num">2:00</span>
+      <span class="countdown-lbl">remaining</span>
+    </div>
+    <div class="prog-wrap"><div class="prog-fill" id="prog"></div></div>
+    <p class="note" id="rec-note" style="max-width:300px;margin-bottom:12px"></p>
+    <div class="ctrl-row">
+      <button class="btn btn-fill" id="btn-rec"  onclick="startRec()">⏺ Record</button>
+      <button class="btn"          id="btn-stop" onclick="stopRec()" disabled>⏹ Stop</button>
+      <button class="btn btn-sm"                 onclick="cancelRec()">← Cancel</button>
+    </div>
+  </div>
+
+  <!-- ADJUST -->
+  <div id="s-adjust" class="screen">
+    <h1>Adjust effects</h1>
+    <p>Fine-tune before rendering. Preview updates in real time.</p>
+    <div class="cam-wrap" style="margin-bottom:16px">
+      <canvas id="adj-cvs"></canvas>
+    </div>
+
+    <div class="slider-group">
+      <div class="slider-row" id="row-face-blur" style="display:none">
+        <span class="slider-lbl">Face blur</span>
+        <input type="range" id="sl-face" min="0" max="100" value="70"
+          oninput="onSlider('face', this.value)">
+        <span class="slider-val" id="v-face">70%</span>
+      </div>
+      <div class="slider-row" id="row-face-mode">
+        <span class="slider-lbl">Face censoring</span>
+        <select id="sel-mode" onchange="onModeChange(this.value)"
+          style="font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);padding:3px 6px;background:white;cursor:pointer;flex:1">
+          <option value="none">None</option>
+          <option value="blur" selected>Blur</option>
+          <option value="bar">Eye bar</option>
+        </select>
+      </div>
+      <div class="slider-row">
+        <span class="slider-lbl">Background blur</span>
+        <input type="range" id="sl-bg" min="0" max="100" value="0"
+          oninput="onSlider('bg', this.value)">
+        <span class="slider-val" id="v-bg">0%</span>
+      </div>
+
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-fill" onclick="startRender()">Render →</button>
+      <button class="btn btn-sm" onclick="reRecord()">Re-record</button>
+    </div>
+  </div>
+
+  <!-- RENDER PROGRESS -->
+  <div id="s-render" class="screen">
+    <h1>Rendering…</h1>
+    <p>Playing back and applying your effects. This takes as long as the recording.</p>
+    <div class="render-box">
+      <div class="render-label">Progress</div>
+      <div class="render-prog-wrap"><div class="render-prog-fill" id="render-prog"></div></div>
+      <div class="render-pct" id="render-pct">0%</div>
+    </div>
+    <div class="cam-wrap" style="margin-top:16px">
+      <canvas id="render-cvs"></canvas>
+    </div>
+  </div>
+
+  <!-- REVIEW -->
+  <div id="s-review" class="screen">
+    <h1>Review your testimony</h1>
+    <p>This is the final rendered video. All effects are baked in.</p>
+    <video id="revvid" class="rev-vid" controls playsinline></video>
+    <div class="rev-note" id="rev-meta"></div>
+    <div class="btn-row">
+      <button class="btn btn-fill" id="btn-sub" onclick="submitVid()">Submit →</button>
+      <button class="btn" onclick="dlVid()">↓ Download</button>
+      <button class="btn btn-sm" onclick="goTo('s-adjust')">← Adjust again</button>
+    </div>
+    <div class="sbox" id="sbox">
+      <div class="sk">Transmission</div>
+      <div class="sv" id="sv"></div>
+      <div id="upload-prog-wrap" style="display:none;margin-top:8px">
+        <div style="height:1px;background:var(--line);margin-bottom:5px">
+          <div id="upload-prog-fill" style="height:100%;background:var(--black);width:0%;transition:width .2s linear"></div>
+        </div>
+        <div id="upload-detail" style="font-size:9px;letter-spacing:.08em;color:var(--mid)"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DONE -->
+  <div id="s-done" class="screen">
+    <h1>Received.</h1>
+    <p>Your testimony has been archived. Thank you for speaking.</p>
+    <p class="note" style="margin-top:8px;font-style:italic">Privacy is not about hiding. It is the right to exist on your own terms.</p>
+
+    <div id="archive-url-wrap" style="display:none;margin-top:20px;padding:12px 14px;border:1px solid var(--line);max-width:300px">
+      <div style="font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);margin-bottom:5px">Archive</div>
+      <p class="note" style="margin-bottom:6px">Your testimony is uploading to archive.org. It will be publicly available within 10–20 minutes.</p>
+      <a id="archive-url-link" href="" target="_blank"
+        style="font-size:11px;color:var(--mid);word-break:break-all;text-decoration:none;border-bottom:1px solid var(--line)"></a>
+    </div>
+
+    <div class="btn-row" style="margin-top:22px">
+      <button class="btn" onclick="dlVid()">↓ Download your copy</button>
+      <button class="btn btn-sm" onclick="restart()">New testimony</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+const WEBHOOK = 'https://n8n.intelechia.com/webhook/archive-upload';
+const MAX_S   = 120;
+
+// ── state ──────────────────────────────────────────────────────────────
+let cMode = 'blur';   // 'none' | 'blur' | 'bar'
+let adjCMode = 'blur';
+let adjFace  = 0.70;  // 0–1
+let adjBg    = 0.0;   // 0–1
+
+let camStream    = null;
+let rawBlob      = null;
+let renderedBlob = null;
+let animId       = null;
+let startMs      = null;
+let clockId      = null;
+let crop         = { sx:0, sy:0, sw:1, sh:1 };
+
+const rawCvs = document.createElement('canvas');
+const rawCtx = rawCvs.getContext('2d');
+const cvs    = document.getElementById('cvs');
+const ctx    = cvs.getContext('2d');
+
+const adjCvs = document.getElementById('adj-cvs');
+const adjCtx = adjCvs.getContext('2d');
+let adjAnimId = null;
+let adjVid    = null;
+
+const fgCvs = document.createElement('canvas');
+const fgCtx = fgCvs.getContext('2d');
+
+const vid = Object.assign(document.createElement('video'),
+  { autoplay:true, muted:true, playsInline:true });
+
+// ── nav ───────────────────────────────────────────────────────────────
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+goTo('s-intro');
+
+// ── setup selections ─────────────────────────────────────────────────
+function selMode(m) {
+  cMode = adjCMode = m;
+  ['none','blur','bar'].forEach(k =>
+    document.getElementById('op-'+k).classList.toggle('on', k===m));
+  document.getElementById('sel-mode').value = m;
+  toggleFaceSlider(m);
+}
+function selVoice(v) {
+  vMode = v;
+  ['none','scramble'].forEach(k =>
+    document.getElementById('ov-'+k).classList.toggle('on', k===v));
+  document.getElementById('row-scramble').style.display = v==='scramble' ? 'flex' : 'none';
+}
+function toggleFaceSlider(m) {
+  document.getElementById('row-face-blur').style.display = m==='blur' ? 'flex' : 'none';
+}
+function onModeChange(m) {
+  adjCMode = m;
+  toggleFaceSlider(m);
+  // Rebuild preview immediately
+}
+function onSlider(which, val) {
+  const v = parseInt(val) / 100;
+  if (which==='face') { adjFace=v; document.getElementById('v-face').textContent=val+'%'; }
+  if (which==='bg')   { adjBg=v;   document.getElementById('v-bg').textContent=val+'%'; }
+}
+
+// ── camera ────────────────────────────────────────────────────────────
+async function startCamera() {
+  const btn = document.getElementById('btn-cam');
+  btn.disabled = true;
+  setCamNote('Requesting camera…');
+  try {
+    camStream = await navigator.mediaDevices.getUserMedia({
+      video: { width:{ideal:1280}, height:{ideal:720}, facingMode:'user' },
+      audio: true
+    });
+    vid.srcObject = camStream;
+    await new Promise(r => { vid.onloadedmetadata = r; });
+    await vid.play();
+
+    const vw = vid.videoWidth, vh = vid.videoHeight;
+    if (vw > vh) {
+      const sw = Math.round(vh * 0.75);
+      crop = { sx: Math.round((vw-sw)/2), sy:0, sw, sh:vh };
+    } else {
+      crop = { sx:0, sy:0, sw:vw, sh:vh };
+    }
+    rawCvs.width = cvs.width  = adjCvs.width  = crop.sw;
+    rawCvs.height= cvs.height = adjCvs.height = crop.sh;
+    fgCvs.width  = crop.sw; fgCvs.height = crop.sh;
+
+    document.getElementById('rec-note').textContent =
+      cMode === 'none' ? 'Press Record when ready.' : 'Fill the oval with your face.';
+    goTo('s-record');
+    startDraw();
+  } catch(e) {
+    setCamNote('Camera denied: ' + e.message);
+    btn.disabled = false;
+  }
+}
+function setCamNote(m) { document.getElementById('cam-note').textContent = m; }
+function stopCamera() { camStream?.getTracks().forEach(t=>t.stop()); camStream=null; }
+
+// ── oval ──────────────────────────────────────────────────────────────
+function oval(W, H) {
+  return { cx:W*0.50, cy:H*0.39, rx:W*0.33, ry:H*0.30 };
+}
+
+// ── draw helpers ─────────────────────────────────────────────────────
+function drawVideoMirrored(targetCtx, W, H, srcEl) {
+  targetCtx.save();
+  targetCtx.translate(W, 0); targetCtx.scale(-1, 1);
+  targetCtx.drawImage(srcEl, crop.sx, crop.sy, crop.sw, crop.sh, 0, 0, W, H);
+  targetCtx.restore();
+}
+
+function applyBgBlur(targetCtx, W, H, blurAmt, srcEl) {
+  if (blurAmt < 0.01) return;
+  const blurPx = Math.round(blurAmt * 18);
+  const ov = oval(W, H);
+
+  // 1. Draw blurred full frame
+  targetCtx.save();
+  targetCtx.filter = `blur(${blurPx}px)`;
+  targetCtx.save();
+  targetCtx.translate(W, 0); targetCtx.scale(-1, 1);
+  targetCtx.drawImage(srcEl, crop.sx, crop.sy, crop.sw, crop.sh, 0, 0, W, H);
+  targetCtx.restore();
+  targetCtx.restore();
+
+  // 2. Draw sharp foreground with a smooth elliptical radial-gradient mask
+  // (scale coordinate system so circular gradient becomes elliptical)
+  fgCvs.width = W; fgCvs.height = H;
+  fgCtx.clearRect(0, 0, W, H);
+
+  // Draw sharp video to fg canvas
+  fgCtx.save();
+  fgCtx.translate(W, 0); fgCtx.scale(-1, 1);
+  fgCtx.drawImage(srcEl, crop.sx, crop.sy, crop.sw, crop.sh, 0, 0, W, H);
+  fgCtx.restore();
+
+  // Cut an elliptical gradient alpha mask: opaque centre → transparent edge
+  fgCtx.save();
+  fgCtx.globalCompositeOperation = 'destination-in';
+  fgCtx.translate(ov.cx, ov.cy);
+  fgCtx.scale(ov.rx / ov.ry, 1);  // squash to circle
+  const grd = fgCtx.createRadialGradient(0, 0, ov.ry * 0.42, 0, 0, ov.ry * 1.15);
+  grd.addColorStop(0,   'rgba(0,0,0,1)');
+  grd.addColorStop(0.6, 'rgba(0,0,0,0.9)');
+  grd.addColorStop(1,   'rgba(0,0,0,0)');
+  fgCtx.fillStyle = grd;
+  fgCtx.fillRect(-ov.rx * 1.6, -ov.ry * 1.6, ov.rx * 3.2, ov.ry * 3.2);
+  fgCtx.restore();
+
+  // Composite fg (sharp centre) over the blurred background
+  targetCtx.drawImage(fgCvs, 0, 0);
+}
+
+function applyFaceCensor(targetCtx, W, H, mode, faceBlurAmt) {
+  const ov = oval(W, H);
+  if (mode === 'blur') {
+    const pad = 20;
+    const bx = Math.max(0, Math.floor(ov.cx-ov.rx-pad));
+    const by = Math.max(0, Math.floor(ov.cy-ov.ry-pad));
+    const bw = Math.min(W-bx, Math.ceil((ov.rx+pad)*2));
+    const bh = Math.min(H-by, Math.ceil((ov.ry+pad)*2));
+    const blurPx = Math.max(1, Math.round(faceBlurAmt * 28));
+
+    const snap = document.createElement('canvas');
+    snap.width = bw; snap.height = bh;
+    snap.getContext('2d').drawImage(targetCtx.canvas, bx, by, bw, bh, 0, 0, bw, bh);
+
+    targetCtx.save();
+    targetCtx.beginPath();
+    targetCtx.ellipse(ov.cx, ov.cy, ov.rx+4, ov.ry+4, 0, 0, Math.PI*2);
+    targetCtx.clip();
+    targetCtx.filter = `blur(${blurPx}px)`;
+    targetCtx.drawImage(snap, 0, 0, bw, bh, bx, by, bw, bh);
+    targetCtx.restore();
+
+  } else if (mode === 'bar') {
+    // Horizontal bar over eyes only
+    targetCtx.fillStyle = '#000';
+    targetCtx.fillRect(
+      ov.cx - ov.rx,
+      ov.cy - ov.ry * 0.22,
+      ov.rx * 2,
+      ov.ry * 0.34
+    );
+  }
+}
+
+function drawOvalGuide(targetCtx, W, H, show) {
+  if (!show) return;
+  const ov = oval(W, H);
+  targetCtx.save();
+  targetCtx.beginPath();
+  targetCtx.ellipse(ov.cx, ov.cy, ov.rx+4, ov.ry+4, 0, 0, Math.PI*2);
+  targetCtx.strokeStyle = 'rgba(255,255,255,0.10)';
+  targetCtx.lineWidth = 10;
+  targetCtx.stroke();
+  targetCtx.beginPath();
+  targetCtx.ellipse(ov.cx, ov.cy, ov.rx+4, ov.ry+4, 0, 0, Math.PI*2);
+  targetCtx.strokeStyle = 'rgba(255,255,255,0.52)';
+  targetCtx.lineWidth = 1.5;
+  targetCtx.setLineDash([6,5]);
+  targetCtx.stroke();
+  targetCtx.setLineDash([]);
+  targetCtx.restore();
+}
+
+// ── LIVE RECORDING PREVIEW LOOP ───────────────────────────────────────
+function startDraw() { if(animId) cancelAnimationFrame(animId); recFrame(); }
+function stopDraw()  { if(animId){ cancelAnimationFrame(animId); animId=null; } }
+
+function recFrame() {
+  if (!vid.videoWidth) { animId=requestAnimationFrame(recFrame); return; }
+  const W=cvs.width, H=cvs.height;
+
+  // Raw canvas: portrait crop + mirror, no effects (used for recording)
+  drawVideoMirrored(rawCtx, W, H, vid);
+
+  // Preview canvas: copy raw, then apply effects
+  ctx.drawImage(rawCvs, 0, 0);
+  applyBgBlur(ctx, W, H, adjBg, vid);
+  applyFaceCensor(ctx, W, H, cMode, adjFace);
+  drawOvalGuide(ctx, W, H, cMode !== 'none' || adjBg > 0);
+
+  animId = requestAnimationFrame(recFrame);
+}
+
+// ── RECORDING ─────────────────────────────────────────────────────────
+async function startRec() {
+  document.getElementById('btn-rec').disabled = true;
+
+  // Record raw canvas (no effects) + raw audio
+  const recStream = rawCvs.captureStream(30);
+  camStream.getAudioTracks().forEach(t => recStream.addTrack(t));
+
+  const mime = ['video/mp4;codecs=h264,aac','video/webm;codecs=vp9,opus',
+                'video/webm;codecs=vp8,opus','video/webm']
+    .find(m => MediaRecorder.isTypeSupported(m)) || '';
+
+  const chunks = [];
+  const rec = new MediaRecorder(recStream, mime ? {mimeType:mime} : {});
+  rec.ondataavailable = e => { if(e.data?.size>0) chunks.push(e.data); };
+  rec.onerror = ()=>{};
+  rec.onstop = () => {
+    rawBlob = new Blob(chunks, { type: rec.mimeType || 'video/webm' });
+    goToAdjust();
+  };
+  rec.start(500);
+  startMs = Date.now();
+
+  document.getElementById('btn-stop').disabled = false;
+  document.getElementById('rec-light').classList.add('on');
+  document.getElementById('countdown-row').classList.add('on');
+  clockId = setInterval(tick, 250); tick();
+  setTimeout(() => { if(rec.state==='recording') rec.stop(); }, MAX_S*1000);
+
+  // Store ref for stopRec
+  window._rec = rec;
+}
+
+function stopRec() {
+  if (window._rec?.state==='recording') { try{window._rec.stop();}catch(_){} }
+  clearInterval(clockId);
+  document.getElementById('btn-rec').disabled  = true;
+  document.getElementById('btn-stop').disabled = true;
+}
+
+function tick() {
+  const el=Math.min((Date.now()-startMs)/1000, MAX_S);
+  const rem=Math.max(0,MAX_S-el);
+  const num=document.getElementById('countdown-num');
+  num.textContent = Math.floor(rem/60)+':'+pad2(Math.floor(rem%60));
+  num.classList.toggle('urgent', rem<=30);
+  document.getElementById('prog').style.width=(el/MAX_S*100)+'%';
+}
+const pad2=n=>String(n).padStart(2,'0');
+
+function cancelRec() {
+  if(window._rec?.state==='recording'){ window._rec.onstop=null; try{window._rec.stop();}catch(_){} }
+  clearInterval(clockId); stopDraw(); stopCamera(); resetRecUI();
+  document.getElementById('btn-cam').disabled=false;
+  setCamNote('Ready to request camera access.');
+  goTo('s-setup');
+}
+
+function resetRecUI() {
+  document.getElementById('btn-rec').disabled=false;
+  document.getElementById('btn-stop').disabled=true;
+  document.getElementById('rec-light').classList.remove('on');
+  document.getElementById('countdown-row').classList.remove('on');
+  document.getElementById('countdown-num').textContent='2:00';
+  document.getElementById('countdown-num').classList.remove('urgent');
+  document.getElementById('prog').style.width='0%';
+}
+
+// ── ADJUST SCREEN ─────────────────────────────────────────────────────
+function goToAdjust() {
+  stopDraw(); stopCamera(); resetRecUI();
+
+  adjCMode = cMode;
+  document.getElementById('sel-mode').value = cMode;
+  toggleFaceSlider(cMode);
+
+  if (adjVid) { adjVid.pause(); adjVid.src=''; }
+  adjVid = document.createElement('video');
+  adjVid.src = URL.createObjectURL(rawBlob);
+  adjVid.loop = true; adjVid.muted = false; adjVid.playsInline = true;
+
+  adjCvs.width  = rawCvs.width;
+  adjCvs.height = rawCvs.height;
+  fgCvs.width   = rawCvs.width;
+  fgCvs.height  = rawCvs.height;
+
+  adjVid.oncanplay = () => {
+    adjVid.play().catch(()=>{});
+    startAdjPreview();
+  };
+
+  goTo('s-adjust');
+}
+
+// Adjust preview draw loop (draws from adjVid with effects)
+function startAdjPreview() {
+  if (adjAnimId) cancelAnimationFrame(adjAnimId);
+  adjFrame();
+}
+function stopAdjPreview() {
+  if (adjAnimId) { cancelAnimationFrame(adjAnimId); adjAnimId=null; }
+}
+
+function adjFrame() {
+  if (!adjVid || adjVid.paused || adjVid.ended) {
+    adjAnimId = requestAnimationFrame(adjFrame); return;
+  }
+  const W=adjCvs.width, H=adjCvs.height;
+  // adjVid is already portrait-cropped + mirrored (recorded from rawCvs)
+  adjCtx.drawImage(adjVid, 0, 0, W, H);
+  applyBgBlurFromCanvas(adjCtx, W, H, adjBg);
+  applyFaceCensor(adjCtx, W, H, adjCMode, adjFace);
+  drawOvalGuide(adjCtx, W, H, adjCMode!=='none' || adjBg>0);
+  adjAnimId = requestAnimationFrame(adjFrame);
+}
+
+// Background blur for adjust/render (source is the canvas itself, not the live video)
+function applyBgBlurFromCanvas(targetCtx, W, H, blurAmt) {
+  if (blurAmt < 0.01) return;
+  const blurPx = Math.round(blurAmt * 18);
+  const ov = oval(W, H);
+
+  // Snapshot current canvas state
+  const snap = document.createElement('canvas');
+  snap.width=W; snap.height=H;
+  snap.getContext('2d').drawImage(targetCtx.canvas, 0, 0);
+
+  // Draw blurred version
+  targetCtx.save();
+  targetCtx.filter = `blur(${blurPx}px)`;
+  targetCtx.drawImage(snap, 0, 0);
+  targetCtx.restore();
+
+  // Draw sharp centre with elliptical gradient mask
+  fgCvs.width=W; fgCvs.height=H;
+  fgCtx.drawImage(snap, 0, 0);
+
+  fgCtx.save();
+  fgCtx.globalCompositeOperation = 'destination-in';
+  fgCtx.translate(ov.cx, ov.cy);
+  fgCtx.scale(ov.rx/ov.ry, 1);
+  const grd = fgCtx.createRadialGradient(0,0,ov.ry*0.42, 0,0,ov.ry*1.15);
+  grd.addColorStop(0,   'rgba(0,0,0,1)');
+  grd.addColorStop(0.6, 'rgba(0,0,0,0.9)');
+  grd.addColorStop(1,   'rgba(0,0,0,0)');
+  fgCtx.fillStyle = grd;
+  fgCtx.fillRect(-ov.rx*1.6, -ov.ry*1.6, ov.rx*3.2, ov.ry*3.2);
+  fgCtx.restore();
+  targetCtx.drawImage(fgCvs, 0, 0);
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────
+async function startRender() {
+  stopAdjPreview();
+  if (adjVid) adjVid.pause();
+
+  const W = rawCvs.width, H = rawCvs.height;
+  const renderCvs = document.getElementById('render-cvs');
+  renderCvs.width = W; renderCvs.height = H;
+  const rCtx = renderCvs.getContext('2d');
+
+  goTo('s-render');
+
+  // Visual: play raw video muted (we handle audio separately)
+  const rVid = document.createElement('video');
+  rVid.src = URL.createObjectURL(rawBlob);
+  rVid.muted = true; rVid.playsInline = true;
+  await new Promise(r => { rVid.onloadedmetadata = r; });
+  const duration = rVid.duration || MAX_S;
+
+  // Audio: raw passthrough via Web Audio (preserves original audio in canvas capture)
+  const canvasStream = renderCvs.captureStream(30);
+  try {
+    const rawAc  = new (window.AudioContext||window.webkitAudioContext)();
+    const audVid = document.createElement('video');
+    audVid.src = URL.createObjectURL(rawBlob);
+    audVid.playsInline = true;
+    const audSrc  = rawAc.createMediaElementSource(audVid);
+    const audDest = rawAc.createMediaStreamDestination();
+    audSrc.connect(audDest);
+    audDest.stream.getAudioTracks().forEach(t => canvasStream.addTrack(t));
+    rVid.onplay = () => audVid.play().catch(()=>{});
+  } catch(_) {}
+
+  const chunks = [];
+  const mime = ['video/mp4;codecs=h264,aac','video/webm;codecs=vp9,opus',
+                'video/webm;codecs=vp8,opus','video/webm']
+    .find(m => MediaRecorder.isTypeSupported(m)) || '';
+  const renderRec = new MediaRecorder(canvasStream, mime?{mimeType:mime}:{});
+  renderRec.ondataavailable = e => { if(e.data?.size>0) chunks.push(e.data); };
+  renderRec.onstop = () => {
+    renderedBlob = new Blob(chunks, { type: renderRec.mimeType||'video/webm' });
+    showReview();
+  };
+
+  renderRec.start(500);
+  await rVid.play();
+
+  // Draw loop
+  const prog = document.getElementById('render-prog');
+  const pct  = document.getElementById('render-pct');
+
+  function rFrame() {
+    if (rVid.ended || rVid.paused) return;
+    rCtx.drawImage(rVid, 0, 0, W, H);
+    applyBgBlurFromCanvas(rCtx, W, H, adjBg);
+    applyFaceCensor(rCtx, W, H, adjCMode, adjFace);
+    // No oval guide in final render
+    const p = Math.min(rVid.currentTime / duration, 1);
+    prog.style.width = (p*100)+'%';
+    pct.textContent = Math.round(p*100)+'%';
+    requestAnimationFrame(rFrame);
+  }
+  rVid.onended = () => renderRec.stop();
+  requestAnimationFrame(rFrame);
+}
+
+function buildRenderAudioChain(ac, src, dest) {
+  if (adjScr === 0) { src.connect(dest); src.start(); return; }
+  const carrier=100+adjScr*150;
+  const r1=ac.createGain(), o1=ac.createOscillator();
+  const r2=ac.createGain(), o2=ac.createOscillator();
+  r1.gain.value=0; o1.type='sawtooth'; o1.frequency.value=carrier;
+  r2.gain.value=0; o2.type='sawtooth'; o2.frequency.value=carrier*0.95;
+  const lfo=ac.createOscillator(), lfoG=ac.createGain();
+  lfo.frequency.value=3; lfoG.gain.value=adjScr*20;
+  lfo.connect(lfoG); lfoG.connect(o1.frequency);
+  o1.connect(r1.gain); o2.connect(r2.gain);
+  o1.start(); o2.start(); lfo.start();
+  const comp=ac.createDynamicsCompressor(); comp.threshold.value=-18; comp.ratio.value=20; comp.attack.value=0.001; comp.release.value=0.08;
+  const outG=ac.createGain(); outG.gain.value=1+adjScr*4;
+  src.connect(r1); r1.connect(r2); r2.connect(comp); comp.connect(outG); outG.connect(dest);
+  src.start();
+}
+
+// ── REVIEW ────────────────────────────────────────────────────────────
+function showReview() {
+  const rv = document.getElementById('revvid');
+  if (rv.src) URL.revokeObjectURL(rv.src);
+  rv.src = URL.createObjectURL(renderedBlob);
+  rv.load(); rv.play().catch(()=>{});
+  const ext = renderedBlob.type.includes('mp4')?'mp4':'webm';
+  document.getElementById('rev-meta').textContent =
+    `${adjCMode} face · bg blur ${Math.round(adjBg*100)}% · .${ext}`;
+  document.getElementById('sbox').style.display='none';
+  document.getElementById('btn-sub').disabled=false;
+  goTo('s-review');
+}
+
+function reRecord() {
+  stopAdjPreview();
+  if(adjVid){adjVid.pause();adjVid.src='';adjVid=null;}
+  rawBlob=null; renderedBlob=null;
+  document.getElementById('btn-cam').disabled=false;
+  setCamNote('Ready to request camera access.');
+  goTo('s-setup');
+}
+
+// ── SUBMIT & DOWNLOAD ────────────────────────────────────────────────
+async function submitVid() {
+  if (!renderedBlob) return;
+  const box  = document.getElementById('sbox');
+  const sv   = document.getElementById('sv');
+  const wrap = document.getElementById('upload-prog-wrap');
+  const fill = document.getElementById('upload-prog-fill');
+  const det  = document.getElementById('upload-detail');
+
+  box.style.display  = 'block';
+  wrap.style.display = 'block';
+  sv.className       = 'sv';
+  document.getElementById('btn-sub').disabled = true;
+
+  const ext      = renderedBlob.type.includes('mp4') ? 'mp4' : 'webm';
+  const guid     = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+  const filename = guid + '.' + ext;
+  const params = new URLSearchParams({
+    filename,
+    title:       'Privacy Testimony - Nashville Community Safety Network',
+    description: 'Video testimony on surveillance, privacy, and the right to be left alone. Collected by Nashville Community Safety Network.',
+    creator:     'Nashville Community Safety Network',
+    subject:     'Nashville;surveillance;privacy;civil liberties;community safety;journalism;LPR;facial recognition',
+    collection:  'opensource_movies',
+    mediatype:   'movies',
+    language:    'eng',
+    licenseurl:  'https://creativecommons.org/licenses/by/4.0/'
+  });
+  const totalMB  = (renderedBlob.size / 1048576).toFixed(1);
+
+  sv.textContent  = 'Preparing ' + totalMB + ' MB…';
+  det.textContent = filename;
+
+  await new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `${WEBHOOK}?${params}`);
+    xhr.setRequestHeader('Content-Type', renderedBlob.type);
+
+    xhr.upload.onprogress = e => {
+      if (!e.lengthComputable) return;
+      const pct      = Math.round(e.loaded / e.total * 100);
+      const sentMB   = (e.loaded / 1048576).toFixed(1);
+      fill.style.width   = pct + '%';
+      sv.textContent     = 'Uploading… ' + pct + '%';
+      det.textContent    = sentMB + ' MB of ' + totalMB + ' MB · ' + filename;
+    };
+
+    xhr.upload.onload = () => {
+      fill.style.width = '100%';
+      sv.textContent   = 'Upload complete. Waiting for archive.org to process…';
+      det.textContent  = 'This may take 30–60 seconds.';
+    };
+
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        let result = {};
+        try { result = JSON.parse(xhr.responseText); } catch (_) {}
+        fill.style.width = '100%';
+        sv.className     = 'sv ok';
+        sv.textContent   = 'Archived successfully.';
+        det.textContent  = filename;
+        // Pass URL to done screen
+        const archiveUrl = result.url || ('https://archive.org/details/' + filename.replace(/\.[^.]+$/, ''));
+        const urlEl = document.getElementById('archive-url-wrap');
+        const linkEl = document.getElementById('archive-url-link');
+        if (urlEl && linkEl) {
+          linkEl.href = archiveUrl;
+          linkEl.textContent = archiveUrl;
+          urlEl.style.display = 'block';
+        }
+        setTimeout(() => goTo('s-done'), 1200);
+        resolve();
+      } else {
+        reject(new Error('HTTP ' + xhr.status));
+      }
+    };
+
+    xhr.onerror = () => reject(new Error('Network error'));
+    xhr.ontimeout = () => reject(new Error('Timed out'));
+    xhr.timeout = 300000; // 5 min
+
+    xhr.send(renderedBlob);
+  }).catch(e => {
+    sv.className    = 'sv err';
+    sv.textContent  = 'Failed: ' + e.message;
+    det.textContent = 'Download still works.';
+    document.getElementById('btn-sub').disabled = false;
+  });
+}
+
+function dlVid() {
+  const b = renderedBlob || rawBlob;
+  if(!b) return;
+  const ext=b.type.includes('mp4')?'mp4':'webm';
+  const url=URL.createObjectURL(b);
+  const a=Object.assign(document.createElement('a'),{href:url,download:'testimony-'+Date.now()+'.'+ext});
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},1000);
+}
+
+function restart() {
+  rawBlob=null; renderedBlob=null; camStream=null;
+  goTo('s-intro');
+}
+</script>
+</body>
+</html>
