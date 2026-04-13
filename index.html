@@ -36,6 +36,15 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
 .cta-item.medium .cta-link,.cta-item.low .cta-link{color:var(--muted);border-bottom-color:var(--muted)}
 .cta-link:hover{opacity:.55}
 
+.testimony-cta{display:block;margin:0 0 1.8rem;padding:20px 22px;border:1px solid var(--ink);background:#fafafa;text-decoration:none;color:var(--ink);transition:background .15s}
+.testimony-cta:hover{background:#f0f0ee}
+.testimony-cta .tc-kicker{font-size:9px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.testimony-cta .tc-title{font-size:22px;font-weight:800;letter-spacing:-.02em;line-height:1.2;margin-bottom:8px}
+.testimony-cta .tc-desc{font-size:13px;color:var(--mid);line-height:1.55;margin-bottom:12px}
+.testimony-cta .tc-note{font-size:11px;color:var(--mid);line-height:1.6;padding:10px 12px;border-left:2px solid #b02020;background:#fff;margin-bottom:12px}
+.testimony-cta .tc-note strong{color:#b02020;font-weight:700;letter-spacing:.02em}
+.testimony-cta .tc-link{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;border-bottom:1px solid var(--ink);padding-bottom:1px}
+
 .article-rule{border:none;border-top:1px solid var(--rule);margin:0}
 .article-item{display:grid;grid-template-columns:72px 1fr;gap:0 18px;padding:14px 0;border-bottom:1px solid var(--rule)}
 .art-meta{padding-top:2px;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
@@ -144,6 +153,17 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
 
 <section>
   <div class="section-label">Calls to action</div>
+
+  <a class="testimony-cta" href="privacy-video.html">
+    <div class="tc-kicker">Record a testimony</div>
+    <div class="tc-title">Why does privacy matter to you?</div>
+    <div class="tc-desc">We're building a public archive of video testimonies on surveillance, privacy, and the right to be left alone. Record a two-minute statement directly in your browser — blur your face or cover your eyes with a bar before it ever leaves your device.</div>
+    <div class="tc-note">
+      <strong>Read this first.</strong> Submitted videos are uploaded to archive.org and become part of the <em>permanent public record</em>. You can censor your face (blur or eye-bar) and the raw footage never leaves your device — only the processed file is transmitted. That said, censoring is not a guarantee of anonymity. If you are genuinely concerned about being identified — by voice, background, metadata, or context — <strong>do not submit a video</strong>.
+    </div>
+    <span class="tc-link">Record your testimony →</span>
+  </a>
+
   <div id="cta-container"><p class="msg">Loading...</p></div>
 </section>
 
