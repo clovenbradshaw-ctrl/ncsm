@@ -260,13 +260,13 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
     <label>Source type</label>
     <select id="art-source-type">
       <option value="">Auto-detect from URL</option>
-      <option value="substack">Primary reporting (Substack / newsletter)</option>
-      <option value="media">News media</option>
-      <option value="analysis">Long-form analysis</option>
+      <option value="media">News outlet (newspaper, TV, radio, wire)</option>
+      <option value="substack">Newsletter / Substack (independent reporting)</option>
+      <option value="analysis">Long-form analysis / opinion</option>
       <option value="podcast">Podcast</option>
-      <option value="social">Social media</option>
+      <option value="social">Social media post</option>
       <option value="community">Community / mutual aid</option>
-      <option value="other">Other</option>
+      <option value="other">Other link</option>
     </select>
     <label>Date</label><input type="date" id="art-date">
     <label>Summary (optional)</label><textarea id="art-summary"></textarea>
@@ -340,19 +340,47 @@ const CFG = {
    Edit in the Article modal; auto-detected on import by URL.
    ══════════════════════════════════════════════════════════ */
 const SOURCE_TYPES = {
-  substack:  {icon:'ph-pen-nib',          label:'Primary'},
-  media:     {icon:'ph-newspaper',         label:'Media'},
-  analysis:  {icon:'ph-magnifying-glass',  label:'Analysis'},
+  media:     {icon:'ph-newspaper',         label:'News outlet'},
+  substack:  {icon:'ph-pen-nib',          label:'Newsletter / Substack'},
+  analysis:  {icon:'ph-magnifying-glass',  label:'Long-form analysis'},
   podcast:   {icon:'ph-microphone',        label:'Podcast'},
-  social:    {icon:'ph-share-network',     label:'Social'},
-  community: {icon:'ph-hand-heart',        label:'Community'},
-  other:     {icon:'ph-link-simple',       label:'Link'},
+  social:    {icon:'ph-share-network',     label:'Social media'},
+  community: {icon:'ph-hand-heart',        label:'Community / mutual aid'},
+  other:     {icon:'ph-link-simple',       label:'Other link'},
 };
 
 // Auto-detect source type from a URL when one isn't supplied.
+// Order matters: news outlets are checked FIRST so an outlet that happens to
+// publish on Substack (or a .org domain) is still tagged as "media", not as a
+// generic newsletter or community site.
 function detectSourceType(url) {
   const u = String(url||'').toLowerCase();
   if (!u) return 'other';
+  // Known news outlets + generic news wire domains (checked first so outlets
+  // take precedence over Substack / .org / newsletter detection below).
+  if (u.includes('nashvillescene.com')
+      || u.includes('nashvillebanner.com')
+      || u.includes('newschannel5.com')
+      || u.includes('wkrn.com')
+      || u.includes('wsmv.com')
+      || u.includes('wpln.org')
+      || u.includes('wtvf.com')
+      || u.includes('fox17.com')
+      || u.includes('tennessean.com')
+      || u.includes('tennesseelookout.com')
+      || u.includes('npr.org')
+      || u.includes('apnews.com')
+      || u.includes('reuters.com')
+      || u.includes('nytimes.com')
+      || u.includes('washingtonpost.com')
+      || u.includes('wsj.com')
+      || u.includes('bloomberg.com')
+      || u.includes('cnn.com')
+      || u.includes('nbcnews.com')
+      || u.includes('cbsnews.com')
+      || u.includes('abcnews.go.com')
+      || u.includes('propublica.org')
+      || u.includes('axios.com'))                              return 'media';
   if (u.includes('substack.com'))                              return 'substack';
   if (u.includes('truthout.org')
       || u.includes('liberationnews.org')
@@ -375,19 +403,6 @@ function detectSourceType(url) {
   if (u.includes('opentablenashville')
       || u.includes('mutualaid')
       || u.includes('.org/'))                                  return 'community';
-  // Known media outlets + generic news domains
-  if (u.includes('nashvillescene.com')
-      || u.includes('nashvillebanner.com')
-      || u.includes('newschannel5.com')
-      || u.includes('wkrn.com')
-      || u.includes('wsmv.com')
-      || u.includes('wpln.org')
-      || u.includes('tennessean.com')
-      || u.includes('npr.org')
-      || u.includes('apnews.com')
-      || u.includes('reuters.com')
-      || u.includes('nytimes.com')
-      || u.includes('washingtonpost.com'))                     return 'media';
   return 'other';
 }
 
@@ -476,34 +491,35 @@ async function discoverRoomFromJoined(tok) {
 }
 
 async function loadContent() {
-  // 1) Prefer the webhook-published page (GCS index.html with embedded
-  //    <script id="ncsn-data">{...}<\/script>) — that's what Save writes to.
+  // 1) Prefer the seed JSON bundled in the repo (migrated-content.json).
+  //    This is the hardcoded starting content — same schema accepted by the
+  //    admin +Import button (version / articles / ctas) — so the page always
+  //    boots with a known-good snapshot before reaching for remote data.
   let loaded = false;
   try {
-    const r = await fetch(CFG.readEndpoint, {cache:'no-store'});
-    if (r.ok) {
-      const html  = await r.text();
-      const state = parseEmbeddedState(html);
-      if (state && (state.articles?.length || state.ctas?.length)) {
-        S = state;
-        loaded = true;
-      }
+    const seed = await loadSeedContent();
+    if (seed && (seed.articles.length || seed.ctas.length)) {
+      S = seed;
+      loaded = true;
     }
-  } catch(err) {
+  } catch (err) {
     S._err = err.message;
   }
 
-  // 2) Fall back to the seed JSON bundled in the repo. This is the same
-  //    schema accepted by the admin +Import button (version / articles /
-  //    ctas), so editors can modify the layout or add items through the
-  //    webhook flow without losing the starting content.
+  // 2) Fall back to the webhook-published page (GCS index.html with embedded
+  //    <script id="ncsn-data">{...}<\/script>) — that's what Save writes to.
+  //    Only consulted when the repo seed is missing or empty.
   if (!loaded) {
     try {
-      const seed = await loadSeedContent();
-      if (seed && (seed.articles.length || seed.ctas.length)) {
-        S = seed;
-        // Clear any earlier fetch error — seed load counts as success.
-        delete S._err;
+      const r = await fetch(CFG.readEndpoint, {cache:'no-store'});
+      if (r.ok) {
+        const html  = await r.text();
+        const state = parseEmbeddedState(html);
+        if (state && (state.articles?.length || state.ctas?.length)) {
+          S = state;
+          // Clear any earlier fetch error — webhook load counts as success.
+          delete S._err;
+        }
       }
     } catch (err) {
       // Only surface an error if nothing loaded at all.
