@@ -121,7 +121,20 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
 .log-detail{font-size:11px;color:var(--mid)}
 .log-enc{font-size:10px;color:var(--faint);font-style:italic}
 
-@media(max-width:480px){.article-item{grid-template-columns:1fr}.art-meta{flex-direction:row;align-items:center;gap:10px;margin-bottom:4px}.art-icon{font-size:20px}}
+/* Testimony archive (videos hosted on archive.org) */
+.archive-intro{font-size:13px;color:var(--mid);line-height:1.55;margin-bottom:1rem}
+.archive-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:.5rem}
+.archive-card{display:block;text-decoration:none;color:var(--ink);border:1px solid var(--rule);background:#fafafa;transition:background .15s,border-color .15s}
+.archive-card:hover{background:#f0f0ee;border-color:var(--ink)}
+.archive-thumb{display:block;width:100%;aspect-ratio:16/9;background:#111 center/cover no-repeat;border-bottom:1px solid var(--rule)}
+.archive-meta{padding:8px 10px 10px}
+.archive-title{font-size:12px;font-weight:700;line-height:1.35;margin-bottom:4px;word-break:break-word}
+.archive-date{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.archive-more{display:inline-block;margin-top:6px;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--ink);padding-bottom:1px}
+.archive-more:hover{opacity:.6}
+.archive-empty{font-size:12px;color:var(--muted);padding:.6rem 0}
+
+@media(max-width:480px){.article-item{grid-template-columns:1fr}.art-meta{flex-direction:row;align-items:center;gap:10px;margin-bottom:4px}.art-icon{font-size:20px}.archive-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}}
 </style>
 </head>
 <body>
@@ -165,6 +178,13 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
   </a>
 
   <div id="cta-container"><p class="msg">Loading...</p></div>
+</section>
+
+<section>
+  <div class="section-label">Testimony archive</div>
+  <p class="archive-intro">Video testimonies submitted by community members, hosted on the Internet Archive. Each one is a voice on surveillance, privacy, and the right to be left alone.</p>
+  <div id="archive-container"><p class="msg">Loading testimonies…</p></div>
+  <a class="archive-more" href="https://archive.org/search.php?query=creator%3A%22Nashville+Community+Safety+Network%22+AND+mediatype%3Amovies&sort=-publicdate" target="_blank" rel="noopener">Browse the full archive →</a>
 </section>
 
 <section>
@@ -472,6 +492,50 @@ document.addEventListener('keydown', ev => {
 async function boot() {
   await loadConfig();
   await loadContent();
+  loadArchiveVideos();
+}
+
+/* ══════════════════════════════════════════════════════════
+   ARCHIVE.ORG TESTIMONY VIDEOS
+   Fetches the public list of videos uploaded under
+   creator="Nashville Community Safety Network" and renders
+   a thumbnail grid linking to archive.org.
+   ══════════════════════════════════════════════════════════ */
+async function loadArchiveVideos() {
+  const host = document.getElementById('archive-container');
+  if (!host) return;
+  const url = 'https://archive.org/advancedsearch.php'
+    + '?q=' + encodeURIComponent('creator:"Nashville Community Safety Network" AND mediatype:movies')
+    + '&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=description&fl%5B%5D=publicdate'
+    + '&sort%5B%5D=publicdate+desc&rows=24&page=1&output=json';
+  try {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    const docs = (d && d.response && d.response.docs) || [];
+    if (!docs.length) {
+      host.innerHTML = '<p class="archive-empty">No testimonies have been archived yet. Be the first — record one above.</p>';
+      return;
+    }
+    const cards = docs.map(doc => {
+      const id   = doc.identifier;
+      const title = doc.title || 'Privacy Testimony';
+      const date = (doc.publicdate || '').slice(0,10);
+      const thumb = 'https://archive.org/services/img/' + encodeURIComponent(id);
+      const href  = 'https://archive.org/details/' + encodeURIComponent(id);
+      return '<a class="archive-card" href="' + x(href) + '" target="_blank" rel="noopener">'
+        + '<span class="archive-thumb" style="background-image:url(\'' + x(thumb) + '\')"></span>'
+        + '<span class="archive-meta">'
+        +   '<span class="archive-title">' + x(title) + '</span>'
+        +   (date ? '<span class="archive-date">' + x(date) + '</span>' : '')
+        + '</span>'
+      + '</a>';
+    }).join('');
+    host.innerHTML = '<div class="archive-grid">' + cards + '</div>';
+  } catch (e) {
+    host.innerHTML = '<p class="archive-empty">Couldn\'t load testimonies right now. '
+      + '<a href="https://archive.org/search.php?query=creator%3A%22Nashville+Community+Safety+Network%22+AND+mediatype%3Amovies" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">View them on archive.org →</a></p>';
+  }
 }
 
 async function loadConfig() {
