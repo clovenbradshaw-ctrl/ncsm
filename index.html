@@ -477,7 +477,7 @@ async function discoverRoomFromJoined(tok) {
 
 async function loadContent() {
   // 1) Prefer the webhook-published page (GCS index.html with embedded
-  //    <script id="ncsn-data">{...}</script>) — that's what Save writes to.
+  //    <script id="ncsn-data">{...}<\/script>) — that's what Save writes to.
   let loaded = false;
   try {
     const r = await fetch(CFG.readEndpoint, {cache:'no-store'});
