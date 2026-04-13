@@ -6,8 +6,8 @@
 <title>Nashville Community Safety Network</title>
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
-<link rel="icon" type="image/jpeg" href="https://instagram.fiad1-1.fna.fbcdn.net/v/t51.2885-19/486497637_1937174386814019_3710320330457640021_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby40NDIuYzIifQ&_nc_ht=instagram.fiad1-1.fna.fbcdn.net&_nc_cat=103&_nc_oc=Q6cZ2gG0sTZBGKqd8moJOIpy5hwIMdQFJ9BumgBdaGvSA9BB5r_Y4uVK8U5gqXr6-LI4hVA&_nc_ohc=EwyUj37DBrMQ7kNvwFRf92V&_nc_gid=8kSlSn4J2-s2T-VuOTwnNQ&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_Af1lZmL9oB7MmDOAuSXHX0vGpCJcz7POiqL6kng8wqTlAA&oe=69E0698A&_nc_sid=7a9f4b">
-<link rel="apple-touch-icon" href="https://instagram.fiad1-1.fna.fbcdn.net/v/t51.2885-19/486497637_1937174386814019_3710320330457640021_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby40NDIuYzIifQ&_nc_ht=instagram.fiad1-1.fna.fbcdn.net&_nc_cat=103&_nc_oc=Q6cZ2gG0sTZBGKqd8moJOIpy5hwIMdQFJ9BumgBdaGvSA9BB5r_Y4uVK8U5gqXr6-LI4hVA&_nc_ohc=EwyUj37DBrMQ7kNvwFRf92V&_nc_gid=8kSlSn4J2-s2T-VuOTwnNQ&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_Af1lZmL9oB7MmDOAuSXHX0vGpCJcz7POiqL6kng8wqTlAA&oe=69E0698A&_nc_sid=7a9f4b">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='28' fill='%23111'/></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='28' fill='%23111'/></svg>">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--ink:#111;--mid:#444;--muted:#888;--faint:#bbb;--rule:#e0e0e0}
@@ -18,7 +18,7 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
 .site-meta{font-size:11px;color:var(--muted);letter-spacing:.06em;margin-top:3px}
 .masthead-rule{border:none;border-top:1px solid var(--ink);margin:14px 0 0}
 
-.instagram-banner{display:flex;align-items:center;justify-content:center;gap:10px;margin:1.2rem 0 .5rem;padding:12px 18px;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);border-radius:8px;text-decoration:none;transition:opacity .2s,transform .15s}
+.instagram-banner{display:flex;align-items:center;justify-content:center;gap:10px;margin:1.2rem 0 .5rem;padding:12px 18px;background:linear-gradient(135deg,#4a4a4a,#3a3a3a,#2a2a2a,#1a1a1a,#111);border-radius:8px;text-decoration:none;transition:opacity .2s,transform .15s}
 .instagram-banner:hover{opacity:.92;transform:translateY(-1px)}
 .instagram-banner img{width:28px;height:28px;object-fit:contain;filter:brightness(0) invert(1)}
 .instagram-banner .ig-text{color:#fff;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
@@ -319,6 +319,12 @@ const CFG = {
   writeEndpoint:  'https://n8n.intelechia.com/webhook/site/write',
   logEndpoint:    'https://n8n.intelechia.com/webhook/site/log',
 
+  // Seed content shipped with the repo. Used as a fallback when the webhook
+  // read endpoint is unreachable or returns an empty page — lets the site
+  // render something useful out of the box, and gives editors a starting
+  // point they can modify (via the admin bar) and re-publish via webhook.
+  seedContentUrl: 'migrated-content.json',
+
   matrixServer:      'https://hyphae.social',
   matrixDomain:      'hyphae.social',
   matrixConfigState: 'community.ncsn.config',
@@ -470,17 +476,76 @@ async function discoverRoomFromJoined(tok) {
 }
 
 async function loadContent() {
+  // 1) Prefer the webhook-published page (GCS index.html with embedded
+  //    <script id="ncsn-data">{...}</script>) — that's what Save writes to.
+  let loaded = false;
   try {
-    const r = await fetch(CFG.readEndpoint);
+    const r = await fetch(CFG.readEndpoint, {cache:'no-store'});
     if (r.ok) {
       const html  = await r.text();
       const state = parseEmbeddedState(html);
-      if (state) S = state;
+      if (state && (state.articles?.length || state.ctas?.length)) {
+        S = state;
+        loaded = true;
+      }
     }
   } catch(err) {
     S._err = err.message;
   }
+
+  // 2) Fall back to the seed JSON bundled in the repo. This is the same
+  //    schema accepted by the admin +Import button (version / articles /
+  //    ctas), so editors can modify the layout or add items through the
+  //    webhook flow without losing the starting content.
+  if (!loaded) {
+    try {
+      const seed = await loadSeedContent();
+      if (seed && (seed.articles.length || seed.ctas.length)) {
+        S = seed;
+        // Clear any earlier fetch error — seed load counts as success.
+        delete S._err;
+      }
+    } catch (err) {
+      // Only surface an error if nothing loaded at all.
+      if (!S.articles.length && !S.ctas.length) S._err = err.message;
+    }
+  }
+
   render();
+}
+
+// Load the repo-bundled migrated-content.json and coerce it into the
+// runtime shape (articles[] / ctas[] with stable ids). Mirrors the
+// normalization in doImport() so the same file works in either path.
+async function loadSeedContent() {
+  const r = await fetch(CFG.seedContentUrl, {cache:'no-store'});
+  if (!r.ok) throw new Error('Seed content HTTP ' + r.status);
+  const data = await r.json();
+
+  const inArts = Array.isArray(data.articles) ? data.articles : [];
+  const inCTAs = Array.isArray(data.ctas)     ? data.ctas     : [];
+
+  const articles = inArts.map(a => ({
+    id:         a.id || uid(),
+    title:      String(a.title||'').trim(),
+    url:        String(a.url||'').trim(),
+    date:       String(a.date||'').trim(),
+    summary:    String(a.summary||'').trim(),
+    tags:       Array.isArray(a.tags) ? a.tags.map(t=>String(t).trim()).filter(Boolean) : [],
+    sourceType: (a.sourceType && Object.prototype.hasOwnProperty.call(SOURCE_TYPES, a.sourceType))
+                  ? a.sourceType : '',
+  })).filter(a => a.title);
+
+  const ctas = inCTAs.map(c => ({
+    id:          c.id || uid(),
+    title:       String(c.title||'').trim(),
+    description: String(c.description||'').trim(),
+    url:         String(c.url||'').trim(),
+    linkLabel:   String(c.linkLabel||'').trim(),
+    urgency:     ['high','medium','low'].includes(c.urgency) ? c.urgency : 'medium',
+  })).filter(c => c.title);
+
+  return { articles, ctas, lastUpdated: data.lastUpdated || null };
 }
 
 function parseEmbeddedState(html) {
