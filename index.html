@@ -153,7 +153,7 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
 <header>
   <div class="site-label">Nashville, TN</div>
   <div class="site-name">Community Safety Network</div>
-  <div class="site-meta">Accountability &nbsp;·&nbsp; Transparency &nbsp;·&nbsp; Mutual Aid</div>
+  <div class="site-meta">Accountability &nbsp;·&nbsp; Transparency</div>
   <hr class="masthead-rule">
   <a href="https://www.instagram.com/nashcommunitysafetynetwork_/" target="_blank" rel="noopener" class="instagram-banner">
     <i class="ph ph-instagram-logo" style="font-size:28px;color:#fff"></i>
@@ -305,7 +305,7 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
       <option value="analysis">Long-form analysis / opinion</option>
       <option value="podcast">Podcast</option>
       <option value="social">Social media post</option>
-      <option value="community">Community / mutual aid</option>
+      <option value="community">Community</option>
       <option value="other">Other link</option>
     </select>
     <label>Date</label><input type="date" id="art-date">
@@ -385,7 +385,7 @@ const SOURCE_TYPES = {
   analysis:  {icon:'ph-magnifying-glass',  label:'Long-form analysis'},
   podcast:   {icon:'ph-microphone',        label:'Podcast'},
   social:    {icon:'ph-share-network',     label:'Social media'},
-  community: {icon:'ph-hand-heart',        label:'Community / mutual aid'},
+  community: {icon:'ph-hand-heart',        label:'Community'},
   other:     {icon:'ph-link-simple',       label:'Other link'},
 };
 
@@ -1134,7 +1134,7 @@ async function saveAll() {
     author:     matrixUserId || '',
     meta: {
       title:       'Nashville Community Safety Network',
-      description: 'Accountability. Transparency. Mutual Aid.',
+      description: 'Accountability. Transparency.',
     },
     // n8n stores whatever is in payload verbatim in the JSONL event
     payload: { encrypted: encPayload },
