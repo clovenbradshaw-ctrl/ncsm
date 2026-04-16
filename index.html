@@ -349,6 +349,241 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
   </div>
 </div>
 
+<!-- ══ HARDCODED INITIAL CONTENT ══
+     Baked into the page so the site renders with zero network dependency.
+     The webhook read endpoint is still consulted after load; if it returns
+     content that differs from this seed, the page re-renders with that
+     version. Mirror of migrated-content.json — keep the two in sync. -->
+<script type="application/json" id="ncsn-seed">
+{
+  "version": 1,
+  "articles": [
+    {
+      "title": "Nashville's Unauthorized Secret Police Force And The People & Orgs Enabling It",
+      "url": "https://readrichtext.substack.com/p/nashvilles-unauthorized-secret-police",
+      "date": "2025-11-05",
+      "sourceType": "substack",
+      "summary": "The Nashville Downtown Partnership's budget has not been reviewed or approved by Metro Council in 22 years. Its president has doubled his salary past $500K while public money funds a private policing operation licensed through a shell company.",
+      "tags": ["NDP", "Secret Police", "Metro Council", "Accountability"]
+    },
+    {
+      "title": "Downtown Partnership's Specially Assessed Nonsense",
+      "url": "https://readrichtext.substack.com/p/downtown-partnerships-specially-assessed",
+      "date": "2025-11-12",
+      "sourceType": "substack",
+      "summary": "Since 1998 the CBID has funneled obligatory special assessments through the DMC to the Downtown Partnership. The last Council-approved CBID budget was FY 2003-2004 — more than sixty million dollars have moved without the legally required Metro Council approval.",
+      "tags": ["NDP", "CBID", "DMC", "Budget", "Metro Council"]
+    },
+    {
+      "title": "Sunday Rewind: Freddie O'Connell — 'Strong Communities are Better for Safety than a Surveillance State' and Other Things He Reversed Course On",
+      "url": "https://readrichtext.substack.com/p/sunday-rewind-freddie-oconnell-strong",
+      "date": "2025-11-16",
+      "sourceType": "substack",
+      "summary": "A look back at Mayor O'Connell's own record: voting to ban LPRs in 2017, warning in 2021 that strong communities beat a surveillance state, then reversing on Fusus, LPRs, and the $15M MOU once in the mayor's office.",
+      "tags": ["O'Connell", "Surveillance", "LPR", "Fusus"]
+    },
+    {
+      "title": "From the Makers of Fusus (Literally): Meet 'LeoSight' — Mayor's MOU Resurrects Rejected Surveillance Tools Under New Branding",
+      "url": "https://readrichtext.substack.com/p/from-the-makers-of-fusus-literally",
+      "date": "2025-11-24",
+      "sourceType": "substack",
+      "summary": "LeoSight's CEO spent three years at Fusus through the Axon acquisition and took over LeoSight after Nashville rejected Fusus in April 2025. LeoSight itself is a rebrand of a 2015 company called Live Earth. The Mayor's MOU quietly reinstates the technology Nashville already said no to.",
+      "tags": ["LeoSight", "Fusus", "Axon", "Surveillance", "MOU"]
+    },
+    {
+      "title": "Breaking: The Mayor's Official Coordinating Nashville's Surveillance MOU Helped Build ICE's Data Pipeline at LexisNexis",
+      "url": "https://readrichtext.substack.com/p/breaking-the-mayors-official-coordinating",
+      "date": "2025-12-02",
+      "sourceType": "substack",
+      "summary": "Kristin Wilson, Mayor O'Connell's Chief of Operations and Performance, is coordinating the $15M surveillance MOU between MNPD and NDP. Before public service she spent six years at LexisNexis Risk Solutions, which currently holds a $22.1M contract with ICE.",
+      "tags": ["Kristin Wilson", "LexisNexis", "ICE", "MOU"]
+    },
+    {
+      "title": "State Records Reveal Nashville Downtown Partnership Was Never Getting the $15M",
+      "url": "https://readrichtext.substack.com/",
+      "date": "2025-12-04",
+      "sourceType": "substack",
+      "summary": "State documents show the District Management Corporation — not NDP — was awarded the grant, contradicting repeated claims by the Mayor's Office that the $15M was going directly to the Downtown Partnership. VERIFY URL: article exists but slug not confirmed from search index; update the link in-app when you find it.",
+      "tags": ["Grant", "NDP", "DMC", "Public Records"]
+    },
+    {
+      "title": "Breaking: Same Exec Who Literally Signed Fusus Contracts With Chief Drake Now Has New Surveillance Company in Mayor's MOU",
+      "url": "https://readrichtext.substack.com/p/thanksgiving-mou-mnpd-slipped-in",
+      "date": "2025-12-15",
+      "sourceType": "substack",
+      "summary": "The original MNPD-Fusus contract carried Mark Wood's signature alongside Chief Drake's. Now Wood runs LeoSight, and the Mayor's Thanksgiving-eve MOU routes $15M toward the same expanded capabilities, sidestepping procurement and public hearing requirements — a replay of the Fusus pattern.",
+      "tags": ["Mark Wood", "Fusus", "LeoSight", "MNPD", "MOU"]
+    },
+    {
+      "title": "(Surveillance MOU) There Is No Use Amending the MOU Resolution — CMs' Attempts To Fix It Are Making It Worse",
+      "url": "https://readrichtext.substack.com/p/surveillance-mou-there-is-no-amending",
+      "date": "2025-12-15",
+      "sourceType": "substack",
+      "summary": "Metro Council already has 100% oversight over NDMC funds through Metro Ordinance BL2017-580 and 0% oversight over NDP funds. The MOU trades statutory line-item control for a voluntary agreement the mayor can amend without Council approval. Seven independent grounds for rejection — pick any one.",
+      "tags": ["MOU", "NDMC", "NDP", "Metro Council", "Oversight"]
+    },
+    {
+      "title": "Dispatch from the December 15th Budget and Finance Committee Meeting",
+      "url": "https://readrichtext.substack.com/p/dispatch-from-the-december-15th-budget",
+      "date": "2025-12-16",
+      "sourceType": "substack",
+      "summary": "On-the-ground reporting from the Budget and Finance Committee meeting where council members began dismantling the Mayor's claims that the MOU was needed to restrict what NDP could buy.",
+      "tags": ["Metro Council", "Budget", "MOU"]
+    },
+    {
+      "title": "The People's House: How Nashville Metro Council Is Starting To Reclaim Democratic Oversight from an Autocratic Mayor's Office",
+      "url": "https://readrichtext.substack.com/p/the-peoples-house-how-nashville-metro",
+      "date": "2025-12-17",
+      "sourceType": "substack",
+      "summary": "Plain text, council testimony, and a public records release show it was MNPD in concert with the Mayor's Office — not NDP — that put the most problematic surveillance technology in the MOU to begin with. The narrative that the MOU 'limited' what NDP could buy collapses on contact with the record.",
+      "tags": ["Metro Council", "Oversight", "MNPD", "MOU"]
+    },
+    {
+      "title": "Correction About THP Trooper Throwing Man to Ground for Kicking His Car (After Almost Running Him Over)",
+      "url": "https://readrichtext.substack.com/p/correction-about-thp-trooper-throwing",
+      "date": "2025-10-05",
+      "sourceType": "substack",
+      "summary": "Correction and context on the September 20, 2025 incident: THP Sgt. DeWunya Topps — off-duty in uniform for Solaren Risk Management — slammed a pedestrian to the ground after nearly running him over in a crosswalk. The man kicked one car, not 'cars' as earlier reported.",
+      "tags": ["THP", "Solaren", "Use of Force", "Off-Duty Policing"]
+    },
+    {
+      "title": "In Wake of ICE Killing, O'Connell Files $3.38M Surveillance & Policing Donations via Funding Used for ICE Collaboration",
+      "url": "https://readrichtext.substack.com/p/in-wake-of-ice-killing-oconnell-files",
+      "date": "2026-01-20",
+      "sourceType": "substack",
+      "summary": "After a fatal ICE encounter in Nashville, the Mayor's Office moved a $3.38M surveillance and policing donation package through funding streams that have previously flowed into ICE collaboration channels. Approximate date — verify in-app.",
+      "tags": ["ICE", "O'Connell", "Surveillance", "MNPD"]
+    },
+    {
+      "title": "Buckle Up: Another Fight Over Surveillance is Upon Us",
+      "url": "https://readrichtext.substack.com/p/surveillance-again-billionaires-invest",
+      "date": "2026-03-28",
+      "sourceType": "substack",
+      "summary": "Flock Safety just raised $275M at a $7.5B valuation led by Andreessen Horowitz. Nashville is the case study for how procurement is circumvented to eliminate public consent over surveillance — and LPRs feed a larger AI-driven infrastructure that can flow into Palantir. MNPD's budget still includes ~$2.8M for LPRs.",
+      "tags": ["Flock", "LPR", "Palantir", "Andreessen Horowitz", "Procurement"]
+    },
+    {
+      "title": "We Built the Surveillance App Nashville's Leaders Have Been Asking For. Except It Tracks Them.",
+      "url": "https://readrichtext.substack.com/p/we-built-the-surveillance-app-nashvilles",
+      "date": "2026-04-07",
+      "sourceType": "substack",
+      "summary": "MNPD and the Mayor's Office keep pushing LPRs even as O'Connell and Chief Drake tout a 20% drop in crime, 18% drop in violent crime, and burglary at its lowest level since the 1960s — a contradiction the city's official messaging quietly papers over.",
+      "tags": ["Surveillance", "LPR", "Flock", "MNPD", "O'Connell"]
+    },
+    {
+      "title": "A Nashville Proposal Could Outsource Surveillance and Policing to a Nonprofit",
+      "url": "https://truthout.org/articles/a-nashville-proposal-could-outsource-surveillance-and-policing-to-a-nonprofit/",
+      "date": "2025-12-02",
+      "sourceType": "analysis",
+      "summary": "Truthout feature by Mike Lacy and Ed Vogel on how Nashville is leveraging a local nonprofit to build a public-private panopticon. Deep-dive analysis of how the Downtown Partnership MOU bypasses democratic oversight and revives the Fusus playbook under the LeoSight brand.",
+      "tags": ["Truthout", "Mike Lacy", "MOU", "LeoSight", "Democratic Oversight"]
+    },
+    {
+      "title": "Mayor's Office Files Resolution to Allow Surveillance Use",
+      "url": "https://www.nashvillescene.com/news/pithinthewind/mayors-office-downtown-surveillance/article_651e0aa9-e3f4-4ddc-9531-27803c5c149e.html",
+      "date": "2025-12-01",
+      "sourceType": "media",
+      "summary": "Nashville Scene's Pith in the Wind reports that the Mayor's Office quietly filed the MOU before Thanksgiving. The package included security cameras, noise-camera enforcement, a live video wall, and two separate real-time surveillance platforms — a backdoor route to the same tools rejected in the Fusus debate.",
+      "tags": ["Nashville Scene", "MOU", "Pith in the Wind", "Fusus"]
+    },
+    {
+      "title": "Metro Council to Consider Downtown Partnership Security Grant",
+      "url": "https://nashvillebanner.com/2025/12/01/nashville-downtown-partnership-fusus-tennessee-grant/",
+      "date": "2025-12-01",
+      "sourceType": "media",
+      "summary": "Nashville Banner's pre-hearing report on the $15M MOU, connecting LeoSight's leadership back to the Fusus contracts Mark Wood personally signed. Council Member Erin Evans tells the Banner she expects many members to seek a deferral.",
+      "tags": ["Nashville Banner", "MOU", "LeoSight", "Erin Evans"]
+    },
+    {
+      "title": "Safety or Surveillance? $15M Downtown Nashville Plan Sparks Debate",
+      "url": "https://www.newschannel5.com/news/safety-or-surveillance-15m-downtown-nashville-plan-sparks-debate",
+      "date": "2025-12-03",
+      "sourceType": "media",
+      "summary": "NewsChannel 5 on the widening split between city leadership and residents over whether a $15M state grant should fund downtown surveillance technology targeting vulnerable communities.",
+      "tags": ["NewsChannel 5", "MOU", "Metro Council"]
+    },
+    {
+      "title": "Downtown Nashville Could See New Surveillance Tech After $15M State Grant",
+      "url": "https://www.wkrn.com/news/local-news/nashville/15m-grant-surveillance-tech/",
+      "date": "2025-12-02",
+      "sourceType": "media",
+      "summary": "WKRN's roundup of the surveillance tools the MOU would enable: noise-detection cameras, AI-driven video analysis, and expansion of the existing downtown camera network via the Nashville Downtown Partnership.",
+      "tags": ["WKRN", "MOU", "Cameras"]
+    },
+    {
+      "title": "Nashville Surveillance Cameras Spark More Pushback as Metro Council Considers Expanded Technology",
+      "url": "https://wpln.org/post/nashville-surveillance-cameras-spark-more-pushback-as-metro-council-considers-expanded-technology/",
+      "date": "2025-12-10",
+      "sourceType": "media",
+      "summary": "WPLN covers the community hearings as the $15M grant — already earmarked in part for new MNPD cameras — draws sustained opposition from residents, civil liberties groups, and music-community members.",
+      "tags": ["WPLN", "Metro Council", "Cameras"]
+    },
+    {
+      "title": "Nashville Council Rejects Downtown Surveillance Cameras in Split Vote on Safety Plan",
+      "url": "https://www.newschannel5.com/news/metro-council-rejects-downtown-surveillance-cameras-in-split-vote-on-nashville-safety-plan",
+      "date": "2026-01-21",
+      "sourceType": "media",
+      "summary": "Metro Council rejects 20-15 (with three abstentions) a $150,000 measure that would have added 15 new police surveillance cameras downtown — the first piece of the broader $15M plan to come to a vote after prior amendments stripped out LeoSight and Fivecast.",
+      "tags": ["NewsChannel 5", "Metro Council", "Vote", "Cameras"]
+    },
+    {
+      "title": "TN-07 Results! Plus, Is Downtown Getting Mass Surveillance?",
+      "url": "https://nashville.citycast.fm/podcasts/tn-07-results-plus-is-downtown-getting-mass-surveillance",
+      "date": "2025-12-03",
+      "sourceType": "podcast",
+      "summary": "City Cast Nashville podcast: Steven Hale (Nashville Banner) joins host Marie Cecile Anderson and executive producer Whitney Pastorek to break down the $15M MOU, the armored SWAT vehicle, and the backlash.",
+      "tags": ["City Cast Nashville", "Podcast", "Steven Hale", "MOU"]
+    },
+    {
+      "title": "Increased Surveillance and Policing Does Not Make Nashville Safer",
+      "url": "https://www.opentablenashville.org/post/increased-surveillance-and-policing-does-not-make-nashville-safer",
+      "date": "2025-12-05",
+      "sourceType": "community",
+      "summary": "Open Table Nashville's statement of opposition to the MOU, arguing that security built on surveillance disproportionately targets refugees, asylum seekers, immigrants, LGBTQIA+ folks, and people of color — and doesn't make anyone safer.",
+      "tags": ["Open Table Nashville", "Opposition"]
+    },
+    {
+      "title": "Nashville Residents Push Back as City Revives Police Surveillance Plan",
+      "url": "https://liberationnews.org/nashville-residents-push-back-as-city-revives-police-surveillance-plan/",
+      "date": "2025-12-08",
+      "sourceType": "analysis",
+      "summary": "Liberation News on the resident-led organizing that forced the deferrals and amendments, ultimately driving the camera proposal to a losing vote.",
+      "tags": ["Liberation News", "Organizing", "Opposition"]
+    }
+  ],
+  "ctas": [
+    {
+      "title": "Read the primary-source reporting",
+      "description": "{Rich Text} is the independent investigative newsletter that broke most of the surveillance, NDP, and MOU stories linked below. Subscribe, share, and support the reporting.",
+      "url": "https://readrichtext.substack.com/",
+      "linkLabel": "Read {Rich Text}",
+      "urgency": "high"
+    },
+    {
+      "title": "Demand Metro Council oversight of the Downtown Partnership",
+      "description": "NDP's budget has not been reviewed by Metro Council in 22 years, even as it funnels specially-assessed public money into a private policing operation. Contact your council member and ask why.",
+      "url": "https://www.nashville.gov/departments/council/districts",
+      "linkLabel": "Find your council member",
+      "urgency": "high"
+    },
+    {
+      "title": "Watch the MNPD surveillance budget",
+      "description": "Even after the $15M MOU was stripped of LeoSight, Fivecast, and new cameras, MNPD's ongoing budget still carries roughly $2.8M for License Plate Recognition. Track every line item before the next Flock contract.",
+      "url": "https://readrichtext.substack.com/p/surveillance-again-billionaires-invest",
+      "linkLabel": "Read the breakdown",
+      "urgency": "medium"
+    },
+    {
+      "title": "No MOU Nashville — campaign archive",
+      "description": "Timeline, talking points, and the organizing record of how Nashville pushed back on the surveillance MOU and forced the council to reject new cameras in January 2026.",
+      "url": "https://clovenbradshaw-ctrl.github.io/mou/",
+      "linkLabel": "Browse the archive",
+      "urgency": "low"
+    }
+  ]
+}
+</script>
+
 <script>
 /* ══════════════════════════════════════════════════════════
    CONFIG — safe to commit; no secrets
@@ -358,12 +593,6 @@ const CFG = {
   readEndpoint:   'https://n8n.intelechia.com/webhook/site/read',
   writeEndpoint:  'https://n8n.intelechia.com/webhook/site/write',
   logEndpoint:    'https://n8n.intelechia.com/webhook/site/log',
-
-  // Seed content shipped with the repo. Used as a fallback when the webhook
-  // read endpoint is unreachable or returns an empty page — lets the site
-  // render something useful out of the box, and gives editors a starting
-  // point they can modify (via the admin bar) and re-publish via webhook.
-  seedContentUrl: 'migrated-content.json',
 
   matrixServer:      'https://hyphae.social',
   matrixDomain:      'hyphae.social',
@@ -575,53 +804,55 @@ async function discoverRoomFromJoined(tok) {
 }
 
 async function loadContent() {
-  // 1) Prefer the seed JSON bundled in the repo (migrated-content.json).
-  //    This is the hardcoded starting content — same schema accepted by the
-  //    admin +Import button (version / articles / ctas) — so the page always
-  //    boots with a known-good snapshot before reaching for remote data.
-  let loaded = false;
+  // 1) Apply the hardcoded seed baked into the page (<script id="ncsn-seed">)
+  //    and render immediately. No network call, so the site is interactive
+  //    the moment the script runs even if the webhook is slow or down.
   try {
-    const seed = await loadSeedContent();
-    if (seed && (seed.articles.length || seed.ctas.length)) {
-      S = seed;
-      loaded = true;
-    }
+    const seed = loadSeedContent();
+    if (seed) S = seed;
   } catch (err) {
     S._err = err.message;
   }
+  render();
 
-  // 2) Fall back to the webhook-published page (GCS index.html with embedded
+  // 2) Then consult the webhook-published page (GCS index.html with embedded
   //    <script id="ncsn-data">{...}<\/script>) — that's what Save writes to.
-  //    Only consulted when the repo seed is missing or empty.
-  if (!loaded) {
-    try {
-      const r = await fetch(CFG.readEndpoint, {cache:'no-store'});
-      if (r.ok) {
-        const html  = await r.text();
-        const state = parseEmbeddedState(html);
-        if (state && (state.articles?.length || state.ctas?.length)) {
-          S = state;
-          // Clear any earlier fetch error — webhook load counts as success.
-          delete S._err;
-        }
-      }
-    } catch (err) {
-      // Only surface an error if nothing loaded at all.
-      if (!S.articles.length && !S.ctas.length) S._err = err.message;
+  //    If its content actually differs from the seed, replace and re-render.
+  //    Otherwise stay on the seed so we don't churn the DOM.
+  try {
+    const r = await fetch(CFG.readEndpoint, {cache:'no-store'});
+    if (!r.ok) return;
+    const html  = await r.text();
+    const raw   = parseEmbeddedState(html);
+    if (!raw || (!raw.articles?.length && !raw.ctas?.length)) return;
+    const remote = normalizeState(raw);
+    if (canonicalContent(remote) !== canonicalContent(S)) {
+      S = remote;
+      delete S._err;
+      render();
+    }
+  } catch (err) {
+    // Only surface an error if the seed failed too — otherwise the page is
+    // already showing valid content.
+    if (!S.articles.length && !S.ctas.length) {
+      S._err = err.message;
+      render();
     }
   }
-
-  render();
 }
 
-// Load the repo-bundled migrated-content.json and coerce it into the
-// runtime shape (articles[] / ctas[] with stable ids). Mirrors the
-// normalization in doImport() so the same file works in either path.
-async function loadSeedContent() {
-  const r = await fetch(CFG.seedContentUrl, {cache:'no-store'});
-  if (!r.ok) throw new Error('Seed content HTTP ' + r.status);
-  const data = await r.json();
+// Read the inline <script type="application/json" id="ncsn-seed"> block and
+// coerce into the runtime shape (articles[] / ctas[] with stable ids).
+function loadSeedContent() {
+  const el = document.getElementById('ncsn-seed');
+  if (!el) return null;
+  return normalizeState(JSON.parse(el.textContent));
+}
 
+// Shared normalizer for seed JSON and webhook state. Assigns ids when
+// missing, trims strings, and drops unknown sourceType values so render()
+// always gets a consistent shape.
+function normalizeState(data) {
   const inArts = Array.isArray(data.articles) ? data.articles : [];
   const inCTAs = Array.isArray(data.ctas)     ? data.ctas     : [];
 
@@ -646,6 +877,28 @@ async function loadSeedContent() {
   })).filter(c => c.title);
 
   return { articles, ctas, lastUpdated: data.lastUpdated || null };
+}
+
+// Canonical content string for diffing seed vs. webhook. Strips volatile
+// fields (id, lastUpdated) and sorts so identical content from different
+// sources compares equal regardless of ordering or id assignment.
+function canonicalContent(state) {
+  const arts = [...(state.articles||[])]
+    .map(a => ({
+      title: a.title || '', url: a.url || '', date: a.date || '',
+      summary: a.summary || '',
+      tags: [...(a.tags||[])].map(t=>String(t).trim()).sort(),
+      sourceType: a.sourceType || '',
+    }))
+    .sort((x,y) => ((x.url||x.title)+'').localeCompare((y.url||y.title)+''));
+  const ctas = [...(state.ctas||[])]
+    .map(c => ({
+      title: c.title || '', description: c.description || '',
+      url: c.url || '', linkLabel: c.linkLabel || '',
+      urgency: c.urgency || 'medium',
+    }))
+    .sort((x,y) => x.title.localeCompare(y.title));
+  return JSON.stringify({arts, ctas});
 }
 
 function parseEmbeddedState(html) {
