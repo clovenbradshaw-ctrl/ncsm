@@ -93,6 +93,14 @@ section { margin-bottom:18px; }
 .consent label { display:flex; gap:8px; align-items:flex-start; cursor:pointer; }
 .consent input[type=checkbox] { margin-top:3px; flex-shrink:0; accent-color:var(--black); }
 .consent .ck-note { font-size:10px; color:var(--mid); margin-top:8px; padding-left:22px; }
+
+.censor-list { margin:18px 0 4px; }
+.cl-title { font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--mid); margin-bottom:10px; }
+.cl-row { display:flex; gap:12px; align-items:flex-start; padding:7px 0; font-size:12px; color:#444; line-height:1.55; border-top:1px solid var(--line); }
+.cl-row:last-of-type { border-bottom:1px solid var(--line); }
+.cl-ico { font-size:13px; color:var(--mid); width:14px; flex-shrink:0; text-align:center; line-height:1.4; }
+.cl-row strong { color:var(--black); font-weight:500; }
+.cl-note { font-size:10px; color:var(--mid); margin-top:10px; }
 </style>
 </head>
 <body>
@@ -116,6 +124,15 @@ section { margin-bottom:18px; }
       <strong style="color:var(--black);font-weight:500">The uncensored footage never leaves your device.</strong>
       Raw video is recorded locally, effects are applied here in the browser, and only the processed file is transmitted.
     </p>
+
+    <div class="censor-list">
+      <div class="cl-title">Censoring options you can apply</div>
+      <div class="cl-row"><span class="cl-ico">◎</span><div><strong>Face blur</strong> — a soft oval blur tracks your face. Intensity adjustable.</div></div>
+      <div class="cl-row"><span class="cl-ico">▬</span><div><strong>Eye bar</strong> — a solid black bar covers your eyes.</div></div>
+      <div class="cl-row"><span class="cl-ico">░</span><div><strong>Background blur</strong> — blur everything behind you, independent of face censoring. Intensity adjustable.</div></div>
+      <div class="cl-row"><span class="cl-ico">◦</span><div><strong>None</strong> — leave your face and surroundings visible.</div></div>
+      <div class="cl-note">Pick on the next screen. You can preview, fine-tune, and re-record before anything is submitted.</div>
+    </div>
 
     <div class="meta-row">
       <div><div class="mk">Archive</div><div class="mv">archive.org</div></div>
