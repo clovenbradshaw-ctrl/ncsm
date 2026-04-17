@@ -87,6 +87,12 @@ section { margin-bottom:18px; }
 .sv { color:var(--black); }
 .sv.ok { color:#1c7a1c; }
 .sv.err { color:#b00; }
+
+.consent { max-width:300px; margin:4px 0 16px; padding:12px 14px; border:1px solid var(--line); background:white; font-size:11px; line-height:1.55; color:#444; }
+.consent .ck-title { font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:var(--mid); margin-bottom:8px; }
+.consent label { display:flex; gap:8px; align-items:flex-start; cursor:pointer; }
+.consent input[type=checkbox] { margin-top:3px; flex-shrink:0; accent-color:var(--black); }
+.consent .ck-note { font-size:10px; color:var(--mid); margin-top:8px; padding-left:22px; }
 </style>
 </head>
 <body>
@@ -227,6 +233,16 @@ section { margin-bottom:18px; }
     <p>This is the final rendered video. All effects are baked in.</p>
     <video id="revvid" class="rev-vid" controls playsinline></video>
     <div class="rev-note" id="rev-meta"></div>
+
+    <div class="consent">
+      <div class="ck-title">Permission for comms &amp; social media</div>
+      <label>
+        <input type="checkbox" id="consent-comms">
+        <span>I give Nashville Community Safety Network permission to use this testimony — in whole or in clips — in their communications, website, and social media.</span>
+      </label>
+      <div class="ck-note">Optional. Your video is already uploaded to the public archive regardless; this checkbox tells NCSN whether they may amplify it.</div>
+    </div>
+
     <div class="btn-row">
       <button class="btn btn-fill" id="btn-sub" onclick="submitVid()">Submit →</button>
       <button class="btn" onclick="dlVid()">↓ Download</button>
@@ -778,16 +794,23 @@ async function submitVid() {
     return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
   });
   const filename = guid + '.' + ext;
+  const commsConsent = document.getElementById('consent-comms')?.checked ? 'yes' : 'no';
+  const subjectTags = 'Nashville;surveillance;privacy;civil liberties;community safety;journalism;LPR;facial recognition'
+    + (commsConsent === 'yes' ? ';ncsn-comms-consent' : '');
   const params = new URLSearchParams({
     filename,
     title:       'Privacy Testimony - Nashville Community Safety Network',
-    description: 'Video testimony on surveillance, privacy, and the right to be left alone. Collected by Nashville Community Safety Network.',
+    description: 'Video testimony on surveillance, privacy, and the right to be left alone. Collected by Nashville Community Safety Network.'
+      + (commsConsent === 'yes'
+          ? ' Contributor has granted NCSN permission to reuse this testimony in communications and social media.'
+          : ' Contributor has not granted NCSN permission to reuse this testimony in communications or social media.'),
     creator:     'Nashville Community Safety Network',
-    subject:     'Nashville;surveillance;privacy;civil liberties;community safety;journalism;LPR;facial recognition',
+    subject:     subjectTags,
     collection:  'opensource_movies',
     mediatype:   'movies',
     language:    'eng',
-    licenseurl:  'https://creativecommons.org/licenses/by/4.0/'
+    licenseurl:  'https://creativecommons.org/licenses/by/4.0/',
+    comms_consent: commsConsent
   });
   const totalMB  = (renderedBlob.size / 1048576).toFixed(1);
 

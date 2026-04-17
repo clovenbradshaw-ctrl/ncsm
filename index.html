@@ -44,6 +44,8 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
 .testimony-cta .tc-note{font-size:11px;color:var(--mid);line-height:1.6;padding:10px 12px;border-left:2px solid #b02020;background:#fff;margin-bottom:12px}
 .testimony-cta .tc-note strong{color:#b02020;font-weight:700;letter-spacing:.02em}
 .testimony-cta .tc-link{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;border-bottom:1px solid var(--ink);padding-bottom:1px}
+.testimony-cta.alt{background:#fff}
+.testimony-cta.alt .tc-title{font-size:18px;font-weight:700}
 
 .article-rule{border:none;border-top:1px solid var(--rule);margin:0}
 .article-item{display:grid;grid-template-columns:72px 1fr;gap:0 18px;padding:14px 0;border-bottom:1px solid var(--rule)}
@@ -172,9 +174,16 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
     <div class="tc-title">Why does privacy matter to you?</div>
     <div class="tc-desc">We're building a public archive of video testimonies on surveillance, privacy, and the right to be left alone. Record a two-minute statement directly in your browser — blur your face or cover your eyes with a bar before it ever leaves your device.</div>
     <div class="tc-note">
-      <strong>Read this first.</strong> Submitted videos are uploaded to archive.org and become part of the <em>permanent public record</em>. You can censor your face (blur or eye-bar) and the raw footage never leaves your device — only the processed file is transmitted. That said, censoring is not a guarantee of anonymity. If you are genuinely concerned about being identified — by voice, background, metadata, or context — <strong>do not submit a video</strong>.
+      <strong>Read this first.</strong> Submitted videos are uploaded to archive.org and become part of the <em>permanent public record</em>. You can censor your face (blur or eye-bar) and the raw footage never leaves your device — only the processed file is transmitted. That said, censoring is not a guarantee of anonymity. If you are genuinely concerned about being identified — by voice, background, metadata, or context — <strong>do not submit a video</strong>. Prefer to write instead? <a href="https://forms.gle/arQb74vci3rJDUSVA" target="_blank" rel="noopener" style="color:var(--ink);border-bottom:1px solid var(--ink)">Submit a written testimony</a>.
     </div>
     <span class="tc-link">Record your testimony →</span>
+  </a>
+
+  <a class="testimony-cta alt" href="https://forms.gle/arQb74vci3rJDUSVA" target="_blank" rel="noopener">
+    <div class="tc-kicker">Write a testimony</div>
+    <div class="tc-title">Rather write than record?</div>
+    <div class="tc-desc">Share your story in text instead. No camera, no microphone — just words. The form takes a minute and lets you decide whether your words can appear in our communications and social media.</div>
+    <span class="tc-link">Open the written testimony form →</span>
   </a>
 
   <div id="cta-container"><p class="msg">Loading...</p></div>
