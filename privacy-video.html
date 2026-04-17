@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Privacy Testimony · Nashville Community Safety Network</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='28' fill='%23111'/></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='28' fill='%23111'/></svg>">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -12,6 +14,11 @@
 body { font-family:'IBM Plex Mono',monospace; background:var(--bg); color:var(--black); font-size:13px; line-height:1.65; }
 .page { max-width:520px; margin:0 auto; padding:44px 22px 80px; }
 .site-tag { font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--mid); margin-bottom:44px; }
+.breadcrumbs { font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--mid); margin-bottom:18px; }
+.breadcrumbs a { color:var(--mid); text-decoration:none; border-bottom:1px solid var(--line); padding-bottom:1px; }
+.breadcrumbs a:hover { color:var(--black); border-bottom-color:var(--black); }
+.breadcrumbs .bc-sep { margin:0 8px; color:var(--light); }
+.breadcrumbs .bc-current { color:var(--black); }
 .screen { display:none; }
 .screen.active { display:block; }
 h1 { font-size:19px; font-weight:500; letter-spacing:-.01em; line-height:1.3; margin-bottom:12px; }
@@ -105,6 +112,9 @@ section { margin-bottom:18px; }
 </head>
 <body>
 <div class="page">
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="index.html">Home</a><span class="bc-sep">/</span><span class="bc-current" aria-current="page">Privacy Testimony</span>
+  </nav>
   <div class="site-tag">Nashville Community Safety Network</div>
 
   <!-- INTRO -->
