@@ -13,6 +13,11 @@
 :root{--ink:#111;--mid:#444;--muted:#888;--faint:#bbb;--rule:#e0e0e0}
 body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.6;color:var(--ink);background:#fff;max-width:700px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
 
+.breadcrumbs{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:14px}
+.breadcrumbs a{color:var(--faint);text-decoration:none;border-bottom:1px solid var(--rule);padding-bottom:1px}
+.breadcrumbs a:hover{color:var(--ink);border-bottom-color:var(--ink)}
+.breadcrumbs .bc-sep{margin:0 8px;color:var(--rule)}
+.breadcrumbs .bc-current{color:var(--ink)}
 .site-label{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--faint);margin-bottom:5px}
 .site-name{font-size:16px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;line-height:1.2}
 .site-meta{font-size:11px;color:var(--muted);letter-spacing:.06em;margin-top:3px}
@@ -151,6 +156,10 @@ body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-
   <button class="abar-btn" onclick="openInvite()">+ Invite</button>
   <button class="abar-btn danger" onclick="logout()">Log out</button>
 </div>
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <span class="bc-current" aria-current="page">Home</span>
+</nav>
 
 <header>
   <div class="site-label">Nashville, TN</div>
