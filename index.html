@@ -1,1688 +1,549 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nashville Community Safety Network</title>
-<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
-<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='28' fill='%23111'/></svg>">
-<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='28' fill='%23111'/></svg>">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--ink:#111;--mid:#444;--muted:#888;--faint:#bbb;--rule:#e0e0e0}
-body{font-family:system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.6;color:var(--ink);background:#fff;max-width:700px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
-
-.breadcrumbs{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:14px}
-.breadcrumbs a{color:var(--faint);text-decoration:none;border-bottom:1px solid var(--rule);padding-bottom:1px}
-.breadcrumbs a:hover{color:var(--ink);border-bottom-color:var(--ink)}
-.breadcrumbs .bc-sep{margin:0 8px;color:var(--rule)}
-.breadcrumbs .bc-current{color:var(--ink)}
-.site-label{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--faint);margin-bottom:5px}
-.site-name{font-size:16px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;line-height:1.2}
-.site-meta{font-size:11px;color:var(--muted);letter-spacing:.06em;margin-top:3px}
-.masthead-rule{border:none;border-top:1px solid var(--ink);margin:14px 0 0}
-
-.instagram-banner{display:flex;align-items:center;justify-content:center;gap:10px;margin:1.2rem 0 .5rem;padding:12px 18px;background:linear-gradient(135deg,#4a4a4a,#3a3a3a,#2a2a2a,#1a1a1a,#111);border-radius:8px;text-decoration:none;transition:opacity .2s,transform .15s}
-.instagram-banner:hover{opacity:.92;transform:translateY(-1px)}
-.instagram-banner img{width:28px;height:28px;object-fit:contain;filter:brightness(0) invert(1)}
-.instagram-banner .ig-text{color:#fff;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-.instagram-banner .ig-handle{color:rgba(255,255,255,.85);font-size:11px;letter-spacing:.04em;text-transform:none;font-weight:400}
-
-.section-label{font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--faint);font-weight:700;margin:2rem 0 1rem}
-
-.cta-item{margin-bottom:1.4rem}
-.cta-item.high .cta-title{font-size:22px;font-weight:800;letter-spacing:-.02em;line-height:1.15;color:var(--ink);margin-bottom:5px}
-.cta-item.medium .cta-title{font-size:16px;font-weight:700;letter-spacing:-.01em;color:var(--ink);margin-bottom:4px}
-.cta-item.low .cta-title{font-size:14px;font-weight:600;color:var(--mid);margin-bottom:3px}
-.cta-desc{font-size:13px;color:var(--mid);line-height:1.55;margin-bottom:6px}
-.cta-item.low .cta-desc{font-size:12px;color:var(--muted)}
-.cta-link{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--ink);padding-bottom:1px}
-.cta-item.medium .cta-link,.cta-item.low .cta-link{color:var(--muted);border-bottom-color:var(--muted)}
-.cta-link:hover{opacity:.55}
-
-.testimony-cta{display:block;margin:0 0 1.8rem;padding:20px 22px;border:1px solid var(--ink);background:#fafafa;text-decoration:none;color:var(--ink);transition:background .15s}
-.testimony-cta:hover{background:#f0f0ee}
-.testimony-cta .tc-kicker{font-size:9px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-.testimony-cta .tc-title{font-size:22px;font-weight:800;letter-spacing:-.02em;line-height:1.2;margin-bottom:8px}
-.testimony-cta .tc-desc{font-size:13px;color:var(--mid);line-height:1.55;margin-bottom:12px}
-.testimony-cta .tc-note{font-size:11px;color:var(--mid);line-height:1.6;padding:10px 12px;border-left:2px solid #b02020;background:#fff;margin-bottom:12px}
-.testimony-cta .tc-note strong{color:#b02020;font-weight:700;letter-spacing:.02em}
-.testimony-cta .tc-link{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;border-bottom:1px solid var(--ink);padding-bottom:1px}
-.testimony-cta.alt{background:#fff}
-.testimony-cta.alt .tc-title{font-size:18px;font-weight:700}
-
-.article-rule{border:none;border-top:1px solid var(--rule);margin:0}
-.article-item{display:grid;grid-template-columns:72px 1fr;gap:0 18px;padding:14px 0;border-bottom:1px solid var(--rule)}
-.art-meta{padding-top:2px;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
-.art-icon{font-size:24px;line-height:1;display:block}
-.art-icon.substack{color:#ff6719}
-.art-icon.media{color:#1a5490}
-.art-icon.analysis{color:#6a4c93}
-.art-icon.podcast{color:#2a8a3e}
-.art-icon.social{color:#e91e63}
-.art-icon.community{color:#c0392b}
-.art-icon.other{color:var(--faint)}
-.art-date{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);line-height:1.4;white-space:pre-line}
-.art-source-label{font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);font-weight:700}
-.art-title{font-size:15px;font-weight:700;line-height:1.35;margin-bottom:3px}
-.art-title a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule)}
-.art-title a:hover{border-bottom-color:var(--ink)}
-.art-summary{font-size:12px;color:var(--mid);line-height:1.5;margin-bottom:5px}
-.art-tags{display:flex;flex-wrap:wrap;gap:4px}
-.art-tag{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border:1px solid var(--rule);padding:1px 5px}
-
-.site-footer{margin-top:2.5rem;border-top:1px solid var(--rule);padding-top:10px;display:flex;justify-content:space-between;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);flex-wrap:wrap;gap:.4rem}
-
-#admin-bar{display:none;background:var(--ink);color:#fff;padding:8px 1.5rem;margin:-2.5rem -1.5rem 2rem;font-size:10px;letter-spacing:.14em;text-transform:uppercase;align-items:center;gap:1rem;flex-wrap:wrap}
-#admin-bar.on{display:flex}
-#admin-bar span{flex:1}
-.abar-btn{background:none;border:1px solid rgba(255,255,255,.3);color:#fff;font-family:inherit;font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:3px 10px;cursor:pointer;white-space:nowrap}
-.abar-btn:hover{background:rgba(255,255,255,.12)}
-.abar-btn.danger{border-color:rgba(255,110,100,.45);color:#ffaa99}
-
-.edit-row{display:none;gap:6px;margin-top:6px}
-.edit-row.on{display:flex}
-.ebtn{background:none;border:1px solid var(--rule);color:var(--muted);font-family:inherit;font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;cursor:pointer}
-.ebtn:hover{border-color:var(--ink);color:var(--ink)}
-.ebtn.del:hover{border-color:#b02020;color:#b02020}
-
-.msg{font-size:12px;color:var(--muted);padding:1rem 0}
-.msg.err{color:#b02020}
-
-.modal-bg{display:none;background:rgba(0,0,0,.5);min-height:520px;align-items:flex-start;justify-content:center;padding:3rem 1rem}
-.modal-bg.on{display:flex}
-.modal{background:#fff;border:1px solid var(--ink);padding:1.8rem;width:100%;max-width:460px}
-.modal h2{font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem;padding-bottom:.6rem;border-bottom:1px solid var(--rule)}
-.modal .step-note{font-size:11px;color:var(--faint);margin-bottom:1.1rem;padding-top:.3rem}
-.modal label{display:block;font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);margin:.9rem 0 .25rem}
-.modal label:first-of-type{margin-top:0}
-.modal input,.modal textarea,.modal select{width:100%;border:1px solid var(--rule);font-family:inherit;font-size:13px;padding:6px 8px;color:var(--ink);outline:none;background:#fff}
-.modal input:focus,.modal textarea:focus,.modal select:focus{border-color:var(--ink)}
-.modal textarea{min-height:72px;resize:vertical;line-height:1.5}
-.modal-actions{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.2rem}
-.mbtn{background:none;border:1px solid var(--rule);color:var(--ink);font-family:inherit;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;cursor:pointer}
-.mbtn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
-.mbtn:hover{border-color:var(--ink)}
-.mbtn.primary:hover{opacity:.8}
-.mbtn:disabled{opacity:.4;cursor:default}
-.modal-msg{font-size:11px;margin-top:.6rem;display:none}
-.modal-msg.err{color:#b02020;display:block}
-.modal-msg.status{color:var(--muted);display:block}
-
-/* setup progress steps */
-.setup-steps{margin:.8rem 0 1rem;display:flex;flex-direction:column;gap:.3rem}
-.setup-step{font-size:11px;color:var(--faint);padding-left:.8rem;position:relative}
-.setup-step::before{content:'·';position:absolute;left:0}
-.setup-step.done{color:var(--mid)}
-.setup-step.done::before{content:'✓'}
-.setup-step.active{color:var(--ink);font-weight:600}
-.setup-step.active::before{content:'→'}
-.setup-step.error{color:#b02020}
-.setup-step.error::before{content:'×'}
-
-/* changelog */
-.log-entry{padding:8px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:110px 36px 1fr;gap:0 10px;align-items:start}
-.log-ts{font-size:10px;color:var(--faint);letter-spacing:.02em}
-.log-op{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--mid)}
-.log-detail{font-size:11px;color:var(--mid)}
-.log-enc{font-size:10px;color:var(--faint);font-style:italic}
-
-@media(max-width:480px){.article-item{grid-template-columns:1fr}.art-meta{flex-direction:row;align-items:center;gap:10px;margin-bottom:4px}.art-icon{font-size:20px}}
-</style>
-</head>
-<body>
-
-<div id="admin-bar">
-  <span>Edit mode</span>
-  <button class="abar-btn" onclick="openAddCTA()">+ Action</button>
-  <button class="abar-btn" onclick="openAddArticle()">+ Article</button>
-  <button class="abar-btn" onclick="openImport()">+ Import</button>
-  <button class="abar-btn" id="save-btn" onclick="saveAll()">Save</button>
-  <button class="abar-btn" onclick="openChangelog()">Log</button>
-  <button class="abar-btn" onclick="openInvite()">+ Invite</button>
-  <button class="abar-btn danger" onclick="logout()">Log out</button>
-</div>
-
-<nav class="breadcrumbs" aria-label="Breadcrumb">
-  <span class="bc-current" aria-current="page">Home</span>
-</nav>
-
-<header>
-  <div class="site-label">Nashville, TN</div>
-  <div class="site-name">Community Safety Network</div>
-  <div class="site-meta">Accountability &nbsp;·&nbsp; Transparency</div>
-  <hr class="masthead-rule">
-  <a href="https://www.instagram.com/nashcommunitysafetynetwork_/" target="_blank" rel="noopener" class="instagram-banner">
-    <i class="ph ph-instagram-logo" style="font-size:28px;color:#fff"></i>
-    <span>
-      <span class="ig-text">Follow us on Instagram</span><br>
-      <span class="ig-handle">@nashcommunitysafetynetwork_</span>
-    </span>
-  </a>
-</header>
-
-<section>
-  <div class="section-label">Calls to action</div>
-
-  <a class="testimony-cta" href="https://forms.gle/arQb74vci3rJDUSVA" target="_blank" rel="noopener">
-    <div class="tc-kicker">Share a testimony</div>
-    <div class="tc-title">Why does privacy matter to you?</div>
-    <div class="tc-desc">Share your story in text. No camera, no microphone — just words. The form takes a minute and lets you decide whether your words can appear in our communications and social media.</div>
-    <span class="tc-link">Open the written testimony form →</span>
-  </a>
-
-  <div id="cta-container"><p class="msg">Loading...</p></div>
-</section>
-
-<section>
-  <div class="section-label">News &amp; articles</div>
-  <hr class="article-rule">
-  <div id="articles-container"><p class="msg">Loading...</p></div>
-</section>
-
-<footer class="site-footer">
-  <span>Nashville Community Safety Network</span>
-  <span id="footer-date"></span>
-</footer>
-
-<!-- ══ STEP 1: Matrix identity ══ -->
-<div class="modal-bg" id="modal-matrix">
-  <div class="modal">
-    <h2>Editor login</h2>
-    <p class="step-note">Step 1 — Matrix identity (hyphae.social)</p>
-    <label>Matrix user</label>
-    <input type="text" id="matrix-user" autocomplete="username" placeholder="username or @user:hyphae.social">
-    <label>Matrix password</label>
-    <input type="password" id="matrix-pw" autocomplete="current-password">
-    <p class="modal-msg" id="matrix-msg"></p>
-    <div class="modal-actions">
-      <button class="mbtn" onclick="closeAllModals()">Cancel</button>
-      <button class="mbtn primary" id="matrix-btn" onclick="doMatrixLogin()">Continue</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nashville Community Safety Network</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css"
+    />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='28' fill='%23111'/></svg>"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='28' fill='%23111'/></svg>"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="admin-bar">
+      <span>Edit mode</span>
+      <button class="abar-btn" onclick="openAddCTA()">+ Action</button>
+      <button class="abar-btn" onclick="openAddArticle()">+ Article</button>
+      <button class="abar-btn" onclick="openImport()">+ Import</button>
+      <button class="abar-btn" id="save-btn" onclick="saveAll()">Save</button>
+      <button class="abar-btn" onclick="openChangelog()">Log</button>
+      <button class="abar-btn" onclick="openInvite()">+ Invite</button>
+      <button class="abar-btn danger" onclick="logout()">Log out</button>
     </div>
-  </div>
-</div>
 
-<!-- ══ INVITE EDITOR ══ -->
-<div class="modal-bg" id="invite-modal">
-  <div class="modal">
-    <h2>Invite editor</h2>
-    <p class="step-note">Grant another hyphae.social user upload access by inviting them to the site's Matrix room. Upon joining they automatically receive the admin credentials from room state.</p>
-    <label>Matrix user</label>
-    <input type="text" id="invite-user" autocomplete="off" placeholder="username or @user:hyphae.social">
-    <p class="modal-msg" id="invite-msg"></p>
-    <div class="modal-actions">
-      <button class="mbtn" onclick="closeAllModals()">Cancel</button>
-      <button class="mbtn primary" id="invite-btn" onclick="doInvite()">Invite</button>
-    </div>
-  </div>
-</div>
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <span class="bc-current" aria-current="page">Home</span>
+    </nav>
 
-<!-- ══ FIRST-RUN SETUP ══ -->
-<div class="modal-bg" id="modal-setup">
-  <div class="modal">
-    <h2>First-run setup</h2>
-    <p class="step-note">Initialize this site's Matrix room and encryption key.</p>
-    <div class="setup-steps" id="setup-steps">
-      <div class="setup-step" id="ss-room">Create private Matrix room</div>
-      <div class="setup-step" id="ss-key">Generate AES-256-GCM encryption key</div>
-      <div class="setup-step" id="ss-state">Store config, key &amp; admin pw in room state</div>
-      <div class="setup-step" id="ss-gcs">Write site config to GCS</div>
-    </div>
-    <label>Write webhook URL</label>
-    <input type="url" id="setup-write-url" value="https://n8n.intelechia.com/webhook/site/write">
-    <label>Admin password (n8n Bearer token)</label>
-    <input type="password" id="setup-admin-pw" autocomplete="off">
-    <p class="modal-msg" id="setup-msg"></p>
-    <div class="modal-actions">
-      <button class="mbtn" onclick="closeAllModals()">Cancel</button>
-      <button class="mbtn primary" id="setup-btn" onclick="doFirstRunSetup()">Initialize</button>
-    </div>
-  </div>
-</div>
+    <header>
+      <div class="site-label">Nashville, TN</div>
+      <div class="site-name">Community Safety Network</div>
+      <div class="site-meta">Accountability &nbsp;·&nbsp; Transparency</div>
+      <hr class="masthead-rule" />
+      <a
+        href="https://www.instagram.com/nashcommunitysafetynetwork_/"
+        target="_blank"
+        rel="noopener"
+        class="instagram-banner"
+      >
+        <i
+          class="ph ph-instagram-logo"
+          style="font-size: 28px; color: #fff"
+        ></i>
+        <span>
+          <span class="ig-text">Follow us on Instagram</span><br />
+          <span class="ig-handle">@nashcommunitysafetynetwork_</span>
+        </span>
+      </a>
+    </header>
 
-<!-- ══ STEP 2: Admin password ══ -->
-<div class="modal-bg" id="modal-admin">
-  <div class="modal">
-    <h2>Editor login</h2>
-    <p class="step-note">Step 2 — Admin password</p>
-    <label>Admin password</label>
-    <input type="password" id="admin-pw" autocomplete="off">
-    <p class="modal-msg" id="admin-msg"></p>
-    <div class="modal-actions">
-      <button class="mbtn" onclick="closeAllModals()">Cancel</button>
-      <button class="mbtn primary" id="admin-btn" onclick="doAdminLogin()">Unlock</button>
-    </div>
-  </div>
-</div>
+    <section>
+      <div class="section-label">Calls to action</div>
 
-<!-- ══ CTA FORM ══ -->
-<div class="modal-bg" id="cta-modal">
-  <div class="modal">
-    <h2 id="cta-modal-h">Add call to action</h2>
-    <input type="hidden" id="cta-id">
-    <label>Title</label><input type="text" id="cta-title">
-    <label>Description</label><textarea id="cta-desc"></textarea>
-    <label>Link URL (optional)</label><input type="url" id="cta-url">
-    <label>Link label</label><input type="text" id="cta-lbl" placeholder="Take action">
-    <label>Urgency</label>
-    <select id="cta-urgency">
-      <option value="high">High</option>
-      <option value="medium" selected>Medium</option>
-      <option value="low">Low</option>
-    </select>
-    <div class="modal-actions">
-      <button class="mbtn" onclick="closeAllModals()">Cancel</button>
-      <button class="mbtn primary" onclick="saveCTA()">Save</button>
-    </div>
-  </div>
-</div>
+      <a
+        class="testimony-cta"
+        href="https://forms.gle/arQb74vci3rJDUSVA"
+        target="_blank"
+        rel="noopener"
+      >
+        <h3 class="tc-kicker">Share a testimony</h3>
+        <h2 class="tc-title">Why does privacy matter to you?</h2>
+        <p class="tc-desc">
+          Share your story in text. No camera, no microphone — just words. The
+          form takes a minute and lets you decide whether your words can appear
+          in our communications and social media.
+        </p>
+        <span class="tc-link">Open the written testimony form →</span>
+      </a>
 
-<!-- ══ ARTICLE FORM ══ -->
-<div class="modal-bg" id="art-modal">
-  <div class="modal">
-    <h2 id="art-modal-h">Add article</h2>
-    <input type="hidden" id="art-id">
-    <label>Headline</label><input type="text" id="art-title">
-    <label>URL</label><input type="url" id="art-url">
-    <label>Source type</label>
-    <select id="art-source-type">
-      <option value="">Auto-detect from URL</option>
-      <option value="media">News outlet (newspaper, TV, radio, wire)</option>
-      <option value="substack">Newsletter / Substack (independent reporting)</option>
-      <option value="analysis">Long-form analysis / opinion</option>
-      <option value="podcast">Podcast</option>
-      <option value="social">Social media post</option>
-      <option value="community">Community</option>
-      <option value="other">Other link</option>
-    </select>
-    <label>Date</label><input type="date" id="art-date">
-    <label>Summary (optional)</label><textarea id="art-summary"></textarea>
-    <label>Tags (comma-separated)</label><input type="text" id="art-tags">
-    <div class="modal-actions">
-      <button class="mbtn" onclick="closeAllModals()">Cancel</button>
-      <button class="mbtn primary" onclick="saveArt()">Save</button>
-    </div>
-  </div>
-</div>
+      <div id="cta-container"><p class="msg">Loading...</p></div>
+    </section>
 
-<!-- ══ IMPORT CONTENT ══ -->
-<div class="modal-bg" id="import-modal">
-  <div class="modal">
-    <h2>Import content</h2>
-    <p class="step-note">Upload a JSON file of articles and/or calls to action. Merge adds new items and skips duplicates (matched by URL for articles, title for actions). Replace clears everything and loads the file from scratch. Either way, nothing is published until you hit Save in the top bar.</p>
-    <label>Content file (.json)</label>
-    <input type="file" id="import-file" accept=".json,application/json">
-    <label>Mode</label>
-    <select id="import-mode">
-      <option value="merge" selected>Merge — skip duplicates</option>
-      <option value="replace">Replace — clear and reload</option>
-    </select>
-    <p class="modal-msg" id="import-msg"></p>
-    <div class="modal-actions">
-      <button class="mbtn" onclick="closeAllModals()">Cancel</button>
-      <button class="mbtn primary" id="import-btn" onclick="doImport()">Import</button>
-    </div>
-  </div>
-</div>
+    <section>
+      <div class="section-label">News &amp; articles</div>
+      <hr class="article-rule" />
+      <div id="articles-container"><p class="msg">Loading...</p></div>
+    </section>
 
-<!-- ══ CHANGELOG ══ -->
-<div class="modal-bg" id="log-modal">
-  <div class="modal" style="max-width:580px">
-    <h2>Change log</h2>
-    <div id="log-container"><p class="msg">Loading...</p></div>
-    <div class="modal-actions" style="margin-top:1rem">
-      <button class="mbtn primary" onclick="closeAllModals()">Close</button>
-    </div>
-  </div>
-</div>
+    <footer class="site-footer">
+      <span>Nashville Community Safety Network</span>
+      <span id="footer-date"></span>
+    </footer>
 
-<!-- ══ HARDCODED INITIAL CONTENT ══
+    <!-- ══ STEP 1: Matrix identity ══ -->
+    <div class="modal-bg" id="modal-matrix">
+      <div class="modal">
+        <h2>Editor login</h2>
+        <p class="step-note">Step 1 — Matrix identity (hyphae.social)</p>
+        <label>Matrix user</label>
+        <input
+          type="text"
+          id="matrix-user"
+          autocomplete="username"
+          placeholder="username or @user:hyphae.social"
+        />
+        <label>Matrix password</label>
+        <input type="password" id="matrix-pw" autocomplete="current-password" />
+        <p class="modal-msg" id="matrix-msg"></p>
+        <div class="modal-actions">
+          <button class="mbtn" onclick="closeAllModals()">Cancel</button>
+          <button
+            class="mbtn primary"
+            id="matrix-btn"
+            onclick="doMatrixLogin()"
+          >
+            Continue
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ INVITE EDITOR ══ -->
+    <div class="modal-bg" id="invite-modal">
+      <div class="modal">
+        <h2>Invite editor</h2>
+        <p class="step-note">
+          Grant another hyphae.social user upload access by inviting them to the
+          site's Matrix room. Upon joining they automatically receive the admin
+          credentials from room state.
+        </p>
+        <label>Matrix user</label>
+        <input
+          type="text"
+          id="invite-user"
+          autocomplete="off"
+          placeholder="username or @user:hyphae.social"
+        />
+        <p class="modal-msg" id="invite-msg"></p>
+        <div class="modal-actions">
+          <button class="mbtn" onclick="closeAllModals()">Cancel</button>
+          <button class="mbtn primary" id="invite-btn" onclick="doInvite()">
+            Invite
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ FIRST-RUN SETUP ══ -->
+    <div class="modal-bg" id="modal-setup">
+      <div class="modal">
+        <h2>First-run setup</h2>
+        <p class="step-note">
+          Initialize this site's Matrix room and encryption key.
+        </p>
+        <div class="setup-steps" id="setup-steps">
+          <div class="setup-step" id="ss-room">Create private Matrix room</div>
+          <div class="setup-step" id="ss-key">
+            Generate AES-256-GCM encryption key
+          </div>
+          <div class="setup-step" id="ss-state">
+            Store config, key &amp; admin pw in room state
+          </div>
+          <div class="setup-step" id="ss-gcs">Write site config to GCS</div>
+        </div>
+        <label>Write webhook URL</label>
+        <input
+          type="url"
+          id="setup-write-url"
+          value="https://n8n.intelechia.com/webhook/site/write"
+        />
+        <label>Admin password (n8n Bearer token)</label>
+        <input type="password" id="setup-admin-pw" autocomplete="off" />
+        <p class="modal-msg" id="setup-msg"></p>
+        <div class="modal-actions">
+          <button class="mbtn" onclick="closeAllModals()">Cancel</button>
+          <button
+            class="mbtn primary"
+            id="setup-btn"
+            onclick="doFirstRunSetup()"
+          >
+            Initialize
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ STEP 2: Admin password ══ -->
+    <div class="modal-bg" id="modal-admin">
+      <div class="modal">
+        <h2>Editor login</h2>
+        <p class="step-note">Step 2 — Admin password</p>
+        <label>Admin password</label>
+        <input type="password" id="admin-pw" autocomplete="off" />
+        <p class="modal-msg" id="admin-msg"></p>
+        <div class="modal-actions">
+          <button class="mbtn" onclick="closeAllModals()">Cancel</button>
+          <button class="mbtn primary" id="admin-btn" onclick="doAdminLogin()">
+            Unlock
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CTA FORM ══ -->
+    <div class="modal-bg" id="cta-modal">
+      <div class="modal">
+        <h2 id="cta-modal-h">Add call to action</h2>
+        <input type="hidden" id="cta-id" />
+        <label>Title</label><input type="text" id="cta-title" />
+        <label>Description</label><textarea id="cta-desc"></textarea>
+        <label>Link URL (optional)</label><input type="url" id="cta-url" />
+        <label>Link label</label
+        ><input type="text" id="cta-lbl" placeholder="Take action" />
+        <label>Urgency</label>
+        <select id="cta-urgency">
+          <option value="high">High</option>
+          <option value="medium" selected>Medium</option>
+          <option value="low">Low</option>
+        </select>
+        <div class="modal-actions">
+          <button class="mbtn" onclick="closeAllModals()">Cancel</button>
+          <button class="mbtn primary" onclick="saveCTA()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ARTICLE FORM ══ -->
+    <div class="modal-bg" id="art-modal">
+      <div class="modal">
+        <h2 id="art-modal-h">Add article</h2>
+        <input type="hidden" id="art-id" />
+        <label>Headline</label><input type="text" id="art-title" />
+        <label>URL</label><input type="url" id="art-url" />
+        <label>Source type</label>
+        <select id="art-source-type">
+          <option value="">Auto-detect from URL</option>
+          <option value="media">
+            News outlet (newspaper, TV, radio, wire)
+          </option>
+          <option value="substack">
+            Newsletter / Substack (independent reporting)
+          </option>
+          <option value="analysis">Long-form analysis / opinion</option>
+          <option value="podcast">Podcast</option>
+          <option value="social">Social media post</option>
+          <option value="community">Community</option>
+          <option value="other">Other link</option>
+        </select>
+        <label>Date</label><input type="date" id="art-date" />
+        <label>Summary (optional)</label><textarea id="art-summary"></textarea>
+        <label>Tags (comma-separated)</label><input type="text" id="art-tags" />
+        <div class="modal-actions">
+          <button class="mbtn" onclick="closeAllModals()">Cancel</button>
+          <button class="mbtn primary" onclick="saveArt()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ IMPORT CONTENT ══ -->
+    <div class="modal-bg" id="import-modal">
+      <div class="modal">
+        <h2>Import content</h2>
+        <p class="step-note">
+          Upload a JSON file of articles and/or calls to action. Merge adds new
+          items and skips duplicates (matched by URL for articles, title for
+          actions). Replace clears everything and loads the file from scratch.
+          Either way, nothing is published until you hit Save in the top bar.
+        </p>
+        <label>Content file (.json)</label>
+        <input type="file" id="import-file" accept=".json,application/json" />
+        <label>Mode</label>
+        <select id="import-mode">
+          <option value="merge" selected>Merge — skip duplicates</option>
+          <option value="replace">Replace — clear and reload</option>
+        </select>
+        <p class="modal-msg" id="import-msg"></p>
+        <div class="modal-actions">
+          <button class="mbtn" onclick="closeAllModals()">Cancel</button>
+          <button class="mbtn primary" id="import-btn" onclick="doImport()">
+            Import
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CHANGELOG ══ -->
+    <div class="modal-bg" id="log-modal">
+      <div class="modal" style="max-width: 580px">
+        <h2>Change log</h2>
+        <div id="log-container"><p class="msg">Loading...</p></div>
+        <div class="modal-actions" style="margin-top: 1rem">
+          <button class="mbtn primary" onclick="closeAllModals()">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ HARDCODED INITIAL CONTENT ══
      Baked into the page so the site renders with zero network dependency.
      The webhook read endpoint is still consulted after load; if it returns
      content that differs from this seed, the page re-renders with that
      version. Mirror of migrated-content.json — keep the two in sync. -->
-<script type="application/json" id="ncsn-seed">
-{
-  "version": 1,
-  "articles": [
-    {
-      "title": "Nashville's Unauthorized Secret Police Force And The People & Orgs Enabling It",
-      "url": "https://readrichtext.substack.com/p/nashvilles-unauthorized-secret-police",
-      "date": "2025-11-05",
-      "sourceType": "substack",
-      "summary": "The Nashville Downtown Partnership's budget has not been reviewed or approved by Metro Council in 22 years. Its president has doubled his salary past $500K while public money funds a private policing operation licensed through a shell company.",
-      "tags": ["NDP", "Secret Police", "Metro Council", "Accountability"]
-    },
-    {
-      "title": "Downtown Partnership's Specially Assessed Nonsense",
-      "url": "https://readrichtext.substack.com/p/downtown-partnerships-specially-assessed",
-      "date": "2025-11-12",
-      "sourceType": "substack",
-      "summary": "Since 1998 the CBID has funneled obligatory special assessments through the DMC to the Downtown Partnership. The last Council-approved CBID budget was FY 2003-2004 — more than sixty million dollars have moved without the legally required Metro Council approval.",
-      "tags": ["NDP", "CBID", "DMC", "Budget", "Metro Council"]
-    },
-    {
-      "title": "Sunday Rewind: Freddie O'Connell — 'Strong Communities are Better for Safety than a Surveillance State' and Other Things He Reversed Course On",
-      "url": "https://readrichtext.substack.com/p/sunday-rewind-freddie-oconnell-strong",
-      "date": "2025-11-16",
-      "sourceType": "substack",
-      "summary": "A look back at Mayor O'Connell's own record: voting to ban LPRs in 2017, warning in 2021 that strong communities beat a surveillance state, then reversing on Fusus, LPRs, and the $15M MOU once in the mayor's office.",
-      "tags": ["O'Connell", "Surveillance", "LPR", "Fusus"]
-    },
-    {
-      "title": "From the Makers of Fusus (Literally): Meet 'LeoSight' — Mayor's MOU Resurrects Rejected Surveillance Tools Under New Branding",
-      "url": "https://readrichtext.substack.com/p/from-the-makers-of-fusus-literally",
-      "date": "2025-11-24",
-      "sourceType": "substack",
-      "summary": "LeoSight's CEO spent three years at Fusus through the Axon acquisition and took over LeoSight after Nashville rejected Fusus in April 2025. LeoSight itself is a rebrand of a 2015 company called Live Earth. The Mayor's MOU quietly reinstates the technology Nashville already said no to.",
-      "tags": ["LeoSight", "Fusus", "Axon", "Surveillance", "MOU"]
-    },
-    {
-      "title": "Breaking: The Mayor's Official Coordinating Nashville's Surveillance MOU Helped Build ICE's Data Pipeline at LexisNexis",
-      "url": "https://readrichtext.substack.com/p/breaking-the-mayors-official-coordinating",
-      "date": "2025-12-02",
-      "sourceType": "substack",
-      "summary": "Kristin Wilson, Mayor O'Connell's Chief of Operations and Performance, is coordinating the $15M surveillance MOU between MNPD and NDP. Before public service she spent six years at LexisNexis Risk Solutions, which currently holds a $22.1M contract with ICE.",
-      "tags": ["Kristin Wilson", "LexisNexis", "ICE", "MOU"]
-    },
-    {
-      "title": "State Records Reveal Nashville Downtown Partnership Was Never Getting the $15M",
-      "url": "https://readrichtext.substack.com/",
-      "date": "2025-12-04",
-      "sourceType": "substack",
-      "summary": "State documents show the District Management Corporation — not NDP — was awarded the grant, contradicting repeated claims by the Mayor's Office that the $15M was going directly to the Downtown Partnership. VERIFY URL: article exists but slug not confirmed from search index; update the link in-app when you find it.",
-      "tags": ["Grant", "NDP", "DMC", "Public Records"]
-    },
-    {
-      "title": "Breaking: Same Exec Who Literally Signed Fusus Contracts With Chief Drake Now Has New Surveillance Company in Mayor's MOU",
-      "url": "https://readrichtext.substack.com/p/thanksgiving-mou-mnpd-slipped-in",
-      "date": "2025-12-15",
-      "sourceType": "substack",
-      "summary": "The original MNPD-Fusus contract carried Mark Wood's signature alongside Chief Drake's. Now Wood runs LeoSight, and the Mayor's Thanksgiving-eve MOU routes $15M toward the same expanded capabilities, sidestepping procurement and public hearing requirements — a replay of the Fusus pattern.",
-      "tags": ["Mark Wood", "Fusus", "LeoSight", "MNPD", "MOU"]
-    },
-    {
-      "title": "(Surveillance MOU) There Is No Use Amending the MOU Resolution — CMs' Attempts To Fix It Are Making It Worse",
-      "url": "https://readrichtext.substack.com/p/surveillance-mou-there-is-no-amending",
-      "date": "2025-12-15",
-      "sourceType": "substack",
-      "summary": "Metro Council already has 100% oversight over NDMC funds through Metro Ordinance BL2017-580 and 0% oversight over NDP funds. The MOU trades statutory line-item control for a voluntary agreement the mayor can amend without Council approval. Seven independent grounds for rejection — pick any one.",
-      "tags": ["MOU", "NDMC", "NDP", "Metro Council", "Oversight"]
-    },
-    {
-      "title": "Dispatch from the December 15th Budget and Finance Committee Meeting",
-      "url": "https://readrichtext.substack.com/p/dispatch-from-the-december-15th-budget",
-      "date": "2025-12-16",
-      "sourceType": "substack",
-      "summary": "On-the-ground reporting from the Budget and Finance Committee meeting where council members began dismantling the Mayor's claims that the MOU was needed to restrict what NDP could buy.",
-      "tags": ["Metro Council", "Budget", "MOU"]
-    },
-    {
-      "title": "The People's House: How Nashville Metro Council Is Starting To Reclaim Democratic Oversight from an Autocratic Mayor's Office",
-      "url": "https://readrichtext.substack.com/p/the-peoples-house-how-nashville-metro",
-      "date": "2025-12-17",
-      "sourceType": "substack",
-      "summary": "Plain text, council testimony, and a public records release show it was MNPD in concert with the Mayor's Office — not NDP — that put the most problematic surveillance technology in the MOU to begin with. The narrative that the MOU 'limited' what NDP could buy collapses on contact with the record.",
-      "tags": ["Metro Council", "Oversight", "MNPD", "MOU"]
-    },
-    {
-      "title": "Correction About THP Trooper Throwing Man to Ground for Kicking His Car (After Almost Running Him Over)",
-      "url": "https://readrichtext.substack.com/p/correction-about-thp-trooper-throwing",
-      "date": "2025-10-05",
-      "sourceType": "substack",
-      "summary": "Correction and context on the September 20, 2025 incident: THP Sgt. DeWunya Topps — off-duty in uniform for Solaren Risk Management — slammed a pedestrian to the ground after nearly running him over in a crosswalk. The man kicked one car, not 'cars' as earlier reported.",
-      "tags": ["THP", "Solaren", "Use of Force", "Off-Duty Policing"]
-    },
-    {
-      "title": "In Wake of ICE Killing, O'Connell Files $3.38M Surveillance & Policing Donations via Funding Used for ICE Collaboration",
-      "url": "https://readrichtext.substack.com/p/in-wake-of-ice-killing-oconnell-files",
-      "date": "2026-01-20",
-      "sourceType": "substack",
-      "summary": "After a fatal ICE encounter in Nashville, the Mayor's Office moved a $3.38M surveillance and policing donation package through funding streams that have previously flowed into ICE collaboration channels. Approximate date — verify in-app.",
-      "tags": ["ICE", "O'Connell", "Surveillance", "MNPD"]
-    },
-    {
-      "title": "Buckle Up: Another Fight Over Surveillance is Upon Us",
-      "url": "https://readrichtext.substack.com/p/surveillance-again-billionaires-invest",
-      "date": "2026-03-28",
-      "sourceType": "substack",
-      "summary": "Flock Safety just raised $275M at a $7.5B valuation led by Andreessen Horowitz. Nashville is the case study for how procurement is circumvented to eliminate public consent over surveillance — and LPRs feed a larger AI-driven infrastructure that can flow into Palantir. MNPD's budget still includes ~$2.8M for LPRs.",
-      "tags": ["Flock", "LPR", "Palantir", "Andreessen Horowitz", "Procurement"]
-    },
-    {
-      "title": "We Built the Surveillance App Nashville's Leaders Have Been Asking For. Except It Tracks Them.",
-      "url": "https://readrichtext.substack.com/p/we-built-the-surveillance-app-nashvilles",
-      "date": "2026-04-07",
-      "sourceType": "substack",
-      "summary": "MNPD and the Mayor's Office keep pushing LPRs even as O'Connell and Chief Drake tout a 20% drop in crime, 18% drop in violent crime, and burglary at its lowest level since the 1960s — a contradiction the city's official messaging quietly papers over.",
-      "tags": ["Surveillance", "LPR", "Flock", "MNPD", "O'Connell"]
-    },
-    {
-      "title": "A Nashville Proposal Could Outsource Surveillance and Policing to a Nonprofit",
-      "url": "https://truthout.org/articles/a-nashville-proposal-could-outsource-surveillance-and-policing-to-a-nonprofit/",
-      "date": "2025-12-02",
-      "sourceType": "analysis",
-      "summary": "Truthout feature by Mike Lacy and Ed Vogel on how Nashville is leveraging a local nonprofit to build a public-private panopticon. Deep-dive analysis of how the Downtown Partnership MOU bypasses democratic oversight and revives the Fusus playbook under the LeoSight brand.",
-      "tags": ["Truthout", "Mike Lacy", "MOU", "LeoSight", "Democratic Oversight"]
-    },
-    {
-      "title": "Mayor's Office Files Resolution to Allow Surveillance Use",
-      "url": "https://www.nashvillescene.com/news/pithinthewind/mayors-office-downtown-surveillance/article_651e0aa9-e3f4-4ddc-9531-27803c5c149e.html",
-      "date": "2025-12-01",
-      "sourceType": "media",
-      "summary": "Nashville Scene's Pith in the Wind reports that the Mayor's Office quietly filed the MOU before Thanksgiving. The package included security cameras, noise-camera enforcement, a live video wall, and two separate real-time surveillance platforms — a backdoor route to the same tools rejected in the Fusus debate.",
-      "tags": ["Nashville Scene", "MOU", "Pith in the Wind", "Fusus"]
-    },
-    {
-      "title": "Metro Council to Consider Downtown Partnership Security Grant",
-      "url": "https://nashvillebanner.com/2025/12/01/nashville-downtown-partnership-fusus-tennessee-grant/",
-      "date": "2025-12-01",
-      "sourceType": "media",
-      "summary": "Nashville Banner's pre-hearing report on the $15M MOU, connecting LeoSight's leadership back to the Fusus contracts Mark Wood personally signed. Council Member Erin Evans tells the Banner she expects many members to seek a deferral.",
-      "tags": ["Nashville Banner", "MOU", "LeoSight", "Erin Evans"]
-    },
-    {
-      "title": "Safety or Surveillance? $15M Downtown Nashville Plan Sparks Debate",
-      "url": "https://www.newschannel5.com/news/safety-or-surveillance-15m-downtown-nashville-plan-sparks-debate",
-      "date": "2025-12-03",
-      "sourceType": "media",
-      "summary": "NewsChannel 5 on the widening split between city leadership and residents over whether a $15M state grant should fund downtown surveillance technology targeting vulnerable communities.",
-      "tags": ["NewsChannel 5", "MOU", "Metro Council"]
-    },
-    {
-      "title": "Downtown Nashville Could See New Surveillance Tech After $15M State Grant",
-      "url": "https://www.wkrn.com/news/local-news/nashville/15m-grant-surveillance-tech/",
-      "date": "2025-12-02",
-      "sourceType": "media",
-      "summary": "WKRN's roundup of the surveillance tools the MOU would enable: noise-detection cameras, AI-driven video analysis, and expansion of the existing downtown camera network via the Nashville Downtown Partnership.",
-      "tags": ["WKRN", "MOU", "Cameras"]
-    },
-    {
-      "title": "Nashville Surveillance Cameras Spark More Pushback as Metro Council Considers Expanded Technology",
-      "url": "https://wpln.org/post/nashville-surveillance-cameras-spark-more-pushback-as-metro-council-considers-expanded-technology/",
-      "date": "2025-12-10",
-      "sourceType": "media",
-      "summary": "WPLN covers the community hearings as the $15M grant — already earmarked in part for new MNPD cameras — draws sustained opposition from residents, civil liberties groups, and music-community members.",
-      "tags": ["WPLN", "Metro Council", "Cameras"]
-    },
-    {
-      "title": "Nashville Council Rejects Downtown Surveillance Cameras in Split Vote on Safety Plan",
-      "url": "https://www.newschannel5.com/news/metro-council-rejects-downtown-surveillance-cameras-in-split-vote-on-nashville-safety-plan",
-      "date": "2026-01-21",
-      "sourceType": "media",
-      "summary": "Metro Council rejects 20-15 (with three abstentions) a $150,000 measure that would have added 15 new police surveillance cameras downtown — the first piece of the broader $15M plan to come to a vote after prior amendments stripped out LeoSight and Fivecast.",
-      "tags": ["NewsChannel 5", "Metro Council", "Vote", "Cameras"]
-    },
-    {
-      "title": "TN-07 Results! Plus, Is Downtown Getting Mass Surveillance?",
-      "url": "https://nashville.citycast.fm/podcasts/tn-07-results-plus-is-downtown-getting-mass-surveillance",
-      "date": "2025-12-03",
-      "sourceType": "podcast",
-      "summary": "City Cast Nashville podcast: Steven Hale (Nashville Banner) joins host Marie Cecile Anderson and executive producer Whitney Pastorek to break down the $15M MOU, the armored SWAT vehicle, and the backlash.",
-      "tags": ["City Cast Nashville", "Podcast", "Steven Hale", "MOU"]
-    },
-    {
-      "title": "Increased Surveillance and Policing Does Not Make Nashville Safer",
-      "url": "https://www.opentablenashville.org/post/increased-surveillance-and-policing-does-not-make-nashville-safer",
-      "date": "2025-12-05",
-      "sourceType": "community",
-      "summary": "Open Table Nashville's statement of opposition to the MOU, arguing that security built on surveillance disproportionately targets refugees, asylum seekers, immigrants, LGBTQIA+ folks, and people of color — and doesn't make anyone safer.",
-      "tags": ["Open Table Nashville", "Opposition"]
-    },
-    {
-      "title": "Nashville Residents Push Back as City Revives Police Surveillance Plan",
-      "url": "https://liberationnews.org/nashville-residents-push-back-as-city-revives-police-surveillance-plan/",
-      "date": "2025-12-08",
-      "sourceType": "analysis",
-      "summary": "Liberation News on the resident-led organizing that forced the deferrals and amendments, ultimately driving the camera proposal to a losing vote.",
-      "tags": ["Liberation News", "Organizing", "Opposition"]
-    }
-  ],
-  "ctas": [
-    {
-      "title": "Read the primary-source reporting",
-      "description": "{Rich Text} is the independent investigative newsletter that broke most of the surveillance, NDP, and MOU stories linked below. Subscribe, share, and support the reporting.",
-      "url": "https://readrichtext.substack.com/",
-      "linkLabel": "Read {Rich Text}",
-      "urgency": "high"
-    },
-    {
-      "title": "Demand Metro Council oversight of the Downtown Partnership",
-      "description": "NDP's budget has not been reviewed by Metro Council in 22 years, even as it funnels specially-assessed public money into a private policing operation. Contact your council member and ask why.",
-      "url": "https://www.nashville.gov/departments/council/districts",
-      "linkLabel": "Find your council member",
-      "urgency": "high"
-    },
-    {
-      "title": "Watch the MNPD surveillance budget",
-      "description": "Even after the $15M MOU was stripped of LeoSight, Fivecast, and new cameras, MNPD's ongoing budget still carries roughly $2.8M for License Plate Recognition. Track every line item before the next Flock contract.",
-      "url": "https://readrichtext.substack.com/p/surveillance-again-billionaires-invest",
-      "linkLabel": "Read the breakdown",
-      "urgency": "medium"
-    },
-    {
-      "title": "No MOU Nashville — campaign archive",
-      "description": "Timeline, talking points, and the organizing record of how Nashville pushed back on the surveillance MOU and forced the council to reject new cameras in January 2026.",
-      "url": "https://clovenbradshaw-ctrl.github.io/mou/",
-      "linkLabel": "Browse the archive",
-      "urgency": "low"
-    }
-  ]
-}
-</script>
-
-<script>
-/* ══════════════════════════════════════════════════════════
-   CONFIG — safe to commit; no secrets
-   ══════════════════════════════════════════════════════════ */
-const CFG = {
-  configEndpoint: 'https://n8n.intelechia.com/webhook/site/config',
-  readEndpoint:   'https://n8n.intelechia.com/webhook/site/read',
-  writeEndpoint:  'https://n8n.intelechia.com/webhook/site/write',
-  logEndpoint:    'https://n8n.intelechia.com/webhook/site/log',
-
-  matrixServer:      'https://hyphae.social',
-  matrixDomain:      'hyphae.social',
-  matrixConfigState: 'community.ncsn.config',
-  matrixKeyState:    'community.ncsn.key',
-  matrixAdminState:  'community.ncsn.admin',
-
-  eoSite: 'page',
-};
-
-/* ══════════════════════════════════════════════════════════
-   SOURCE TYPES — visual taxonomy for articles
-   Phosphor icon (regular weight) + label + accent color.
-   Edit in the Article modal; auto-detected on import by URL.
-   ══════════════════════════════════════════════════════════ */
-const SOURCE_TYPES = {
-  media:     {icon:'ph-newspaper',         label:'News outlet'},
-  substack:  {icon:'ph-pen-nib',          label:'Newsletter / Substack'},
-  analysis:  {icon:'ph-magnifying-glass',  label:'Long-form analysis'},
-  podcast:   {icon:'ph-microphone',        label:'Podcast'},
-  social:    {icon:'ph-share-network',     label:'Social media'},
-  community: {icon:'ph-hand-heart',        label:'Community'},
-  other:     {icon:'ph-link-simple',       label:'Other link'},
-};
-
-// Auto-detect source type from a URL when one isn't supplied.
-// Order matters: news outlets are checked FIRST so an outlet that happens to
-// publish on Substack (or a .org domain) is still tagged as "media", not as a
-// generic newsletter or community site.
-function detectSourceType(url) {
-  const u = String(url||'').toLowerCase();
-  if (!u) return 'other';
-  // Known news outlets + generic news wire domains (checked first so outlets
-  // take precedence over Substack / .org / newsletter detection below).
-  if (u.includes('nashvillescene.com')
-      || u.includes('nashvillebanner.com')
-      || u.includes('newschannel5.com')
-      || u.includes('wkrn.com')
-      || u.includes('wsmv.com')
-      || u.includes('wpln.org')
-      || u.includes('wtvf.com')
-      || u.includes('fox17.com')
-      || u.includes('tennessean.com')
-      || u.includes('tennesseelookout.com')
-      || u.includes('npr.org')
-      || u.includes('apnews.com')
-      || u.includes('reuters.com')
-      || u.includes('nytimes.com')
-      || u.includes('washingtonpost.com')
-      || u.includes('wsj.com')
-      || u.includes('bloomberg.com')
-      || u.includes('cnn.com')
-      || u.includes('nbcnews.com')
-      || u.includes('cbsnews.com')
-      || u.includes('abcnews.go.com')
-      || u.includes('propublica.org')
-      || u.includes('axios.com'))                              return 'media';
-  if (u.includes('substack.com'))                              return 'substack';
-  if (u.includes('truthout.org')
-      || u.includes('liberationnews.org')
-      || u.includes('theintercept.com')
-      || u.includes('jacobin'))                                return 'analysis';
-  if (u.includes('citycast.fm')
-      || u.includes('/podcast')
-      || u.includes('podcasts.')
-      || u.includes('apple.com/podcast')
-      || u.includes('spotify.com'))                            return 'podcast';
-  if (u.includes('twitter.com')
-      || u.includes('x.com')
-      || u.includes('bsky.app')
-      || u.includes('mastodon')
-      || u.includes('hyphae.social')
-      || u.includes('instagram.com')
-      || u.includes('facebook.com')
-      || u.includes('tiktok.com')
-      || u.includes('threads.net'))                            return 'social';
-  if (u.includes('opentablenashville')
-      || u.includes('mutualaid')
-      || u.includes('.org/'))                                  return 'community';
-  return 'other';
-}
-
-function normalizeSourceType(t) {
-  return Object.prototype.hasOwnProperty.call(SOURCE_TYPES, t) ? t : 'other';
-}
-
-/* ══════════════════════════════════════════════════════════
-   SESSION STATE
-   ══════════════════════════════════════════════════════════ */
-// Boot-time — fetched from GCS config on load, with localStorage fallback.
-// roomId is not a secret; we cache it so the site survives a flaky config
-// endpoint and never asks an existing editor to re-run first-run setup.
-let roomId     = localStorage.getItem('ncsn_room') || null;
-let isFirstRun = false;
-
-// Per-session — all sessionStorage, cleared on tab close
-let matrixToken  = sessionStorage.getItem('ncsn_mx')  || null;
-let matrixUserId = sessionStorage.getItem('ncsn_mxu') || null;
-let writeUrl     = sessionStorage.getItem('ncsn_wh')  || null;
-let adminPass    = sessionStorage.getItem('ncsn_ap')  || null;
-let encKeyB64    = sessionStorage.getItem('ncsn_key') || null;
-
-let admin = !!(matrixToken && writeUrl && adminPass && encKeyB64);
-
-// Content state
-let S = { articles:[], ctas:[], lastUpdated:null };
-
-/* ══════════════════════════════════════════════════════════
-   ESC × 3
-   ══════════════════════════════════════════════════════════ */
-let ec=0, et;
-document.addEventListener('keydown', ev => {
-  if (ev.key !== 'Escape') { ec=0; return; }
-  ec++; clearTimeout(et);
-  et = setTimeout(() => ec=0, 800);
-  if (ec >= 3) {
-    ec=0;
-    if (document.querySelector('.modal-bg.on')) { closeAllModals(); return; }
-    admin ? logout() : openLogin();
-  }
-});
-
-/* ══════════════════════════════════════════════════════════
-   BOOT — load config then content
-   ══════════════════════════════════════════════════════════ */
-async function boot() {
-  await loadConfig();
-  await loadContent();
-}
-
-async function loadConfig() {
-  // Prefer the GCS config file as the source of truth, but only treat
-  // "no roomId anywhere" as first-run. A cached localStorage value (or a
-  // post-login joined-rooms discovery) is enough to keep using the existing
-  // room when the GCS write is broken.
-  try {
-    const r = await fetch(CFG.configEndpoint);
-    if (r.ok) {
-      const d = await r.json();
-      if (d && d.roomId) {
-        roomId = d.roomId;
-        localStorage.setItem('ncsn_room', d.roomId);
+    <script type="application/json" id="ncsn-seed">
+      {
+        "version": 1,
+        "articles": [
+          {
+            "title": "Nashville's Unauthorized Secret Police Force And The People & Orgs Enabling It",
+            "url": "https://readrichtext.substack.com/p/nashvilles-unauthorized-secret-police",
+            "date": "2025-11-05",
+            "sourceType": "substack",
+            "summary": "The Nashville Downtown Partnership's budget has not been reviewed or approved by Metro Council in 22 years. Its president has doubled his salary past $500K while public money funds a private policing operation licensed through a shell company.",
+            "tags": ["NDP", "Secret Police", "Metro Council", "Accountability"]
+          },
+          {
+            "title": "Downtown Partnership's Specially Assessed Nonsense",
+            "url": "https://readrichtext.substack.com/p/downtown-partnerships-specially-assessed",
+            "date": "2025-11-12",
+            "sourceType": "substack",
+            "summary": "Since 1998 the CBID has funneled obligatory special assessments through the DMC to the Downtown Partnership. The last Council-approved CBID budget was FY 2003-2004 — more than sixty million dollars have moved without the legally required Metro Council approval.",
+            "tags": ["NDP", "CBID", "DMC", "Budget", "Metro Council"]
+          },
+          {
+            "title": "Sunday Rewind: Freddie O'Connell — 'Strong Communities are Better for Safety than a Surveillance State' and Other Things He Reversed Course On",
+            "url": "https://readrichtext.substack.com/p/sunday-rewind-freddie-oconnell-strong",
+            "date": "2025-11-16",
+            "sourceType": "substack",
+            "summary": "A look back at Mayor O'Connell's own record: voting to ban LPRs in 2017, warning in 2021 that strong communities beat a surveillance state, then reversing on Fusus, LPRs, and the $15M MOU once in the mayor's office.",
+            "tags": ["O'Connell", "Surveillance", "LPR", "Fusus"]
+          },
+          {
+            "title": "From the Makers of Fusus (Literally): Meet 'LeoSight' — Mayor's MOU Resurrects Rejected Surveillance Tools Under New Branding",
+            "url": "https://readrichtext.substack.com/p/from-the-makers-of-fusus-literally",
+            "date": "2025-11-24",
+            "sourceType": "substack",
+            "summary": "LeoSight's CEO spent three years at Fusus through the Axon acquisition and took over LeoSight after Nashville rejected Fusus in April 2025. LeoSight itself is a rebrand of a 2015 company called Live Earth. The Mayor's MOU quietly reinstates the technology Nashville already said no to.",
+            "tags": ["LeoSight", "Fusus", "Axon", "Surveillance", "MOU"]
+          },
+          {
+            "title": "Breaking: The Mayor's Official Coordinating Nashville's Surveillance MOU Helped Build ICE's Data Pipeline at LexisNexis",
+            "url": "https://readrichtext.substack.com/p/breaking-the-mayors-official-coordinating",
+            "date": "2025-12-02",
+            "sourceType": "substack",
+            "summary": "Kristin Wilson, Mayor O'Connell's Chief of Operations and Performance, is coordinating the $15M surveillance MOU between MNPD and NDP. Before public service she spent six years at LexisNexis Risk Solutions, which currently holds a $22.1M contract with ICE.",
+            "tags": ["Kristin Wilson", "LexisNexis", "ICE", "MOU"]
+          },
+          {
+            "title": "State Records Reveal Nashville Downtown Partnership Was Never Getting the $15M",
+            "url": "https://readrichtext.substack.com/",
+            "date": "2025-12-04",
+            "sourceType": "substack",
+            "summary": "State documents show the District Management Corporation — not NDP — was awarded the grant, contradicting repeated claims by the Mayor's Office that the $15M was going directly to the Downtown Partnership. VERIFY URL: article exists but slug not confirmed from search index; update the link in-app when you find it.",
+            "tags": ["Grant", "NDP", "DMC", "Public Records"]
+          },
+          {
+            "title": "Breaking: Same Exec Who Literally Signed Fusus Contracts With Chief Drake Now Has New Surveillance Company in Mayor's MOU",
+            "url": "https://readrichtext.substack.com/p/thanksgiving-mou-mnpd-slipped-in",
+            "date": "2025-12-15",
+            "sourceType": "substack",
+            "summary": "The original MNPD-Fusus contract carried Mark Wood's signature alongside Chief Drake's. Now Wood runs LeoSight, and the Mayor's Thanksgiving-eve MOU routes $15M toward the same expanded capabilities, sidestepping procurement and public hearing requirements — a replay of the Fusus pattern.",
+            "tags": ["Mark Wood", "Fusus", "LeoSight", "MNPD", "MOU"]
+          },
+          {
+            "title": "(Surveillance MOU) There Is No Use Amending the MOU Resolution — CMs' Attempts To Fix It Are Making It Worse",
+            "url": "https://readrichtext.substack.com/p/surveillance-mou-there-is-no-amending",
+            "date": "2025-12-15",
+            "sourceType": "substack",
+            "summary": "Metro Council already has 100% oversight over NDMC funds through Metro Ordinance BL2017-580 and 0% oversight over NDP funds. The MOU trades statutory line-item control for a voluntary agreement the mayor can amend without Council approval. Seven independent grounds for rejection — pick any one.",
+            "tags": ["MOU", "NDMC", "NDP", "Metro Council", "Oversight"]
+          },
+          {
+            "title": "Dispatch from the December 15th Budget and Finance Committee Meeting",
+            "url": "https://readrichtext.substack.com/p/dispatch-from-the-december-15th-budget",
+            "date": "2025-12-16",
+            "sourceType": "substack",
+            "summary": "On-the-ground reporting from the Budget and Finance Committee meeting where council members began dismantling the Mayor's claims that the MOU was needed to restrict what NDP could buy.",
+            "tags": ["Metro Council", "Budget", "MOU"]
+          },
+          {
+            "title": "The People's House: How Nashville Metro Council Is Starting To Reclaim Democratic Oversight from an Autocratic Mayor's Office",
+            "url": "https://readrichtext.substack.com/p/the-peoples-house-how-nashville-metro",
+            "date": "2025-12-17",
+            "sourceType": "substack",
+            "summary": "Plain text, council testimony, and a public records release show it was MNPD in concert with the Mayor's Office — not NDP — that put the most problematic surveillance technology in the MOU to begin with. The narrative that the MOU 'limited' what NDP could buy collapses on contact with the record.",
+            "tags": ["Metro Council", "Oversight", "MNPD", "MOU"]
+          },
+          {
+            "title": "Correction About THP Trooper Throwing Man to Ground for Kicking His Car (After Almost Running Him Over)",
+            "url": "https://readrichtext.substack.com/p/correction-about-thp-trooper-throwing",
+            "date": "2025-10-05",
+            "sourceType": "substack",
+            "summary": "Correction and context on the September 20, 2025 incident: THP Sgt. DeWunya Topps — off-duty in uniform for Solaren Risk Management — slammed a pedestrian to the ground after nearly running him over in a crosswalk. The man kicked one car, not 'cars' as earlier reported.",
+            "tags": ["THP", "Solaren", "Use of Force", "Off-Duty Policing"]
+          },
+          {
+            "title": "In Wake of ICE Killing, O'Connell Files $3.38M Surveillance & Policing Donations via Funding Used for ICE Collaboration",
+            "url": "https://readrichtext.substack.com/p/in-wake-of-ice-killing-oconnell-files",
+            "date": "2026-01-20",
+            "sourceType": "substack",
+            "summary": "After a fatal ICE encounter in Nashville, the Mayor's Office moved a $3.38M surveillance and policing donation package through funding streams that have previously flowed into ICE collaboration channels. Approximate date — verify in-app.",
+            "tags": ["ICE", "O'Connell", "Surveillance", "MNPD"]
+          },
+          {
+            "title": "Buckle Up: Another Fight Over Surveillance is Upon Us",
+            "url": "https://readrichtext.substack.com/p/surveillance-again-billionaires-invest",
+            "date": "2026-03-28",
+            "sourceType": "substack",
+            "summary": "Flock Safety just raised $275M at a $7.5B valuation led by Andreessen Horowitz. Nashville is the case study for how procurement is circumvented to eliminate public consent over surveillance — and LPRs feed a larger AI-driven infrastructure that can flow into Palantir. MNPD's budget still includes ~$2.8M for LPRs.",
+            "tags": [
+              "Flock",
+              "LPR",
+              "Palantir",
+              "Andreessen Horowitz",
+              "Procurement"
+            ]
+          },
+          {
+            "title": "We Built the Surveillance App Nashville's Leaders Have Been Asking For. Except It Tracks Them.",
+            "url": "https://readrichtext.substack.com/p/we-built-the-surveillance-app-nashvilles",
+            "date": "2026-04-07",
+            "sourceType": "substack",
+            "summary": "MNPD and the Mayor's Office keep pushing LPRs even as O'Connell and Chief Drake tout a 20% drop in crime, 18% drop in violent crime, and burglary at its lowest level since the 1960s — a contradiction the city's official messaging quietly papers over.",
+            "tags": ["Surveillance", "LPR", "Flock", "MNPD", "O'Connell"]
+          },
+          {
+            "title": "A Nashville Proposal Could Outsource Surveillance and Policing to a Nonprofit",
+            "url": "https://truthout.org/articles/a-nashville-proposal-could-outsource-surveillance-and-policing-to-a-nonprofit/",
+            "date": "2025-12-02",
+            "sourceType": "analysis",
+            "summary": "Truthout feature by Mike Lacy and Ed Vogel on how Nashville is leveraging a local nonprofit to build a public-private panopticon. Deep-dive analysis of how the Downtown Partnership MOU bypasses democratic oversight and revives the Fusus playbook under the LeoSight brand.",
+            "tags": [
+              "Truthout",
+              "Mike Lacy",
+              "MOU",
+              "LeoSight",
+              "Democratic Oversight"
+            ]
+          },
+          {
+            "title": "Mayor's Office Files Resolution to Allow Surveillance Use",
+            "url": "https://www.nashvillescene.com/news/pithinthewind/mayors-office-downtown-surveillance/article_651e0aa9-e3f4-4ddc-9531-27803c5c149e.html",
+            "date": "2025-12-01",
+            "sourceType": "media",
+            "summary": "Nashville Scene's Pith in the Wind reports that the Mayor's Office quietly filed the MOU before Thanksgiving. The package included security cameras, noise-camera enforcement, a live video wall, and two separate real-time surveillance platforms — a backdoor route to the same tools rejected in the Fusus debate.",
+            "tags": ["Nashville Scene", "MOU", "Pith in the Wind", "Fusus"]
+          },
+          {
+            "title": "Metro Council to Consider Downtown Partnership Security Grant",
+            "url": "https://nashvillebanner.com/2025/12/01/nashville-downtown-partnership-fusus-tennessee-grant/",
+            "date": "2025-12-01",
+            "sourceType": "media",
+            "summary": "Nashville Banner's pre-hearing report on the $15M MOU, connecting LeoSight's leadership back to the Fusus contracts Mark Wood personally signed. Council Member Erin Evans tells the Banner she expects many members to seek a deferral.",
+            "tags": ["Nashville Banner", "MOU", "LeoSight", "Erin Evans"]
+          },
+          {
+            "title": "Safety or Surveillance? $15M Downtown Nashville Plan Sparks Debate",
+            "url": "https://www.newschannel5.com/news/safety-or-surveillance-15m-downtown-nashville-plan-sparks-debate",
+            "date": "2025-12-03",
+            "sourceType": "media",
+            "summary": "NewsChannel 5 on the widening split between city leadership and residents over whether a $15M state grant should fund downtown surveillance technology targeting vulnerable communities.",
+            "tags": ["NewsChannel 5", "MOU", "Metro Council"]
+          },
+          {
+            "title": "Downtown Nashville Could See New Surveillance Tech After $15M State Grant",
+            "url": "https://www.wkrn.com/news/local-news/nashville/15m-grant-surveillance-tech/",
+            "date": "2025-12-02",
+            "sourceType": "media",
+            "summary": "WKRN's roundup of the surveillance tools the MOU would enable: noise-detection cameras, AI-driven video analysis, and expansion of the existing downtown camera network via the Nashville Downtown Partnership.",
+            "tags": ["WKRN", "MOU", "Cameras"]
+          },
+          {
+            "title": "Nashville Surveillance Cameras Spark More Pushback as Metro Council Considers Expanded Technology",
+            "url": "https://wpln.org/post/nashville-surveillance-cameras-spark-more-pushback-as-metro-council-considers-expanded-technology/",
+            "date": "2025-12-10",
+            "sourceType": "media",
+            "summary": "WPLN covers the community hearings as the $15M grant — already earmarked in part for new MNPD cameras — draws sustained opposition from residents, civil liberties groups, and music-community members.",
+            "tags": ["WPLN", "Metro Council", "Cameras"]
+          },
+          {
+            "title": "Nashville Council Rejects Downtown Surveillance Cameras in Split Vote on Safety Plan",
+            "url": "https://www.newschannel5.com/news/metro-council-rejects-downtown-surveillance-cameras-in-split-vote-on-nashville-safety-plan",
+            "date": "2026-01-21",
+            "sourceType": "media",
+            "summary": "Metro Council rejects 20-15 (with three abstentions) a $150,000 measure that would have added 15 new police surveillance cameras downtown — the first piece of the broader $15M plan to come to a vote after prior amendments stripped out LeoSight and Fivecast.",
+            "tags": ["NewsChannel 5", "Metro Council", "Vote", "Cameras"]
+          },
+          {
+            "title": "TN-07 Results! Plus, Is Downtown Getting Mass Surveillance?",
+            "url": "https://nashville.citycast.fm/podcasts/tn-07-results-plus-is-downtown-getting-mass-surveillance",
+            "date": "2025-12-03",
+            "sourceType": "podcast",
+            "summary": "City Cast Nashville podcast: Steven Hale (Nashville Banner) joins host Marie Cecile Anderson and executive producer Whitney Pastorek to break down the $15M MOU, the armored SWAT vehicle, and the backlash.",
+            "tags": ["City Cast Nashville", "Podcast", "Steven Hale", "MOU"]
+          },
+          {
+            "title": "Increased Surveillance and Policing Does Not Make Nashville Safer",
+            "url": "https://www.opentablenashville.org/post/increased-surveillance-and-policing-does-not-make-nashville-safer",
+            "date": "2025-12-05",
+            "sourceType": "community",
+            "summary": "Open Table Nashville's statement of opposition to the MOU, arguing that security built on surveillance disproportionately targets refugees, asylum seekers, immigrants, LGBTQIA+ folks, and people of color — and doesn't make anyone safer.",
+            "tags": ["Open Table Nashville", "Opposition"]
+          },
+          {
+            "title": "Nashville Residents Push Back as City Revives Police Surveillance Plan",
+            "url": "https://liberationnews.org/nashville-residents-push-back-as-city-revives-police-surveillance-plan/",
+            "date": "2025-12-08",
+            "sourceType": "analysis",
+            "summary": "Liberation News on the resident-led organizing that forced the deferrals and amendments, ultimately driving the camera proposal to a losing vote.",
+            "tags": ["Liberation News", "Organizing", "Opposition"]
+          }
+        ],
+        "ctas": [
+          {
+            "title": "Read the primary-source reporting",
+            "description": "{Rich Text} is the independent investigative newsletter that broke most of the surveillance, NDP, and MOU stories linked below. Subscribe, share, and support the reporting.",
+            "url": "https://readrichtext.substack.com/",
+            "linkLabel": "Read {Rich Text}",
+            "urgency": "high"
+          },
+          {
+            "title": "Demand Metro Council oversight of the Downtown Partnership",
+            "description": "NDP's budget has not been reviewed by Metro Council in 22 years, even as it funnels specially-assessed public money into a private policing operation. Contact your council member and ask why.",
+            "url": "https://www.nashville.gov/departments/council/districts",
+            "linkLabel": "Find your council member",
+            "urgency": "high"
+          },
+          {
+            "title": "Watch the MNPD surveillance budget",
+            "description": "Even after the $15M MOU was stripped of LeoSight, Fivecast, and new cameras, MNPD's ongoing budget still carries roughly $2.8M for License Plate Recognition. Track every line item before the next Flock contract.",
+            "url": "https://readrichtext.substack.com/p/surveillance-again-billionaires-invest",
+            "linkLabel": "Read the breakdown",
+            "urgency": "medium"
+          },
+          {
+            "title": "No MOU Nashville — campaign archive",
+            "description": "Timeline, talking points, and the organizing record of how Nashville pushed back on the surveillance MOU and forced the council to reject new cameras in January 2026.",
+            "url": "https://clovenbradshaw-ctrl.github.io/mou/",
+            "linkLabel": "Browse the archive",
+            "urgency": "low"
+          }
+        ]
       }
-    }
-  } catch { /* ignore — fall through to cache + discovery */ }
-  isFirstRun = !roomId;
-}
+    </script>
 
-// Walk the editor's joined Matrix rooms looking for one that carries our
-// site config state event. Used as a fallback when neither the GCS config
-// nor localStorage has a roomId — prevents repeated first-run setup.
-async function discoverRoomFromJoined(tok) {
-  try {
-    const r = await fetch(CFG.matrixServer + '/_matrix/client/v3/joined_rooms', {
-      headers: {'Authorization':'Bearer '+tok}
-    });
-    if (!r.ok) return null;
-    const d = await r.json();
-    for (const rid of (d.joined_rooms || [])) {
-      const cfg = await matrixGetState(tok, rid, CFG.matrixConfigState);
-      if (cfg && cfg.writeWebhook) return rid;
-    }
-  } catch { /* ignore */ }
-  return null;
-}
-
-async function loadContent() {
-  // 1) Apply the hardcoded seed baked into the page (<script id="ncsn-seed">)
-  //    and render immediately. No network call, so the site is interactive
-  //    the moment the script runs even if the webhook is slow or down.
-  try {
-    const seed = loadSeedContent();
-    if (seed) S = seed;
-  } catch (err) {
-    S._err = err.message;
-  }
-  render();
-
-  // 2) Then consult the webhook-published page (GCS index.html with embedded
-  //    <script id="ncsn-data">{...}<\/script>) — that's what Save writes to.
-  //    If its content actually differs from the seed, replace and re-render.
-  //    Otherwise stay on the seed so we don't churn the DOM.
-  try {
-    const r = await fetch(CFG.readEndpoint, {cache:'no-store'});
-    if (!r.ok) return;
-    const html  = await r.text();
-    const raw   = parseEmbeddedState(html);
-    if (!raw || (!raw.articles?.length && !raw.ctas?.length)) return;
-    const remote = normalizeState(raw);
-    if (canonicalContent(remote) !== canonicalContent(S)) {
-      S = remote;
-      delete S._err;
-      render();
-    }
-  } catch (err) {
-    // Only surface an error if the seed failed too — otherwise the page is
-    // already showing valid content.
-    if (!S.articles.length && !S.ctas.length) {
-      S._err = err.message;
-      render();
-    }
-  }
-}
-
-// Read the inline <script type="application/json" id="ncsn-seed"> block and
-// coerce into the runtime shape (articles[] / ctas[] with stable ids).
-function loadSeedContent() {
-  const el = document.getElementById('ncsn-seed');
-  if (!el) return null;
-  return normalizeState(JSON.parse(el.textContent));
-}
-
-// Shared normalizer for seed JSON and webhook state. Assigns ids when
-// missing, trims strings, and drops unknown sourceType values so render()
-// always gets a consistent shape.
-function normalizeState(data) {
-  const inArts = Array.isArray(data.articles) ? data.articles : [];
-  const inCTAs = Array.isArray(data.ctas)     ? data.ctas     : [];
-
-  const articles = inArts.map(a => ({
-    id:         a.id || uid(),
-    title:      String(a.title||'').trim(),
-    url:        String(a.url||'').trim(),
-    date:       String(a.date||'').trim(),
-    summary:    String(a.summary||'').trim(),
-    tags:       Array.isArray(a.tags) ? a.tags.map(t=>String(t).trim()).filter(Boolean) : [],
-    sourceType: (a.sourceType && Object.prototype.hasOwnProperty.call(SOURCE_TYPES, a.sourceType))
-                  ? a.sourceType : '',
-  })).filter(a => a.title);
-
-  const ctas = inCTAs.map(c => ({
-    id:          c.id || uid(),
-    title:       String(c.title||'').trim(),
-    description: String(c.description||'').trim(),
-    url:         String(c.url||'').trim(),
-    linkLabel:   String(c.linkLabel||'').trim(),
-    urgency:     ['high','medium','low'].includes(c.urgency) ? c.urgency : 'medium',
-  })).filter(c => c.title);
-
-  return { articles, ctas, lastUpdated: data.lastUpdated || null };
-}
-
-// Canonical content string for diffing seed vs. webhook. Strips volatile
-// fields (id, lastUpdated) and sorts so identical content from different
-// sources compares equal regardless of ordering or id assignment.
-function canonicalContent(state) {
-  const arts = [...(state.articles||[])]
-    .map(a => ({
-      title: a.title || '', url: a.url || '', date: a.date || '',
-      summary: a.summary || '',
-      tags: [...(a.tags||[])].map(t=>String(t).trim()).sort(),
-      sourceType: a.sourceType || '',
-    }))
-    .sort((x,y) => ((x.url||x.title)+'').localeCompare((y.url||y.title)+''));
-  const ctas = [...(state.ctas||[])]
-    .map(c => ({
-      title: c.title || '', description: c.description || '',
-      url: c.url || '', linkLabel: c.linkLabel || '',
-      urgency: c.urgency || 'medium',
-    }))
-    .sort((x,y) => x.title.localeCompare(y.title));
-  return JSON.stringify({arts, ctas});
-}
-
-function parseEmbeddedState(html) {
-  try {
-    const m = html.match(/<script[^>]+id="ncsn-data"[^>]*>([\s\S]*?)<\/script>/);
-    return m ? JSON.parse(m[1]) : null;
-  } catch { return null; }
-}
-
-/* ══════════════════════════════════════════════════════════
-   RENDER
-   ══════════════════════════════════════════════════════════ */
-function render() {
-  renderMeta(); renderCTAs(); renderArts();
-  document.getElementById('admin-bar').classList.toggle('on', admin);
-}
-
-function renderMeta() {
-  const d = S.lastUpdated
-    ? new Date(S.lastUpdated).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
-    : '—';
-  document.getElementById('footer-date').textContent = 'Updated ' + d;
-}
-
-function renderCTAs() {
-  const el = document.getElementById('cta-container');
-  if (S._err) { el.innerHTML=`<p class="msg err">Could not load: ${x(S._err)}</p>`; return; }
-  if (!S.ctas.length) { el.innerHTML=`<p class="msg">No active calls to action.</p>`; return; }
-  const ord = {high:0,medium:1,low:2};
-  el.innerHTML = [...S.ctas]
-    .sort((a,b)=>(ord[a.urgency]??1)-(ord[b.urgency]??1))
-    .map(c=>`
-      <div class="cta-item ${x(c.urgency||'medium')}">
-        <div class="cta-title">${x(c.title)}</div>
-        ${c.description?`<div class="cta-desc">${x(c.description)}</div>`:''}
-        ${c.url?`<a class="cta-link" href="${x(c.url)}" target="_blank" rel="noopener">${x(c.linkLabel||'Take action')} →</a>`:''}
-        <div class="edit-row${admin?' on':''}">
-          <button class="ebtn" onclick="openEditCTA('${x(c.id)}')">Edit</button>
-          <button class="ebtn del" onclick="delCTA('${x(c.id)}')">Delete</button>
-        </div>
-      </div>`).join('');
-}
-
-function renderArts() {
-  const el = document.getElementById('articles-container');
-  if (!S.articles.length) { el.innerHTML=`<p class="msg">No articles yet.</p>`; return; }
-  el.innerHTML = [...S.articles]
-    .sort((a,b)=>(b.date||'').localeCompare(a.date||''))
-    .map(a=>{
-      const st  = normalizeSourceType(a.sourceType || detectSourceType(a.url));
-      const meta = SOURCE_TYPES[st];
-      return `
-      <div class="article-item">
-        <div class="art-meta">
-          <i class="ph ${meta.icon} art-icon ${st}" title="${x(meta.label)}" aria-label="${x(meta.label)}"></i>
-          <div class="art-date">${fmtDate(a.date)}</div>
-          <div class="art-source-label">${x(meta.label)}</div>
-        </div>
-        <div>
-          <div class="art-title">${a.url
-            ?`<a href="${x(a.url)}" target="_blank" rel="noopener">${x(a.title)}</a>`
-            :x(a.title)}</div>
-          ${a.summary?`<div class="art-summary">${x(a.summary)}</div>`:''}
-          ${a.tags?.length?`<div class="art-tags">${a.tags.map(t=>`<span class="art-tag">${x(t.trim())}</span>`).join('')}</div>`:''}
-          <div class="edit-row${admin?' on':''}">
-            <button class="ebtn" onclick="openEditArt('${x(a.id)}')">Edit</button>
-            <button class="ebtn del" onclick="delArt('${x(a.id)}')">Delete</button>
-          </div>
-        </div>
-      </div>`;
-    }).join('');
-}
-
-/* ══════════════════════════════════════════════════════════
-   CRYPTO — Web Crypto API (AES-256-GCM)
-   ══════════════════════════════════════════════════════════ */
-async function generateKey() {
-  const key = await crypto.subtle.generateKey(
-    {name:'AES-GCM', length:256}, true, ['encrypt','decrypt']
-  );
-  const raw = await crypto.subtle.exportKey('raw', key);
-  return btoa(String.fromCharCode(...new Uint8Array(raw)));
-}
-
-async function encryptData(obj, keyB64) {
-  const keyBytes = Uint8Array.from(atob(keyB64), c=>c.charCodeAt(0));
-  const key = await crypto.subtle.importKey('raw', keyBytes, {name:'AES-GCM'}, false, ['encrypt']);
-  const iv  = crypto.getRandomValues(new Uint8Array(12));
-  const enc = await crypto.subtle.encrypt(
-    {name:'AES-GCM', iv}, key,
-    new TextEncoder().encode(JSON.stringify(obj))
-  );
-  return btoa(String.fromCharCode(...iv)) + '.' + btoa(String.fromCharCode(...new Uint8Array(enc)));
-}
-
-async function decryptData(blob, keyB64) {
-  const [ivB64, encB64] = blob.split('.');
-  const keyBytes = Uint8Array.from(atob(keyB64), c=>c.charCodeAt(0));
-  const key = await crypto.subtle.importKey('raw', keyBytes, {name:'AES-GCM'}, false, ['decrypt']);
-  const iv  = Uint8Array.from(atob(ivB64),  c=>c.charCodeAt(0));
-  const enc = Uint8Array.from(atob(encB64), c=>c.charCodeAt(0));
-  const dec = await crypto.subtle.decrypt({name:'AES-GCM', iv}, key, enc);
-  return JSON.parse(new TextDecoder().decode(dec));
-}
-
-/* ══════════════════════════════════════════════════════════
-   MATRIX HELPERS
-   ══════════════════════════════════════════════════════════ */
-async function matrixPost(path, token, body) {
-  const headers = {'Content-Type':'application/json'};
-  if (token) headers['Authorization'] = 'Bearer ' + token;
-  const r = await fetch(CFG.matrixServer + path, {method:'POST', headers, body:JSON.stringify(body)});
-  return {ok: r.ok, status: r.status, data: await r.json()};
-}
-
-async function matrixPutState(token, rid, type, content) {
-  const url = `${CFG.matrixServer}/_matrix/client/v3/rooms/${encodeURIComponent(rid)}/state/${encodeURIComponent(type)}/`;
-  const r = await fetch(url, {
-    method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-    body: JSON.stringify(content)
-  });
-  return {ok:r.ok, data:await r.json()};
-}
-
-async function matrixGetState(token, rid, type) {
-  const url = `${CFG.matrixServer}/_matrix/client/v3/rooms/${encodeURIComponent(rid)}/state/${encodeURIComponent(type)}/`;
-  const r = await fetch(url, {headers:{'Authorization':'Bearer '+token}});
-  if (!r.ok) return null;
-  return r.json();
-}
-
-/* ══════════════════════════════════════════════════════════
-   LOGIN FLOW — STEP 1: Matrix
-   ══════════════════════════════════════════════════════════ */
-function openLogin() {
-  document.getElementById('matrix-user').value = '';
-  document.getElementById('matrix-pw').value   = '';
-  setMsg('matrix-msg','','');
-  setDisabled('matrix-btn', false);
-  openModal('modal-matrix');
-  setTimeout(()=>document.getElementById('matrix-user').focus(), 60);
-}
-
-// Accept either a bare localpart ("alice") or a full MXID ("@alice:hyphae.social").
-// Only hyphae.social accounts are allowed.
-function normalizeMxid(input) {
-  let u = (input || '').trim();
-  if (!u) return null;
-  if (u.startsWith('@')) {
-    if (!u.toLowerCase().endsWith(':' + CFG.matrixDomain)) return null;
-    return u;
-  }
-  if (u.includes(':') || u.includes('@')) return null;
-  return '@' + u + ':' + CFG.matrixDomain;
-}
-
-document.getElementById('matrix-user').addEventListener('keydown', ev=>{
-  if(ev.key==='Enter'){ ev.preventDefault(); document.getElementById('matrix-pw').focus(); }
-});
-document.getElementById('matrix-pw').addEventListener('keydown', ev=>{
-  if(ev.key==='Enter') doMatrixLogin();
-});
-
-async function doMatrixLogin() {
-  const userInput = document.getElementById('matrix-user').value;
-  const pw        = document.getElementById('matrix-pw').value;
-  if (!pw) return;
-
-  const mxid = normalizeMxid(userInput);
-  if (!mxid) {
-    setMsg('matrix-msg','Enter a valid '+CFG.matrixDomain+' user.','err');
-    return;
-  }
-
-  setDisabled('matrix-btn', true);
-  setMsg('matrix-msg','Authenticating…','status');
-
-  const res = await matrixPost('/_matrix/client/v3/login', null, {
-    type: 'm.login.password',
-    identifier: {type:'m.id.user', user: mxid},
-    password: pw,
-  });
-  if (!res.ok) {
-    setMsg('matrix-msg', res.data.error||'Login failed.','err');
-    setDisabled('matrix-btn', false);
-    return;
-  }
-
-  const tok        = res.data.access_token;
-  const serverMxid = res.data.user_id || mxid;
-  sessionStorage.setItem('ncsn_mx',  tok);
-  sessionStorage.setItem('ncsn_mxu', serverMxid);
-  matrixToken  = tok;
-  matrixUserId = serverMxid;
-
-  closeAllModals();
-
-  // Belt-and-suspenders: even if loadConfig didn't find a roomId, the editor
-  // may already be a member of an existing site config room. Scan their
-  // joined rooms for one that carries our config state before assuming this
-  // is a first run. This prevents the setup wizard from running twice when
-  // the GCS config write is failing.
-  if (!roomId) {
-    const found = await discoverRoomFromJoined(tok);
-    if (found) {
-      roomId = found;
-      localStorage.setItem('ncsn_room', found);
-      isFirstRun = false;
-    }
-  }
-
-  // Branch: first run vs existing room
-  if (isFirstRun || !roomId) {
-    openModal('modal-setup');
-    setTimeout(()=>document.getElementById('setup-admin-pw').focus(), 60);
-  } else {
-    await fetchRoomSession(tok);
-  }
-}
-
-// After Matrix login on a normal run: fetch write URL + key + admin pw from room state.
-// If the admin password is present in state (shared via room membership), auto-unlock.
-async function fetchRoomSession(tok) {
-  const cfgState = await matrixGetState(tok, roomId, CFG.matrixConfigState);
-  const keyState = await matrixGetState(tok, roomId, CFG.matrixKeyState);
-  const admState = await matrixGetState(tok, roomId, CFG.matrixAdminState);
-
-  if (!cfgState?.writeWebhook || !keyState?.k) {
-    openModal('modal-admin');
-    setMsg('admin-msg',
-      'Could not read room state. You may not be a member of this site\'s Matrix room — ask an existing editor to invite you.',
-      'err');
-    setDisabled('admin-btn', true);
-    return;
-  }
-
-  sessionStorage.setItem('ncsn_wh',  cfgState.writeWebhook);
-  sessionStorage.setItem('ncsn_key', keyState.k);
-  writeUrl  = cfgState.writeWebhook;
-  encKeyB64 = keyState.k;
-
-  // Shared admin password — any invited room member auto-unlocks with it.
-  if (admState?.adminPw) {
-    sessionStorage.setItem('ncsn_ap', admState.adminPw);
-    adminPass = admState.adminPw;
-    admin     = true;
-    render();
-    return;
-  }
-
-  // Legacy fallback: prompt the user manually.
-  openModal('modal-admin');
-  setMsg('admin-msg','Admin password not in room state — enter it manually.','status');
-  document.getElementById('admin-pw').value = '';
-  setDisabled('admin-btn', false);
-  setTimeout(()=>document.getElementById('admin-pw').focus(), 60);
-}
-
-/* ══════════════════════════════════════════════════════════
-   LOGIN FLOW — FIRST RUN SETUP
-   ══════════════════════════════════════════════════════════ */
-async function doFirstRunSetup() {
-  const wh  = document.getElementById('setup-write-url').value.trim();
-  const apw = document.getElementById('setup-admin-pw').value;
-  if (!wh || !apw) { setMsg('setup-msg','Both fields are required.','err'); return; }
-
-  setDisabled('setup-btn', true);
-  setMsg('setup-msg','','');
-
-  try {
-    // 1. Create Matrix room
-    stepState('ss-room','active');
-    const roomRes = await matrixPost('/_matrix/client/v3/createRoom', matrixToken, {
-      visibility: 'private',
-      name:       'NCSN Site Config',
-      topic:      'Nashville Community Safety Network — site config and encryption key',
-      preset:     'private_chat',
-    });
-    if (!roomRes.ok) throw new Error('Room creation failed: ' + (roomRes.data.error||roomRes.status));
-    const rid = roomRes.data.room_id;
-    stepState('ss-room','done');
-
-    // 2. Generate encryption key
-    stepState('ss-key','active');
-    const keyB64 = await generateKey();
-    stepState('ss-key','done');
-
-    // 3. Store config, key, and admin password in Matrix room state.
-    //    Anyone invited to this room will later read the admin password from
-    //    state and automatically gain upload access.
-    stepState('ss-state','active');
-    const cfgPut = await matrixPutState(matrixToken, rid, CFG.matrixConfigState, {writeWebhook: wh});
-    if (!cfgPut.ok) throw new Error('Failed to set config state: ' + JSON.stringify(cfgPut.data));
-    const keyPut = await matrixPutState(matrixToken, rid, CFG.matrixKeyState, {k: keyB64});
-    if (!keyPut.ok) throw new Error('Failed to set key state: ' + JSON.stringify(keyPut.data));
-    const admPut = await matrixPutState(matrixToken, rid, CFG.matrixAdminState, {adminPw: apw});
-    if (!admPut.ok) throw new Error('Failed to set admin state: ' + JSON.stringify(admPut.data));
-    stepState('ss-state','done');
-
-    // 4. Write site config to GCS via n8n. The roomId already lives in
-    //    Matrix room state (and we cache it locally), so a GCS failure here
-    //    is recoverable — log it but don't lose the freshly-created room.
-    stepState('ss-gcs','active');
-    let gcsOk = false;
-    try {
-      const gcsCfg = await fetch(CFG.configEndpoint, {
-        method:  'POST',
-        headers: {'Content-Type':'application/json','Authorization':'Bearer '+apw},
-        body:    JSON.stringify({roomId: rid, createdAt: new Date().toISOString(), version:1}),
-      });
-      if (gcsCfg.status === 401) throw new Error('Wrong admin password.');
-      if (!gcsCfg.ok)            throw new Error('Config write failed: HTTP ' + gcsCfg.status);
-      gcsOk = true;
-      stepState('ss-gcs','done');
-    } catch (gcsErr) {
-      // Hard-fail only on auth — a 500 from GCS shouldn't strand the editor.
-      if (/wrong admin password/i.test(gcsErr.message)) throw gcsErr;
-      console.warn('GCS config write failed, falling back to local cache:', gcsErr);
-      stepState('ss-gcs','error');
-      // Defer the alert until after the modal closes so it isn't hidden.
-      setTimeout(()=>alert(
-        'Site is set up, but the GCS config write failed (' + gcsErr.message + ').\n\n' +
-        'The room id has been cached locally and is also stored in Matrix room state, ' +
-        'so editors who join the room will still find it on next login. ' +
-        'You can fix the n8n config webhook later without redoing setup.'
-      ), 100);
-    }
-
-    // Commit session state. Cache the roomId persistently so even a wiped
-    // GCS config file can never trigger a duplicate first-run setup.
-    roomId    = rid;
-    writeUrl  = wh;
-    encKeyB64 = keyB64;
-    adminPass = apw;
-    isFirstRun = false;
-    localStorage.setItem('ncsn_room', rid);
-    sessionStorage.setItem('ncsn_wh',  wh);
-    sessionStorage.setItem('ncsn_key', keyB64);
-    sessionStorage.setItem('ncsn_ap',  apw);
-    admin = true;
-
-    closeAllModals();
-    render();
-
-  } catch(err) {
-    setMsg('setup-msg', err.message, 'err');
-    // Mark last active step as error
-    document.querySelectorAll('.setup-step.active').forEach(el=>{
-      el.classList.remove('active'); el.classList.add('error');
-    });
-    setDisabled('setup-btn', false);
-  }
-}
-
-function stepState(id, state) {
-  const el = document.getElementById(id);
-  el.className = 'setup-step ' + state;
-}
-
-/* ══════════════════════════════════════════════════════════
-   LOGIN FLOW — STEP 2: Admin password
-   ══════════════════════════════════════════════════════════ */
-document.getElementById('admin-pw').addEventListener('keydown', ev=>{
-  if(ev.key==='Enter') doAdminLogin();
-});
-
-async function doAdminLogin() {
-  const pw = document.getElementById('admin-pw').value;
-  if (!pw) return;
-  setDisabled('admin-btn', true);
-  setMsg('admin-msg','Verifying…','status');
-
-  try {
-    const r = await fetch(writeUrl, {
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+pw},
-      body: JSON.stringify({_probe:true, op:'NUL', site:'probe',
-        resolution:'probe', author: matrixUserId || '', meta:{}, payload:{}, content:''}),
-    });
-    if (r.status === 401) {
-      setMsg('admin-msg','Wrong password.','err');
-      setDisabled('admin-btn', false);
-      return;
-    }
-  } catch {
-    setMsg('admin-msg','Could not reach write endpoint.','err');
-    setDisabled('admin-btn', false);
-    return;
-  }
-
-  sessionStorage.setItem('ncsn_ap', pw);
-  adminPass = pw;
-  admin     = true;
-  closeAllModals();
-  render();
-}
-
-/* ══════════════════════════════════════════════════════════
-   LOGOUT
-   ══════════════════════════════════════════════════════════ */
-function logout() {
-  ['ncsn_mx','ncsn_mxu','ncsn_wh','ncsn_ap','ncsn_key'].forEach(k=>sessionStorage.removeItem(k));
-  matrixToken=null; matrixUserId=null; writeUrl=null; adminPass=null; encKeyB64=null; admin=false;
-  document.getElementById('admin-bar').classList.remove('on');
-  render();
-}
-
-/* ══════════════════════════════════════════════════════════
-   INVITE — grant another hyphae.social user upload access
-   by inviting them to the site's Matrix room. Upon joining
-   they read the admin password from room state automatically.
-   ══════════════════════════════════════════════════════════ */
-function openInvite() {
-  if (!admin || !matrixToken || !roomId) return;
-  document.getElementById('invite-user').value = '';
-  setMsg('invite-msg','','');
-  setDisabled('invite-btn', false);
-  openModal('invite-modal');
-  setTimeout(()=>document.getElementById('invite-user').focus(), 60);
-}
-
-async function doInvite() {
-  const mxid = normalizeMxid(document.getElementById('invite-user').value);
-  if (!mxid) {
-    setMsg('invite-msg','Enter a valid '+CFG.matrixDomain+' user.','err');
-    return;
-  }
-  setDisabled('invite-btn', true);
-  setMsg('invite-msg','Sending invite…','status');
-  try {
-    const url = CFG.matrixServer + '/_matrix/client/v3/rooms/'
-              + encodeURIComponent(roomId) + '/invite';
-    const r = await fetch(url, {
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+matrixToken},
-      body: JSON.stringify({user_id: mxid}),
-    });
-    if (!r.ok) {
-      const d = await r.json().catch(()=>({}));
-      throw new Error(d.error || ('HTTP '+r.status));
-    }
-    setMsg('invite-msg','Invited '+mxid+'. Once they accept and log in they\'ll have upload access.','status');
-    setDisabled('invite-btn', false);
-  } catch(err) {
-    setMsg('invite-msg', err.message, 'err');
-    setDisabled('invite-btn', false);
-  }
-}
-
-document.getElementById('invite-user').addEventListener('keydown', ev=>{
-  if(ev.key==='Enter') doInvite();
-});
-
-/* ══════════════════════════════════════════════════════════
-   SAVE — encrypted payload, rendered content HTML
-   ══════════════════════════════════════════════════════════ */
-async function saveAll() {
-  if (!admin||!writeUrl||!adminPass||!encKeyB64) return;
-  const btn = document.getElementById('save-btn');
-  btn.textContent='Saving…'; btn.disabled=true;
-
-  // First-fill × Making: if no prior save has ever landed against this site
-  // (no lastUpdated was loaded from the remote), this save is the initial
-  // authoring act and carries the Making stance. Subsequent saves are
-  // replace. Capture before we overwrite lastUpdated below.
-  const isFirstFill = !S.lastUpdated;
-  S.lastUpdated = new Date().toISOString();
-
-  // Encrypt the content payload before it leaves the browser
-  let encPayload;
-  try {
-    encPayload = await encryptData(
-      {articles:S.articles, ctas:S.ctas, ts:S.lastUpdated},
-      encKeyB64
-    );
-  } catch(err) {
-    btn.textContent='Crypto error'; btn.disabled=false;
-    alert('Encryption failed: '+err.message);
-    return;
-  }
-
-  const body = {
-    op:         'INS',
-    site:       CFG.eoSite,
-    resolution: isFirstFill ? 'Making' : 'replace',
-    author:     matrixUserId || '',
-    meta: {
-      title:       'Nashville Community Safety Network',
-      description: 'Accountability. Transparency.',
-    },
-    // n8n stores whatever is in payload verbatim in the JSONL event
-    payload: { encrypted: encPayload },
-    // content = inner HTML saved to GCS index.html
-    content: buildContentHTML(),
-  };
-
-  const MAX_RETRIES = 2;
-  const jsonBody = JSON.stringify(body);
-
-  try {
-    let r, attempt = 0, lastErr;
-    while (attempt <= MAX_RETRIES) {
-      if (attempt > 0) {
-        btn.textContent = `Retry ${attempt}/${MAX_RETRIES}…`;
-        await new Promise(ok => setTimeout(ok, 1000 * Math.pow(2, attempt)));
-      }
-      try {
-        r = await fetch(writeUrl, {
-          method:'POST',
-          headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminPass},
-          body: jsonBody,
-        });
-      } catch (netErr) {
-        lastErr = netErr;
-        attempt++;
-        continue;
-      }
-      if (r.status === 401) { btn.textContent='Auth error'; btn.disabled=false; return; }
-      if (r.status >= 500 && attempt < MAX_RETRIES) { attempt++; continue; }
-      if (!r.ok) {
-        let detail = '';
-        try { detail = (await r.text()).slice(0, 200); } catch {}
-        throw new Error('HTTP ' + r.status + (detail ? ' — ' + detail : ''));
-      }
-      break;
-    }
-    if (!r || !r.ok) throw lastErr || new Error('Save failed after retries');
-    renderMeta();
-    btn.textContent='Saved';
-    setTimeout(()=>{btn.textContent='Save';btn.disabled=false},2200);
-  } catch(err) {
-    btn.textContent='Error'; btn.disabled=false;
-    alert('Save failed: '+err.message);
-  }
-}
-
-function buildContentHTML() {
-  const ord={high:0,medium:1,low:2};
-  const sCTAs=[...S.ctas].sort((a,b)=>(ord[a.urgency]??1)-(ord[b.urgency]??1));
-  const sArts=[...S.articles].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
-
-  const ctaHtml = sCTAs.map(c=>`
-    <div class="cta-item ${x(c.urgency||'medium')}">
-      <div class="cta-title">${x(c.title)}</div>
-      ${c.description?`<div class="cta-desc">${x(c.description)}</div>`:''}
-      ${c.url?`<a class="cta-link" href="${x(c.url)}">${x(c.linkLabel||'Take action')} →</a>`:''}
-    </div>`).join('');
-
-  const artHtml = sArts.map(a=>{
-    const st   = normalizeSourceType(a.sourceType || detectSourceType(a.url));
-    const meta = SOURCE_TYPES[st];
-    return `
-    <div class="article-item">
-      <div class="art-meta">
-        <i class="ph ${meta.icon} art-icon ${st}" title="${x(meta.label)}" aria-label="${x(meta.label)}"></i>
-        <div class="art-date">${fmtDate(a.date)}</div>
-        <div class="art-source-label">${x(meta.label)}</div>
-      </div>
-      <div>
-        <div class="art-title">${a.url?`<a href="${x(a.url)}">${x(a.title)}</a>`:x(a.title)}</div>
-        ${a.summary?`<div class="art-summary">${x(a.summary)}</div>`:''}
-        ${a.tags?.length?`<div class="art-tags">${a.tags.map(t=>`<span class="art-tag">${x(t.trim())}</span>`).join('')}</div>`:''}
-      </div>
-    </div>`;
-  }).join('');
-
-  const stateJson = JSON.stringify({articles:S.articles,ctas:S.ctas,lastUpdated:S.lastUpdated})
-    .replace(/<\//g, '<\\/');
-
-  return `<script type="application/json" id="ncsn-data">${stateJson}<\/script>
-<section><div class="section-label">Calls to action</div>
-<div id="cta-container">${ctaHtml}</div></section>
-<section><div class="section-label">News &amp; articles</div>
-<hr class="article-rule"><div id="articles-container">${artHtml}</div></section>`;
-}
-
-/* ══════════════════════════════════════════════════════════
-   CHANGELOG — fetch JSONL, decrypt payloads
-   Requires GET /webhook/site/log in n8n (see ncsn-n8n-additions.json)
-   ══════════════════════════════════════════════════════════ */
-async function openChangelog() {
-  openModal('log-modal');
-  const el = document.getElementById('log-container');
-  el.innerHTML='<p class="msg">Loading...</p>';
-
-  if (!adminPass) { el.innerHTML='<p class="msg err">Admin session required.</p>'; return; }
-
-  let text;
-  try {
-    const r = await fetch(CFG.logEndpoint, {
-      headers:{'Authorization':'Bearer '+adminPass}
-    });
-    if (r.status===404) {
-      el.innerHTML=`<p class="msg">Log endpoint not yet configured.<br>
-        Import <code>ncsn-n8n-additions.json</code> into n8n and activate it.</p>`;
-      return;
-    }
-    if (r.status===401) { el.innerHTML='<p class="msg err">Unauthorized.</p>'; return; }
-    if (!r.ok) throw new Error('HTTP '+r.status);
-    text = await r.text();
-  } catch(err) {
-    el.innerHTML=`<p class="msg err">Could not load log: ${x(err.message)}</p>`;
-    return;
-  }
-
-  const lines = text.trim().split('\n').filter(Boolean).reverse();
-  if (!lines.length) { el.innerHTML='<p class="msg">No log entries yet.</p>'; return; }
-
-  const rows = await Promise.all(lines.map(async line => {
-    let ev;
-    try { ev = JSON.parse(line); } catch { return ''; }
-    const ts = ev.ts
-      ? new Date(ev.ts).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})
-      : '—';
-
-    let detail = '';
-    if (ev.payload?.encrypted && encKeyB64) {
-      try {
-        const dec = await decryptData(ev.payload.encrypted, encKeyB64);
-        const na = dec.articles?.length ?? '?';
-        const nc = dec.ctas?.length ?? '?';
-        detail = `${na} articles, ${nc} actions`;
-      } catch {
-        detail = '<span class="log-enc">encrypted</span>';
-      }
-    } else if (ev.payload?._probe) {
-      detail = '<span class="log-enc">probe</span>';
-    }
-
-    return `<div class="log-entry">
-      <div class="log-ts">${ts}</div>
-      <div class="log-op">${x(ev.op||'—')}</div>
-      <div class="log-detail">${detail || x(ev.site||'')}</div>
-    </div>`;
-  }));
-
-  el.innerHTML = rows.join('');
-}
-
-/* ══════════════════════════════════════════════════════════
-   CTA CRUD
-   ══════════════════════════════════════════════════════════ */
-function openAddCTA() {
-  document.getElementById('cta-modal-h').textContent='Add call to action';
-  ['cta-id','cta-title','cta-desc','cta-url','cta-lbl'].forEach(i=>document.getElementById(i).value='');
-  document.getElementById('cta-urgency').value='medium';
-  openModal('cta-modal');
-}
-function openEditCTA(id) {
-  const c=S.ctas.find(c=>c.id===id); if(!c)return;
-  document.getElementById('cta-modal-h').textContent='Edit call to action';
-  document.getElementById('cta-id').value    =id;
-  document.getElementById('cta-title').value =c.title||'';
-  document.getElementById('cta-desc').value  =c.description||'';
-  document.getElementById('cta-url').value   =c.url||'';
-  document.getElementById('cta-lbl').value   =c.linkLabel||'';
-  document.getElementById('cta-urgency').value=c.urgency||'medium';
-  openModal('cta-modal');
-}
-function saveCTA() {
-  const id=document.getElementById('cta-id').value;
-  const c={id:id||uid(),title:document.getElementById('cta-title').value.trim(),
-    description:document.getElementById('cta-desc').value.trim(),
-    url:document.getElementById('cta-url').value.trim(),
-    linkLabel:document.getElementById('cta-lbl').value.trim(),
-    urgency:document.getElementById('cta-urgency').value};
-  if(!c.title)return;
-  S.ctas=id?S.ctas.map(v=>v.id===id?c:v):[...S.ctas,c];
-  closeAllModals(); renderCTAs();
-}
-function delCTA(id){if(!confirm('Delete?'))return;S.ctas=S.ctas.filter(c=>c.id!==id);renderCTAs()}
-
-/* ══════════════════════════════════════════════════════════
-   ARTICLE CRUD
-   ══════════════════════════════════════════════════════════ */
-function openAddArticle() {
-  document.getElementById('art-modal-h').textContent='Add article';
-  ['art-id','art-title','art-url','art-summary','art-tags'].forEach(i=>document.getElementById(i).value='');
-  document.getElementById('art-date').value=today();
-  document.getElementById('art-source-type').value='';
-  openModal('art-modal');
-}
-function openEditArt(id) {
-  const a=S.articles.find(a=>a.id===id); if(!a)return;
-  document.getElementById('art-modal-h').textContent='Edit article';
-  document.getElementById('art-id').value         =id;
-  document.getElementById('art-title').value      =a.title||'';
-  document.getElementById('art-url').value        =a.url||'';
-  document.getElementById('art-date').value       =a.date||today();
-  document.getElementById('art-summary').value    =a.summary||'';
-  document.getElementById('art-tags').value       =(a.tags||[]).join(', ');
-  document.getElementById('art-source-type').value=a.sourceType||'';
-  openModal('art-modal');
-}
-function saveArt() {
-  const id=document.getElementById('art-id').value;
-  const url=document.getElementById('art-url').value.trim();
-  const stChoice=document.getElementById('art-source-type').value;
-  const a={id:id||uid(),title:document.getElementById('art-title').value.trim(),
-    url,
-    date:document.getElementById('art-date').value,
-    summary:document.getElementById('art-summary').value.trim(),
-    tags:document.getElementById('art-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
-    // Empty value = auto-detect: store only when the editor explicitly picked one,
-    // so future URL changes can keep auto-detecting.
-    sourceType: stChoice ? normalizeSourceType(stChoice) : ''};
-  if(!a.title)return;
-  S.articles=id?S.articles.map(v=>v.id===id?a:v):[...S.articles,a];
-  closeAllModals(); renderArts();
-}
-function delArt(id){if(!confirm('Delete?'))return;S.articles=S.articles.filter(a=>a.id!==id);renderArts()}
-
-/* ══════════════════════════════════════════════════════════
-   IMPORT — upload a JSON file of migrated content
-   Format: { version:1, articles:[...], ctas:[...] }
-   Items without an id get one assigned. Merge mode dedupes
-   articles by URL (fallback title) and CTAs by title.
-   Nothing is published until the user clicks Save.
-   ══════════════════════════════════════════════════════════ */
-function openImport() {
-  if (!admin) return;
-  document.getElementById('import-file').value = '';
-  document.getElementById('import-mode').value = 'merge';
-  setMsg('import-msg','','');
-  setDisabled('import-btn', false);
-  openModal('import-modal');
-}
-
-async function doImport() {
-  const f = document.getElementById('import-file').files?.[0];
-  const mode = document.getElementById('import-mode').value;
-  if (!f) { setMsg('import-msg','Choose a file.','err'); return; }
-
-  setDisabled('import-btn', true);
-  setMsg('import-msg','Reading…','status');
-
-  let data;
-  try {
-    data = JSON.parse(await f.text());
-  } catch(err) {
-    setMsg('import-msg','Not a valid JSON file: '+err.message,'err');
-    setDisabled('import-btn', false);
-    return;
-  }
-
-  const inArts = Array.isArray(data.articles) ? data.articles : [];
-  const inCTAs = Array.isArray(data.ctas)     ? data.ctas     : [];
-  if (!inArts.length && !inCTAs.length) {
-    setMsg('import-msg','File has no articles or ctas.','err');
-    setDisabled('import-btn', false);
-    return;
-  }
-
-  const normArt = a => {
-    const url = String(a.url||'').trim();
-    // If the file supplies a known sourceType, keep it. Otherwise leave the
-    // field empty so the renderer auto-detects from the URL — that way an
-    // editor changing the URL later still gets a sensible default.
-    let st = '';
-    if (a.sourceType && Object.prototype.hasOwnProperty.call(SOURCE_TYPES, a.sourceType)) {
-      st = a.sourceType;
-    }
-    return {
-      id:         a.id || uid(),
-      title:      String(a.title||'').trim(),
-      url,
-      date:       String(a.date||'').trim(),
-      summary:    String(a.summary||'').trim(),
-      tags:       Array.isArray(a.tags) ? a.tags.map(t=>String(t).trim()).filter(Boolean) : [],
-      sourceType: st,
-    };
-  };
-  const normCTA = c => ({
-    id:          c.id || uid(),
-    title:       String(c.title||'').trim(),
-    description: String(c.description||'').trim(),
-    url:         String(c.url||'').trim(),
-    linkLabel:   String(c.linkLabel||'').trim(),
-    urgency:     ['high','medium','low'].includes(c.urgency) ? c.urgency : 'medium',
-  });
-
-  const arts = inArts.map(normArt).filter(a=>a.title);
-  const ctas = inCTAs.map(normCTA).filter(c=>c.title);
-
-  if (mode === 'replace') {
-    if (!confirm(`Replace all content with ${arts.length} articles and ${ctas.length} actions?`)) {
-      setDisabled('import-btn', false);
-      setMsg('import-msg','','');
-      return;
-    }
-    S.articles = arts;
-    S.ctas     = ctas;
-    setMsg('import-msg',`Replaced. ${arts.length} articles, ${ctas.length} actions. Click Save in the top bar to publish.`,'status');
-  } else {
-    const haveArtKey = new Set(S.articles.map(a => (a.url || a.title).toLowerCase()));
-    const haveCTAKey = new Set(S.ctas.map(c => c.title.toLowerCase()));
-    let addedA = 0, addedC = 0;
-    arts.forEach(a => {
-      const k = (a.url || a.title).toLowerCase();
-      if (!haveArtKey.has(k)) { S.articles.push(a); haveArtKey.add(k); addedA++; }
-    });
-    ctas.forEach(c => {
-      const k = c.title.toLowerCase();
-      if (!haveCTAKey.has(k)) { S.ctas.push(c); haveCTAKey.add(k); addedC++; }
-    });
-    setMsg('import-msg',`Added ${addedA} articles, ${addedC} actions (duplicates skipped). Click Save in the top bar to publish.`,'status');
-  }
-
-  setDisabled('import-btn', false);
-  renderCTAs(); renderArts();
-}
-
-/* ══════════════════════════════════════════════════════════
-   MODAL / UI HELPERS
-   ══════════════════════════════════════════════════════════ */
-function openModal(id){closeAllModals();document.getElementById(id).classList.add('on')}
-function closeAllModals(){document.querySelectorAll('.modal-bg.on').forEach(m=>m.classList.remove('on'))}
-function setMsg(id,txt,type){const el=document.getElementById(id);el.className='modal-msg'+(txt?' '+type:'');el.textContent=txt}
-function setDisabled(id,v){document.getElementById(id).disabled=v}
-
-document.querySelectorAll('.modal-bg').forEach(bg=>
-  bg.addEventListener('click',ev=>{if(ev.target===bg)closeAllModals()}));
-
-/* ══════════════════════════════════════════════════════════
-   UTILS
-   ══════════════════════════════════════════════════════════ */
-function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5)}
-function today(){return new Date().toISOString().slice(0,10)}
-function x(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
-function fmtDate(iso){
-  if(!iso)return'—';
-  const d=new Date(iso+'T12:00:00');
-  if(isNaN(d))return iso;
-  return d.toLocaleDateString('en-US',{month:'short'})+'\n'+d.getFullYear();
-}
-
-/* ══════════════════════════════════════════════════════════
-   INIT
-   ══════════════════════════════════════════════════════════ */
-boot();
-</script>
-</body>
+    <script src="main.js"></script>
+  </body>
 </html>
