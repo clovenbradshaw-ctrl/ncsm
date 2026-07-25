@@ -12,6 +12,7 @@
   --faint: #bbb;
   --rule: #e0e0e0;
   --brand: #9d8f6d;
+  --max-width: 700px;
 }
 body {
   background-color: var(--ink);
@@ -22,21 +23,24 @@ body {
     Arial,
     sans-serif;
   font-size: 15px;
-  min-height: 100dvh;
+  min-height: 100vh;
   line-height: 1.6;
   color: var(--ink);
 }
 
 .site-container {
-  max-width: 700px;
+  max-width: var(--max-width);
   background: var(--brand);
   margin: 0 auto;
-  padding: 1.5rem;
+  min-height: calc(100vh - 550px);
+  padding: 1rem 1.5rem;
   display: flex;
   flex-direction: column;
 }
 
 .header-container {
+  margin: 0 auto;
+  max-width: var(--max-width);
   background: var(--brand);
   padding: 1.5rem 1.5rem 0;
 }
@@ -46,13 +50,14 @@ main {
 }
 
 .logo-container {
-  /* max-width: 100%; */
-  /* margin-bottom: 1rem; */
   background-color: var(--ink);
+  display: flex;
+  justify-content: center;
 }
 
 .logo {
   width: 100%;
+  max-width: 400px;
   height: auto;
 }
 
@@ -76,11 +81,13 @@ main {
 nav {
   margin-top: 10px;
 }
+
 nav ul {
   display: flex;
   align-items: center;
   gap: 18px;
 }
+
 nav ul li {
   list-style: none;
 }
@@ -100,7 +107,7 @@ nav ul li {
   align-items: center;
   gap: 10px;
   margin: 1.2rem 0 0.5rem;
-  padding: 12px 18px;
+  padding: 8px 16px;
   background-color: #111;
   border-radius: 8px;
   text-decoration: none;
@@ -108,16 +115,19 @@ nav ul li {
     opacity 0.2s,
     transform 0.15s;
 }
+
 .social-banner:hover {
   opacity: 0.92;
   transform: translateY(-1px);
 }
+
 .social-banner img {
   width: 28px;
   height: 28px;
   object-fit: contain;
   filter: brightness(0) invert(1);
 }
+
 .social-banner .ig-text {
   color: #fff;
   font-size: 13px;
@@ -125,12 +135,15 @@ nav ul li {
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+
 .social-banner .ig-handle {
   color: rgba(255, 255, 255, 0.85);
   font-size: 11px;
   letter-spacing: 0.04em;
   text-transform: none;
   font-weight: 400;
+  display: flex;
+  word-break: break-word;
 }
 
 .section-label {
@@ -144,16 +157,18 @@ nav ul li {
 
 .article-rule {
   border: none;
-  border-top: 1px solid var(--rule);
+  border-top: 1px solid var(--ink);
   margin: 0;
 }
+
 .article-item {
   display: grid;
   grid-template-columns: 72px 1fr;
   gap: 0 18px;
   padding: 14px 0;
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 1px solid var(--ink);
 }
+
 .art-meta {
   padding-top: 2px;
   display: flex;
@@ -161,11 +176,13 @@ nav ul li {
   align-items: flex-start;
   gap: 6px;
 }
+
 .art-icon {
   font-size: 24px;
   line-height: 1;
   display: block;
 }
+
 .art-icon.substack {
   color: #ff6719;
 }
@@ -187,35 +204,42 @@ nav ul li {
 .art-icon.other {
   color: var(--faint);
 }
+
 .art-date {
   font-size: 10px;
+  color: var(--ink);
+  font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--faint);
   line-height: 1.4;
   white-space: pre-line;
 }
+
 .art-source-label {
   font-size: 8px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--faint);
+  color: var(--ink);
   font-weight: 700;
 }
+
 .art-title {
   font-size: 15px;
   font-weight: 700;
   line-height: 1.35;
   margin-bottom: 3px;
 }
+
 .art-title a {
   color: var(--ink);
   text-decoration: none;
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 1px solid var(--ink);
 }
+
 .art-title a:hover {
   border-bottom-color: var(--ink);
 }
+
 .art-summary {
   font-size: 12px;
   color: var(--mid);
@@ -225,14 +249,14 @@ nav ul li {
 
 .site-footer {
   margin-top: 2.5rem;
-  border-top: 1px solid var(--rule);
+  border-top: 1px solid var(--ink);
   padding-top: 10px;
   display: flex;
   justify-content: space-between;
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--faint);
+  color: var(--ink);
   flex-wrap: wrap;
   gap: 0.4rem;
 }
