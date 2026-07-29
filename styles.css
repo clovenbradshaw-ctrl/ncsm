@@ -247,6 +247,19 @@ nav ul li {
   margin-bottom: 5px;
 }
 
+.timeline article {
+  padding-top: 1rem;
+}
+
+.timeline article p {
+  padding-top: 0.5rem;
+}
+
+.timeline ul {
+  padding-left: 1rem;
+  margin-top: 0.5rem;
+}
+
 .site-footer {
   margin-top: 2.5rem;
   border-top: 1px solid var(--ink);
