@@ -92,6 +92,18 @@ nav ul li {
   list-style: none;
 }
 
+nav ul li a {
+  color: var(--mid);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+nav ul li a.active {
+  color: var(--ink);
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--ink);
+}
+
 .site-subheading {
   padding-top: 10px;
 }
